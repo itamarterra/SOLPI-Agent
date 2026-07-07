@@ -11,3 +11,4 @@ Pillow
 pymysql
 pyyaml
 pygetwindow
+opencv-python
