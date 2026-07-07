@@ -1,37 +1,18 @@
-import time
-import os
-
 class Reflection:
-    """
-    O Crítico do SOLPI-AIOS.
-    Avalia se as ações executadas pelos agentes atingiram o objetivo esperado.
-    """
-    def __init__(self, memory, tools):
+    """O Analista de Resultados do SOLPI OS."""
+    
+    def __init__(self, memory, voice):
         self.memory = memory
-        self.tools = tools
+        self.voice = voice
 
-    def evaluate(self, objective, plan, result):
-        print(f"🧐 [REFLECTION]: Avaliando eficácia da execução...")
+    def evaluate_task(self, objective, result):
+        """Reflete se a tarefa foi concluída ou se precisa de correção."""
+        print(f"🧐 [REFLECTION]: Auditando resultado...")
         
-        # 1. Análise de Sucesso (Baseado em texto por enquanto)
-        success = True
-        feedback = "Objetivo parece ter sido alcançado."
+        is_success = "error" not in str(result).lower() and "failure" not in str(result).lower()
         
-        if "erro" in str(result).lower() or "falha" in str(result).lower():
-            success = False
-            feedback = "A execução encontrou erros técnicos."
-        
-        # 2. Verificação Sensorial (Simulada)
-        # Em tarefas de UI, poderíamos tirar um print e comparar com o esperado
-        
-        print(f"⚖️ [REFLECTION]: Resultado -> {'Sucesso' if success else 'Falha'}. Feedback: {feedback}")
-        
-        return {
-            "success": success,
-            "feedback": feedback,
-            "performance_score": 0.9 if success else 0.2
-        }
+        if not is_success:
+            self.voice.speak("Detectei uma anomalia na execução. Iniciando diagnóstico.")
+            return {"status": "retry", "reason": "Erro técnico detectado na saída."}
 
-    def should_retry(self, evaluation):
-        """Decide se o Orquestrador deve tentar novamente ou pedir ajuda."""
-        return not evaluation["success"]
+        return {"status": "done", "feedback": "Tarefa validada."}

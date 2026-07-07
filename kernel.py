@@ -2,58 +2,48 @@ import os
 import sys
 from dotenv import load_dotenv
 from cognition.orchestrator import Orchestrator
-from telemetry.monitor import OSMonitor
 
 class SOLPI_OS:
     """
-    O Kernel do SOLPI OS v3.0.
-    Sistema Operacional de Inteligência Artificial Geral.
+    O Kernel do SOLPI OS v4.5.
+    Suporte nativo a Voz, Visão e Auto-Recuperação.
     """
     def __init__(self):
-        self.version = "3.0.0-COGNITIVE"
+        self.version = "4.5.0-INTEGRATED"
         load_dotenv()
-        self.monitor = OSMonitor()
         self.orchestrator = Orchestrator()
-        # Injeta o monitor no orquestrador para observabilidade
-        self.orchestrator.monitor = self.monitor
-        
         self._boot_message()
 
     def _boot_message(self):
         print("="*60)
         print(f"🚀 [BOOT]: SOLPI OS v{self.version}")
-        print(f"🧠 [CORE]: Cognition Engine v2.0 Activated")
-        print(f"🛡️  [SEC]: Security Gatekeeper Standing By")
-        print(f"📊 [OBS]: Telemetry Monitor Online")
+        print(f"🧠 [AI CORE]: Integrated Brain Active")
+        print(f"🎤 [VOICE]: Mic and Speakers Online")
+        print(f"👁️  [VISION]: OCR and Object Detection Ready")
         print("="*60)
-
-    def shutdown(self):
-        print("\n🛑 [KERNEL]: Shutting down SOLPI OS...")
-        sys.exit(0)
+        self.orchestrator.voice.speak("Sistemas online. Estou pronto, Comandante Itamar.")
 
     def run(self):
-        print(f"✨ [SYSTEM]: SOLPI OS Ready. Commands: 'objetivo [desc]', 'status', 'sair'")
+        print(f"✨ [SYSTEM]: SOLPI OS Ready. Commands: 'objetivo', 'status', ou Pressione ENTER para falar.")
         
         while True:
             try:
                 user_input = input("\n👤 [ITAMAR]: ").strip()
                 
-                if not user_input: continue
-                
-                if user_input.lower() in ["exit", "sair", "shutdown"]:
-                    self.shutdown()
+                # Se der ENTER vazio, usa o microfone
+                if not user_input:
+                    user_input = self.orchestrator.voice.listen()
+                    if not user_input: continue
 
-                if user_input.lower() == "status":
-                    metrics = self.monitor.get_system_metrics()
-                    print(f"📊 [STATUS]: CPU: {metrics['cpu_usage']} | RAM: {metrics['memory_usage']} | Uptime: {metrics['uptime']}")
-                    continue
+                if user_input.lower() in ["exit", "sair", "shutdown"]:
+                    sys.exit(0)
 
                 # Ciclo de Autonomia Total
                 response = self.orchestrator.solve(user_input)
                 print(f"\n🤖 [SOLPI OS]: {response}")
 
             except KeyboardInterrupt:
-                self.shutdown()
+                sys.exit(0)
             except Exception as e:
                 print(f"⚠️ [CRITICAL]: {e}")
 
