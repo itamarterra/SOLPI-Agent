@@ -12,3 +12,6 @@ pymysql
 pyyaml
 pygetwindow
 opencv-python
+numpy
+screeninfo
+lxml
