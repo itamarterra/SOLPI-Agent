@@ -1,6 +1,6 @@
 import time
 import json
-from cognition.memory import SOLPIMemory
+from cognition.brain_memory import BrainMemory
 from cognition.temporal_memory import TemporalMemory
 from cognition.world_model import WorldModel
 from cognition.goal_manager import GoalManager
@@ -23,20 +23,19 @@ from registry.tool_registry import ToolRegistry
 
 class Orchestrator:
     """
-    O AI CORE v6.0: O Cérebro Unificado.
-    Integra Raciocínio LLM, Enxame de Agentes e Gêmeo Digital.
+    O AI CORE v6.1: O Cérebro Unificado e Seguro.
     """
     def __init__(self):
-        # Motores de Inteligência (v6)
+        # Motores de Inteligência
         self.llm = LLMEngine()
         self.intent = IntentAnalyzer(self.llm)
+        self.memory = BrainMemory() # Classe e arquivo renomeados
         
         # Sensores e Interface
         self.voice = VoiceCore()
         self.vision = VisionEngine()
         
-        # Infraestrutura Cognitiva (v4-v5)
-        self.memory = SOLPIMemory()
+        # Infraestrutura
         self.temporal_memory = TemporalMemory()
         self.registry = ToolRegistry()
         self.world = WorldModel(self.memory)
@@ -57,44 +56,34 @@ class Orchestrator:
         start_time = time.time()
         self.executive.set_state("PENSANDO")
         
-        # 1. PERCEPÇÃO MUNDIAL & DIGITAL TWIN
+        # 1. PERCEPÇÃO
         world_state = self.world.update_state()
-        self.digital_twin.sync_from_sources()
         
-        # 2. ANÁLISE DE INTENÇÃO (LLM-CENTRIC v6)
+        # 2. ANÁLISE DE INTENÇÃO
         intent = self.intent.analyze(user_input, world_state)
         print(f"🎯 [INTENT]: {intent}")
 
         if intent == "CONVERSATION":
             return self._handle_conversation(user_input)
 
-        # 3. CICLO DE EXECUÇÃO DE ELITE (Se for GOAL ou TROUBLESHOOTING)
-        self.voice.speak(f"Processando objetivo estratégico: {user_input}")
+        # 3. CICLO DE EXECUÇÃO
+        self.voice.speak(f"Comandante, iniciando missão: {user_input}")
         self.goal_manager.set_goal(user_input)
 
-        # 4. PLANEJAMENTO HIERÁRQUICO (Task Tree)
+        # 4. PLANEJAMENTO E SIMULAÇÃO
         self.executive.set_state("PLANEJANDO")
         task_tree = self.workflow.generate_task_tree(user_input, world_state)
-        self.goal_manager.update_milestones(task_tree['branches'])
-
-        # 5. SIMULAÇÃO DE IMPACTO
         sim_report = self.simulator.simulate_plan(task_tree['branches'])
-        if sim_report['predicted_success_rate'] < 50:
-            msg = "Risco de falha crítica detectado. Abortando execução."
-            self.voice.speak(msg)
-            return f"❌ {msg}"
+        
+        if sim_report['predicted_success_rate'] < 40:
+            return "❌ Risco de falha muito alto detectado na simulação."
 
-        # 6. EXECUÇÃO VIA ENXAME (Swarm Intelligence)
+        # 5. EXECUÇÃO
         self.executive.set_state("EXECUTANDO")
         swarm_results = self.swarm.execute_swarm(task_tree['branches'])
-        
-        for i, res in enumerate(swarm_results):
-            self.goal_manager.mark_step_complete(i)
 
-        # 7. REFLEXÃO & APRENDIZADO
+        # 6. REFLEXÃO & APRENDIZADO
         self.executive.set_state("OBSERVANDO")
-        evaluation = self.reflection.evaluate_task(user_input, swarm_results)
-        
         self.experience.distill({
             "problem": user_input,
             "context": world_state,
@@ -105,12 +94,11 @@ class Orchestrator:
         })
 
         self.executive.set_state("DORMINDO")
-        final_msg = f"Objetivo concluído com {sim_report['predicted_success_rate']}% de confiança."
-        return self._handle_conversation(f"O resultado do enxame foi: {final_msg}. Resuma para o usuário.")
+        return self._handle_conversation(f"Missão concluída: {user_input}. Dê um resumo final.")
 
     def _handle_conversation(self, text):
         messages = [
-            {"role": "system", "content": "Você é o SOLPI OS v6.0. Responda de forma clara e técnica em Português-BR."},
+            {"role": "system", "content": "Você é o SOLPI OS v6.1. Responda de forma humana e técnica. Se o usuário disser 'boa noite', responda 'boa noite' de forma amigável."},
             {"role": "user", "content": text}
         ]
         res = self.llm.chat(messages)
@@ -119,4 +107,4 @@ class Orchestrator:
             self.voice.speak(msg)
             return msg
         except:
-            return "Cérebro em manutenção. Por favor, verifique sua chave de API."
+            return "Estou ouvindo, Itamar. No entanto, minha conexão com a inteligência superior falhou. Verifique sua chave API."
