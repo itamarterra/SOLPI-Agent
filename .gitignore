@@ -1,0 +1,7 @@
+.env
+__pycache__/
+*.db
+logs/*.log
+memory/*.db
+memory/*.png
+backups/*.zip
