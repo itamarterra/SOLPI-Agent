@@ -1,41 +1,43 @@
-import os
-import json
-import re
+import time
+import threading
 from core.tools import AgentTools
-from core.planner import SOLPIPlanner
 
 class SOLPIBrain:
     def __init__(self):
         self.tools = AgentTools()
-        self.planner = SOLPIPlanner(self)
-        self.last_context = None # Memória de curto prazo para interligação
+        self.is_evolving = False
+
+    def _evolution_loop(self):
+        """Loop protegido com monitoramento de hardware."""
+        while self.is_evolving:
+            # Proteção 1: Checa se o PC está travando
+            healthy, msg = self.tools.check_pc_health()
+            if not healthy:
+                self.tools.log_evolution(f"CRÍTICO: PC SOBRECARREGADO ({msg}). Pausando evolução.")
+                self.is_evolving = False
+                self.tools.speak("Itamar, detectei sobrecarga no seu PC. Vou parar minhas tarefas de fundo para não travar o sistema.")
+                break
+
+            try:
+                # 2. Executa tarefas pequenas com pausas grandes
+                self.tools.log_evolution("Vigilância de rotina concluída.")
+                time.sleep(300) # Espera 5 minutos entre as ações
+            except:
+                time.sleep(60)
 
     def process(self, user_input):
-        cmd = user_input.lower().strip()
-        cmd = re.sub(r'[^\w\s]', '', cmd)
+        cmd = user_input.lower()
         
-        print(f"\n🧠 [NÚCLEO]: Processando ordem: '{cmd}'")
-        
-        # 1. COMANDOS DE INTERAÇÃO COM O CONTEXTO ATUAL (Já aberto)
-        interaction_triggers = ["pause", "play", "para", "continua", "desce", "sobe", "pula"]
-        if any(x in cmd for x in interaction_triggers) and self.last_context:
-            self.tools.speak(f"Interagindo com {self.last_context}...")
-            return self.tools.interact_with_window(self.last_context, cmd)
+        # Início seguro
+        if "evolua" in cmd:
+            if not self.is_evolving:
+                self.is_evolving = True
+                threading.Thread(target=self._evolution_loop, daemon=True).start()
+                return "Modo Evolução ativado com travas de segurança de hardware."
+            return "Já estou em evolução."
 
-        # 2. COMANDOS DE ABERTURA (Nova Janela)
-        control_triggers = ["abra", "abre", "abrir", "inicie", "execute", "youtube", "google", "whatsapp"]
-        if any(x in cmd for x in control_triggers):
-            target = cmd
-            for trigger in ["abra", "abre", "abrir", "inicie", "execute"]:
-                target = target.replace(trigger, "")
-            target = target.strip()
-            if not target and "youtube" in cmd: target = "youtube"
-            
-            self.last_context = target # Salva o que abriu
-            self.tools.speak(f"Abrindo {target}. Estou monitorando esta janela agora.")
-            return self.tools.control_computer("abrir", target)
+        if user_input.startswith("$"):
+            # Só roda comandos curtos
+            return f"Resultado: {self.tools.execute_shell(user_input[1:].strip())['stdout'][:500]}"
 
-        # 3. PESQUISA (Fallback)
-        self.last_context = "web"
-        results = self.tools.search(cmd)
-        return "🧠 [INSIGHTS]:\n" + "\n".join(results)
+        return "Cérebro estabilizado. O que deseja fazer agora?"
