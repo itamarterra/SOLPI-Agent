@@ -5,18 +5,14 @@ import json
 
 class SOLPIMemory:
     """
-    Gerenciador de Memória em 7 Camadas:
-    1. Short Term (Sessão atual)
-    2. Long Term (Persistência histórica)
-    3. Semantic (Busca por similaridade/FTS5)
-    4. Task (Histórico de planos e execuções)
-    5. Experience (Aprendizados e reflexões)
-    6. Conversation (Logs de interação)
-    7. Knowledge (Base de fatos e ferramentas)
+    MEMÓRIA SUPREMA: 7 Camadas de Consciência para o AI Core.
     """
-    def __init__(self, db_path="memory/solpi_os.db"):
+    def __init__(self, db_path="memory/ai_core.db"):
         self.db_path = db_path
-        self.short_term = {} # Memória de Curto Prazo (Volátil)
+        self.cache = {
+            "conversation": [], # Short-term
+            "current_task": None
+        }
         self._init_db()
 
     def _init_db(self):
@@ -24,82 +20,37 @@ class SOLPIMemory:
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
         
-        # Camada Semântica e Long Term (FTS5 para busca rápida)
-        cursor.execute('''
-            CREATE VIRTUAL TABLE IF NOT EXISTS semantic_memory 
-            USING fts5(content, layer, tags, timestamp UNINDEXED)
-        ''')
+        # 1. Semantic Memory (FTS5) - Busca por significado
+        cursor.execute('CREATE VIRTUAL TABLE IF NOT EXISTS semantic USING fts5(content, tags, timestamp UNINDEXED)')
         
-        # Camada de Tarefas (Task Memory)
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS task_memory (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                objective TEXT,
-                plan TEXT,
-                result TEXT,
-                status TEXT,
-                duration FLOAT,
-                timestamp DATETIME
-            )
-        ''')
+        # 2. Procedural Memory - Como fazer as coisas (Skills)
+        cursor.execute('CREATE TABLE IF NOT EXISTS procedural (id INTEGER PRIMARY KEY, skill_name TEXT, steps TEXT, version TEXT)')
+        
+        # 3. Experience Memory - O que funcionou e o que falhou
+        cursor.execute('CREATE TABLE IF NOT EXISTS experience (id INTEGER PRIMARY KEY, scenario TEXT, outcome TEXT, lessons TEXT)')
+        
+        # 4. Knowledge Memory - Fatos do mundo (GLPI, Zabbix, etc)
+        cursor.execute('CREATE TABLE IF NOT EXISTS knowledge (id INTEGER PRIMARY KEY, key TEXT, value TEXT, category TEXT)')
 
-        # Camada de Experiência (Experience Memory)
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS experience_memory (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                scenario TEXT,
-                action_taken TEXT,
-                outcome TEXT,
-                lessons_learned TEXT,
-                timestamp DATETIME
-            )
-        ''')
+        # 5. Task Memory - Histórico de execuções
+        cursor.execute('CREATE TABLE IF NOT EXISTS tasks (id INTEGER PRIMARY KEY, objective TEXT, result TEXT, status TEXT)')
+
+        # 6. Conversation Memory - Logs de chat
+        cursor.execute('CREATE TABLE IF NOT EXISTS conversation (id INTEGER PRIMARY KEY, user_input TEXT, agent_response TEXT, timestamp DATETIME)')
         
         conn.commit()
         conn.close()
 
-    # Operações de Curto Prazo
-    def set_context(self, key, value):
-        self.short_term[key] = value
-
-    def get_context(self, key):
-        return self.short_term.get(key)
-
-    # Operações de Longo Prazo e Semântica
-    def store(self, content, layer="knowledge", tags=""):
+    def store_experience(self, scenario, outcome, lessons):
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
-        cursor.execute(
-            "INSERT INTO semantic_memory (content, layer, tags, timestamp) VALUES (?, ?, ?, ?)",
-            (content, layer, tags, datetime.now().isoformat())
-        )
+        cursor.execute("INSERT INTO experience (scenario, outcome, lessons) VALUES (?, ?, ?)", 
+                       (scenario, outcome, json.dumps(lessons)))
         conn.commit()
         conn.close()
 
-    def search(self, query, layer=None):
+    def search_semantic(self, query):
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
-        if layer:
-            cursor.execute(
-                "SELECT content FROM semantic_memory WHERE semantic_memory MATCH ? AND layer = ? ORDER BY rank",
-                (query, layer)
-            )
-        else:
-            cursor.execute(
-                "SELECT content FROM semantic_memory WHERE semantic_memory MATCH ? ORDER BY rank",
-                (query,)
-            )
-        results = cursor.fetchall()
-        conn.close()
-        return [r[0] for r in results]
-
-    # Registro de Experiência e Aprendizado
-    def log_experience(self, scenario, action, outcome, lessons):
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-        cursor.execute(
-            "INSERT INTO experience_memory (scenario, action_taken, outcome, lessons_learned, timestamp) VALUES (?, ?, ?, ?, ?)",
-            (scenario, action, outcome, json.dumps(lessons), datetime.now().isoformat())
-        )
-        conn.commit()
-        conn.close()
+        cursor.execute("SELECT content FROM semantic WHERE semantic MATCH ? ORDER BY rank", (query,))
+        return [r[0] for r in cursor.fetchall()]
