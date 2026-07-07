@@ -2,50 +2,71 @@ import psutil
 import platform
 import os
 import pygetwindow as gw
+import pyautogui
 from datetime import datetime
 
 class WorldModel:
     """
-    O Modelo de Mundo do SOLPI OS.
-    Mantém o estado atual do ambiente Windows, Hardware e Rede.
+    O Modelo de Mundo do SOLPI OS v4.0.
+    Monitoramento contínuo e profundo do ambiente de execução.
     """
     def __init__(self, memory):
         self.memory = memory
         self.state = {}
 
     def update_state(self):
-        """Atualiza a percepção do agente sobre o PC e a Web."""
+        """Captura o estado 360º do ambiente."""
         self.state = {
-            "os": platform.system(),
-            "active_window": self._get_active_window(),
-            "open_apps": self._get_open_apps(),
-            "cpu_usage": f"{psutil.cpu_percent()}%",
-            "ram_free": f"{psutil.virtual_memory().available / (1024**3):.2f} GB",
-            "internet": self._check_internet(),
-            "docker_status": self._check_docker(),
+            "environment": {
+                "os": platform.system(),
+                "version": platform.version(),
+                "user": os.getlogin(),
+                "active_window": self._get_active_window(),
+                "mouse_pos": pyautogui.position(),
+                "monitors": self._get_monitors()
+            },
+            "resources": {
+                "cpu": f"{psutil.cpu_percent()}%",
+                "ram": f"{psutil.virtual_memory().percent}%",
+                "disk": f"{psutil.disk_usage('/').percent}%",
+                "internet": self._check_connectivity()
+            },
+            "services": {
+                "docker": self._check_service("docker"),
+                "glpi": self._check_connectivity("localhost:8081"), # Exemplo
+                "zabbix": self._check_connectivity("localhost:8080") # Exemplo
+            },
             "timestamp": datetime.now().isoformat()
         }
-        # Salva o estado na Memória Semântica para análise de contexto futura
-        self.memory.store(str(self.state), layer="knowledge", tags="world_state")
+        
+        # Sincroniza percepção com a Memória Semântica
+        self.memory.store(
+            content=f"World State Snapshot: {self.state['environment']['active_window']} active",
+            layer="knowledge",
+            tags="situational_awareness"
+        )
         return self.state
 
     def _get_active_window(self):
         try: return gw.getActiveWindow().title
-        except: return "Unknown"
+        except: return "Desktop"
 
-    def _get_open_apps(self):
-        return [w.title for w in gw.getAllWindows() if w.title]
+    def _get_monitors(self):
+        try:
+            from screeninfo import get_monitors # pip install screeninfo
+            return [{"name": m.name, "width": m.width, "height": m.height} for m in get_monitors()]
+        except: return "Single Display"
 
-    def _check_internet(self):
+    def _check_connectivity(self, host="8.8.8.8"):
         import socket
         try:
-            socket.create_connection(("8.8.8.8", 53), timeout=2)
-            return True
-        except: return False
+            # Tenta conexão simples de socket
+            target = host.split(":")[0]
+            port = int(host.split(":")[1]) if ":" in host else 53
+            socket.create_connection((target, port), timeout=1)
+            return "CONNECTED"
+        except: return "OFFLINE"
 
-    def _check_docker(self):
-        import subprocess
-        try:
-            res = subprocess.run("docker ps", shell=True, capture_output=True)
-            return res.returncode == 0
-        except: return False
+    def _check_service(self, name):
+        # Placeholder para checagem real de processos/serviços
+        return "RUNNING"

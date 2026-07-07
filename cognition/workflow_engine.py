@@ -1,21 +1,40 @@
 class WorkflowEngine:
     """
-    O Motor de Decomposição do SOLPI OS.
-    Quebra objetivos em subtarefas atômicas e lógicas.
+    O Motor de Decomposição e Cadeia de Tarefas (Task Tree).
+    Transforma intenções em grafos de execução lógicos.
     """
-    def __init__(self, planner):
+    def __init__(self, planner, reasoner):
         self.planner = planner
+        self.reasoner = reasoner
 
-    def decompose(self, objective, context):
-        """Transforma um objetivo 'preparar servidor' em passos reais."""
-        print(f"⚙️ [WORKFLOW]: Decompondo objetivo complexo...")
+    def generate_task_tree(self, objective, world_context):
+        """Cria uma estrutura hierárquica de objetivos e subtarefas."""
+        print(f"🌲 [WORKFLOW]: Gerando Task Tree para: {objective}")
         
-        # O motor de fluxo usa o Planner e o Reasoner para criar a sequência
-        # Aqui injetaremos lógica de grafos de dependência no futuro
-        plan = self.planner.create_plan(objective, context)
+        # O Planner gera o plano base
+        base_plan = self.planner.create_plan(objective, world_context)
         
-        # Adiciona validação de pré-requisitos para cada passo
-        for step in plan:
-            step["verified"] = False
+        task_tree = {
+            "root_goal": objective,
+            "branches": []
+        }
+
+        for step in base_plan:
+            # Para cada passo, o Reasoner valida a estratégia
+            strategy = self.reasoner.ponder(step['task'], world_context)
             
-        return plan
+            branch = {
+                "id": step['id'],
+                "sub_goal": step['task'],
+                "agent": step['agent'],
+                "strategy": strategy['name'],
+                "status": "pending",
+                "validation_required": True
+            }
+            task_tree["branches"].append(branch)
+            
+        return task_tree
+
+    def validate_step(self, step_result):
+        """Verifica se o nó da árvore foi concluído com sucesso."""
+        return "error" not in str(step_result).lower()
