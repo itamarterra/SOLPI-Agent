@@ -33,11 +33,22 @@ class SOLPIMemory:
         cursor.execute('CREATE TABLE IF NOT EXISTS knowledge (id INTEGER PRIMARY KEY, key TEXT, value TEXT, category TEXT)')
 
         # 5. Task Memory - Histórico de execuções
-        cursor.execute('CREATE TABLE IF NOT EXISTS tasks (id INTEGER PRIMARY KEY, objective TEXT, result TEXT, status TEXT)')
+        cursor.execute('CREATE TABLE IF NOT EXISTS task_history (id INTEGER PRIMARY KEY AUTOINCREMENT, objective TEXT, result TEXT, status TEXT, timestamp DATETIME)')
 
         # 6. Conversation Memory - Logs de chat
         cursor.execute('CREATE TABLE IF NOT EXISTS conversation (id INTEGER PRIMARY KEY, user_input TEXT, agent_response TEXT, timestamp DATETIME)')
         
+        conn.commit()
+        conn.close()
+
+    def store(self, content, layer="semantic", tags=""):
+        """Método genérico para armazenar na memória semântica."""
+        conn = sqlite3.connect(self.db_path)
+        cursor = conn.cursor()
+        cursor.execute(
+            "INSERT INTO semantic (content, tags, timestamp) VALUES (?, ?, ?)",
+            (content, tags, datetime.now().isoformat())
+        )
         conn.commit()
         conn.close()
 
@@ -50,7 +61,17 @@ class SOLPIMemory:
         conn.close()
 
     def search_semantic(self, query):
+        """Busca na memória semântica usando FTS5."""
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
-        cursor.execute("SELECT content FROM semantic WHERE semantic MATCH ? ORDER BY rank", (query,))
-        return [r[0] for r in cursor.fetchall()]
+        try:
+            cursor.execute("SELECT content FROM semantic WHERE semantic MATCH ? ORDER BY rank", (query,))
+            return [r[0] for r in cursor.fetchall()]
+        except:
+            return []
+        finally:
+            conn.close()
+
+    def search(self, query, layer=None):
+        """Alias para manter compatibilidade com módulos que chamam .search()"""
+        return self.search_semantic(query)
