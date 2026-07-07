@@ -14,13 +14,15 @@ from cognition.vision_engine import VisionEngine
 from cognition.skill_composer import SkillComposer
 from cognition.simulation_engine import SimulationEngine
 from cognition.executive_function import ExecutiveFunction
+from cognition.digital_twin import DigitalTwin
+from cognition.swarm_manager import SwarmManager
 from tools.voice_core import VoiceCore
 from registry.tool_registry import ToolRegistry
 
 class Orchestrator:
     """
-    O AI CORE v5.2: O Operador de Elite.
-    Agora com Memória Temporal, Simulação de Planos e Funções Executivas.
+    O AI CORE v5.3: O Maestro do Enxame e Gêmeo Digital.
+    Integração total de infraestrutura e inteligência coletiva.
     """
     def __init__(self):
         self.voice = VoiceCore()
@@ -39,56 +41,58 @@ class Orchestrator:
         self.composer = SkillComposer(self.memory, self.registry)
         self.simulator = SimulationEngine(self.memory, self.world)
         self.executive = ExecutiveFunction()
+        
+        # Módulos v5.3
+        self.digital_twin = DigitalTwin(self.memory)
+        self.swarm = SwarmManager(self.executor)
 
     def solve(self, objective):
         start_time = time.time()
         self.executive.set_state("PENSANDO")
-        self.voice.speak(f"Analisando objetivo: {objective}")
-
-        # 1. PERCEPÇÃO & REGISTRO TEMPORAL
-        world_state = self.world.update_state()
-        cpu_val = float(world_state['resources']['cpu'].replace('%', ''))
-        self.temporal_memory.record_metric("system", "cpu_usage", cpu_val)
         
-        # 2. GESTÃO DE OBJETIVO
-        self.goal_manager.set_goal(objective)
+        # 1. SINCRONIA DO GÊMEO DIGITAL (Contexto de TI)
+        self.digital_twin.sync_from_sources()
+        
+        # 2. PERCEPÇÃO MUNDIAL
+        world_state = self.world.update_state()
+        self.voice.speak(f"Comandante, analisando objetivo sob a ótica do Gêmeo Digital.")
 
-        # 3. PLANEJAMENTO HIERÁRQUICO
-        self.executive.set_state("PLANEJANDO")
+        # 3. GESTÃO DE OBJETIVO E PLANEJAMENTO
+        self.goal_manager.set_goal(objective)
         task_tree = self.workflow.generate_task_tree(objective, world_state)
         self.goal_manager.update_milestones(task_tree['branches'])
 
-        # 4. SIMULAÇÃO (Dry Run)
+        # 4. SIMULAÇÃO E IMPACTO
         sim_report = self.simulator.simulate_plan(task_tree['branches'])
+        impact = self.digital_twin.predict_impact("execution", "core_infra")
+        
         if sim_report['predicted_success_rate'] < 50:
-            self.voice.speak("Risco muito alto detectado na simulação. Abortando execução física.")
-            return "❌ Execução abortada por alto risco."
+            self.voice.speak("Risco de impacto na infraestrutura detectado. Abortando.")
+            return "❌ Execução abortada por segurança do Gêmeo Digital."
 
-        # 5. EXECUÇÃO ORQUESTRADA COM VIGILÂNCIA DE RECURSOS
+        # 5. EXECUÇÃO VIA ENXAME (SWARM INTELLIGENCE)
         self.executive.set_state("EXECUTANDO")
-        results = []
-        for i, task in enumerate(task_tree['branches']):
-            # Proteção de Hardware
-            ok, msg = self.executive.manage_resources(cpu_val, 0) # RAM fixo 0 por simplificação
-            if not ok:
-                self.voice.speak(msg)
-                break
-                
-            res = self.executor.run_plan([task])
-            results.append(res)
+        self.voice.speak(f"Disparando enxame de agentes para {objective}.")
+        
+        # Executa as tarefas em paralelo usando o Swarm Manager
+        swarm_results = self.swarm.execute_swarm(task_tree['branches'])
+        
+        for i, res in enumerate(swarm_results):
             self.goal_manager.mark_step_complete(i)
 
         # 6. REFLEXÃO & APRENDIZADO
         self.executive.set_state("OBSERVANDO")
-        evaluation = self.reflection.evaluate_task(objective, results)
+        evaluation = self.reflection.evaluate_task(objective, swarm_results)
+        
         self.experience.distill({
             "problem": objective,
             "context": world_state,
             "duration": time.time() - start_time,
-            "result": str(results),
+            "result": str(swarm_results),
             "errors": [],
             "confidence": sim_report['predicted_success_rate']
         })
 
         self.executive.set_state("DORMINDO")
-        return f"🏆 Objetivo concluído. Taxa de sucesso simulada foi de {sim_report['predicted_success_rate']}%."
+        self.voice.speak(f"Objetivo alcançado em {time.time() - start_time:.2f} segundos através do enxame.")
+        return f"🏆 Sucesso coletivo atingido. {len(swarm_results)} agentes cooperaram."

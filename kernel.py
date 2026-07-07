@@ -2,48 +2,33 @@ import os
 import sys
 from dotenv import load_dotenv
 from cognition.orchestrator import Orchestrator
-from cognition.discovery_engine import DiscoveryEngine
-from telemetry.monitor import OSMonitor
 
 class SOLPI_OS:
     """
-    O Kernel do SOLPI OS v5.0.
-    Arquitetura baseada em Descoberta e Gráfico de Capacidades.
+    O Kernel do SOLPI OS v5.3.
+    Operador de Infraestrutura com Swarm Intelligence e Digital Twin.
     """
     def __init__(self):
-        self.version = "5.0.0-PRO"
+        self.version = "5.3.0-ELITE"
         load_dotenv()
-        
-        # 1. HARDWARE & TELEMETRY
-        self.monitor = OSMonitor()
-        
-        # 2. COGNITIVE CORE INITIALIZATION
         self.orchestrator = Orchestrator()
-        self.orchestrator.monitor = self.monitor
-        
-        # 3. DISCOVERY SEQUENCE (O pulo do gato v5)
-        self.discovery = DiscoveryEngine(self.orchestrator.registry, self.orchestrator.memory)
-        
-    def boot(self):
-        os.system('cls' if os.name == 'nt' else 'clear')
+        self._boot_sequence()
+
+    def _boot_sequence(self):
         print("="*65)
-        print(f"🛰️  [KERNEL]: BOOTING SOLPI OS v{self.version}")
+        print(f"🛰️  [SYSTEM]: BOOTING SOLPI OS v{self.version}")
+        print(f"🧠 [AI CORE]: Swarm Intelligence Manager Online")
+        print(f"👯 [TWIN]: Digital Twin Infrastructure Sync Active")
+        print(f"🌍 [WORLD]: Situational Awareness v2.0")
         print("="*65)
-        
-        # Executa a descoberta de tudo o que existe no sistema
-        self.orchestrator.capabilities = self.discovery.discover_all()
-        
-        # Carrega Contexto e Memória
-        print(f"🧠 [CORE]: Context & Memory Loaded.")
-        print(f"🛡️  [SEC]: Security Gatekeeper Standing By.")
-        print(f"📊 [OBS]: Telemetry Monitor Online.")
-        print("="*65)
-        
-        self.orchestrator.voice.speak("SOLPI OS v5 inicializado. Sistema de descoberta concluiu o mapeamento de capacidades.")
+        self.orchestrator.voice.speak("SOLPI v5.3 ativa. Enxame de agentes pronto para o comando.")
+
+    def shutdown(self):
+        print("\n🛑 [KERNEL]: Shutting down SOLPI OS...")
+        sys.exit(0)
 
     def run(self):
-        self.boot()
-        print(f"✨ [SYSTEM]: SOLPI OS Ready. Commands: 'objetivo', 'status', 'sair'")
+        print(f"✨ [SYSTEM]: SOLPI AI Core Ready. Dê seu objetivo estratégico.")
         
         while True:
             try:
@@ -53,14 +38,18 @@ class SOLPI_OS:
                     if not user_input: continue
 
                 if user_input.lower() in ["exit", "sair", "shutdown"]:
-                    sys.exit(0)
+                    self.shutdown()
 
+                # Ciclo Cognitivo de Elite (Swarm + Twin)
                 response = self.orchestrator.solve(user_input)
                 print(f"\n🤖 [SOLPI OS]: {response}")
 
+            except KeyboardInterrupt:
+                self.shutdown()
             except Exception as e:
                 print(f"⚠️ [SYSTEM ALERT]: {e}")
 
 if __name__ == "__main__":
+    os.system('cls' if os.name == 'nt' else 'clear')
     system = SOLPI_OS()
     system.run()
