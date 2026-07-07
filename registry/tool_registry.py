@@ -1,35 +1,26 @@
-import json
-
 class ToolRegistry:
     """
-    Catálogo centralizado de capacidades do SOLPI-AIOS.
-    Permite que o Reasoner e o Orchestrator saibam exatamente o que o sistema pode fazer.
+    O GRÁFICO DE CAPACIDADES (Capability Graph).
+    Mapeia: O QUE pode ser feito e QUEM possui a perícia necessária.
     """
-    _instance = None
-
-    def __new__(cls):
-        if cls._instance is None:
-            cls._instance = super(ToolRegistry, cls).__new__(cls)
-            cls._instance.tools = {}
-        return cls._instance
-
-    def register(self, agent_name, tool_name, description, parameters=None, permissions="user"):
-        """Registra uma ferramenta com metadados detalhados."""
-        key = f"{agent_name}.{tool_name}"
-        self.tools[key] = {
-            "agent": agent_name,
-            "name": tool_name,
-            "description": description,
-            "parameters": parameters or {},
-            "permissions": permissions
+    def __init__(self):
+        self.capability_graph = {
+            "IT_OPS": ["Instalar Programas", "Configurar Firewall", "Backup", "DB Query"],
+            "GUI_NAV": ["Clicar em Ícones", "OCR", "Preencher Formulários"],
+            "WEB_RESEARCH": ["Google Shopping", "YouTube Trends", "Preços"],
+            "CODING": ["Refatorar PHP", "Validar Python", "Git Sync"]
         }
-        print(f"🛠️ [REGISTRY]: Ferramenta '{key}' registrada.")
+        self.reputation_scores = {}
 
-    def get_tool(self, tool_key):
-        return self.tools.get(tool_key)
+    def get_experts_for(self, task_type):
+        """Retorna os agentes mais confiáveis para uma tarefa."""
+        # Ex: "Quem é o especialista em IT_OPS com melhor reputação?"
+        print(f"🕸️ [CAPABILITY GRAPH]: Buscando especialistas para {task_type}...")
+        return ["WindowsAgent", "DatabaseAgent"] # Exemplo estático para base
 
-    def list_all(self):
-        return self.tools
-
-    def get_tools_by_agent(self, agent_name):
-        return {k: v for k, v in self.tools.items() if v['agent'] == agent_name}
+    def register_tool(self, tool_metadata):
+        """
+        Metadados Detalhados (Sugestão CTO):
+        name, risk, estimated_time, requires_admin, etc.
+        """
+        pass

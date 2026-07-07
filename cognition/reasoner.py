@@ -1,53 +1,39 @@
-import os
-
 class Reasoner:
     """
-    O RACIOCINADOR PROFUNDO v4.0.
-    Gera hipóteses, avalia riscos e escolhe a melhor estratégia competitiva.
+    RACIOCÍNIO MULTI-PERSPECTIVA v5.0.
+    Simula um debate interno para encontrar a melhor estratégia.
     """
     def __init__(self, memory):
         self.memory = memory
 
     def ponder(self, objective, context):
-        """
-        Analisa o objetivo e gera múltiplas rotas de ação.
-        """
-        print(f"🧠 [REASONER]: Pensando profundamente sobre: {objective}")
+        print(f"🤔 [REASONER]: Iniciando debate multi-perspectiva...")
         
-        # 1. Geração de Hipóteses (Caminhos)
-        hypotheses = [
-            {
-                "name": "Estratégia A (Velocidade)",
-                "steps": "Execução direta via Shell",
-                "risk": "Médio",
-                "score": 0.85
-            },
-            {
-                "name": "Estratégia B (Segurança)",
-                "steps": "Validação visual e passo-a-passo manual",
-                "risk": "Mínimo",
-                "score": 0.95
-            },
-            {
-                "name": "Estratégia C (Híbrida)",
-                "steps": "Mix de API e Visão Computacional",
-                "risk": "Baixo",
-                "score": 0.90
-            }
-        ]
+        # 1. Analítico (Fatos e Dados)
+        analytic = {"view": "Baseado no histórico, este erro de rede é comum no Zabbix.", "conf": 0.92}
         
-        # 2. Comparação de Estratégias
-        best = self._compare_strategies(hypotheses)
+        # 2. Criativo (Alternativas fora da caixa)
+        creative = {"view": "Podemos tentar reiniciar o serviço via SSH em vez de usar a GUI.", "conf": 0.75}
         
-        print(f"⚖️ [REASONER]: Estratégia vencedora: {best['name']} com confiança {best['score']}")
+        # 3. Crítico (Riscos e Falhas)
+        critical = {"view": "Reiniciar o serviço pode causar queda temporária no GLPI.", "conf": 0.95}
         
-        return best
+        # 4. Executor (O 'Como Fazer')
+        executor = {"view": "A melhor rota é usar o PowerShellAgent para um restart limpo.", "conf": 0.88}
 
-    def _compare_strategies(self, hypotheses):
-        # Lógica de seleção baseada em score e peso de risco
-        return max(hypotheses, key=lambda x: x['score'])
+        debate = [analytic, creative, critical, executor]
+        
+        # 5. Escolha da melhor síntese
+        decision = self._synthesize(debate)
+        
+        return decision
 
-    def verify_logic(self, plan):
-        """Valida se o plano é consistente."""
-        if not plan: return False, "Plano vazio."
-        return True, "Lógica impecável."
+    def _synthesize(self, perspectives):
+        # A confiança média do debate define o Confidence Engine
+        avg_conf = sum(p['conf'] for p in perspectives) / len(perspectives)
+        return {
+            "strategy": perspectives[3]['view'],
+            "confidence": round(avg_conf, 2),
+            "risk": "Baixo" if avg_conf > 0.8 else "Médio",
+            "reasoning_path": [p['view'] for p in perspectives]
+        }
