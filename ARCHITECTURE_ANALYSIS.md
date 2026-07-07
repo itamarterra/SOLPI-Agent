@@ -1,39 +1,38 @@
-# Análise de Arquitetura: SOLPI-AIOS (v2.0.0-Cognitive)
+# Arquitetura SOLPI OS: Sistema Operacional Cognitivo (v3.0.0)
 
-## 1. Visão Geral
-O projeto atual é um assistente funcional baseado em Python com capacidades de execução de ferramentas (ferramentas de sistema, visão OCR, voz e integração de banco de dados). Embora poderoso, ele opera em um fluxo linear de "Comando -> Resposta". O objetivo desta transformação é implementar um loop de raciocínio recursivo (Reasoning Loop).
+## 1. Filosofia de Design
+O SOLPI OS opera sob o princípio da **Cognição Proativa**. Diferente de sistemas tradicionais baseados em triggers, este sistema busca compreender o "estado desejado" do usuário e orquestra múltiplos agentes especializados para alcançá-lo, validando cada etapa e aprendendo com as falhas de hardware e software.
 
-## 2. Pontos Fortes (Atual)
-*   **Modularidade de Ferramentas:** O arquivo `core/tools.py` já separa bem as capacidades físicas do agente.
-*   **Segurança Nativa:** O `SecurityGatekeeper` fornece uma camada de proteção essencial para um sistema autônomo.
-*   **Memória Persistente:** O uso de SQLite FTS5 permite busca semântica rápida em histórico.
-*   **Capacidade Sensorial:** Implementação funcional de OCR (Visão) e STT/TTS (Voz).
+## 2. Estrutura de Diretórios (Layout Profissional)
+```text
+SOLPI-OS/
+├── cognition/      # O Cérebro (Orchestrator, Reasoner, Planner, Reflection, Learning)
+├── agents/         # Multiagentes Especializados (Windows, Docker, Browser, etc.)
+├── tools/          # Plugins de hardware e sistema (antiga core/tools)
+├── workflows/      # Definições de fluxos complexos (YAML/JSON)
+├── memory/         # Memória Persistente e Vetorial (SQLite/FTS5)
+├── knowledge/      # Base de conhecimento estática e dinâmica
+├── integrations/   # Conectores externos (Shopify, Zabbix, GLPI)
+├── security/       # Guardião de permissões e sanitização
+├── telemetry/      # Observabilidade (CPU, RAM, Performance)
+└── kernel.py       # O ponto de entrada (Bootstrapper)
+```
 
-## 3. Problemas e Limitações
-*   **Cérebro Reativo:** O `core/brain.py` utiliza cadeias de `if/elif`, o que impede o planejamento de tarefas complexas de múltiplos passos.
-*   **Ausência de Orquestrador:** Não há distinção entre o agente que decide e o agente que executa.
-*   **Falta de Reflexão:** O sistema não avalia se o comando executado atingiu o objetivo esperado.
-*   **Dependência de Coordenadas:** O controle de GUI ainda é muito dependente de cliques em texto/coordenadas, faltando uma abstração de "objetos" de interface.
+## 3. RoadMap de Implementação (Fases)
 
-## 4. Proposta de Melhoria (Roadmap de Fases)
+### Fase 1: Kernel e Cognição (Atual)
+*   Consolidar `orchestrator.py` como o Kernel do sistema.
+*   Implementar o `ToolRegistry` como catálogo central de capacidades.
+*   Migrar a segurança para o módulo `security/`.
 
-### Fase 1: Fundação Cognitiva (Curto Prazo)
-*   Reestruturar `core/` para `cognition/`.
-*   Implementar o **Orchestrator** como ponto de entrada único.
-*   Introduzir o **Planner** para decomposição de objetivos em grafos de tarefas.
-*   Implementar suporte básico ao **MCP (Model Context Protocol)**.
+### Fase 2: Domínio de Interface (Próxima)
+*   Implementar o `BrowserAgent` com suporte a múltiplas abas.
+*   Evoluir o `AutomationAgent` para reconhecimento de objetos via OpenCV.
 
-### Fase 2: Ecossistema de Multiagentes (Médio Prazo)
-*   Criar a classe base `BaseAgent`.
-*   Especializar os agentes: `WindowsAgent`, `BrowserAgent`, `GLPIAgent`, `ZabbixAgent`.
-*   Implementar o **Tool Registry** dinâmico.
+### Fase 3: Governança e Observabilidade
+*   Implementar telemetria em tempo real.
+*   Sistema de permissões por nível de risco.
 
-### Fase 3: Auto-Evolução e Observabilidade (Longo Prazo)
-*   Módulo de **Reflection** para pós-execução.
-*   Módulo de **Learning** para ajuste de pesos e experiências.
-*   Dashboard de Observabilidade (Tempo, CPU, Taxa de Sucesso).
-
-## 5. Próximos Passos Imediatos
-1. Criar estrutura de diretórios `/cognition`.
-2. Migrar lógica de `brain.py` para `orchestrator.py` e `reasoner.py`.
-3. Implementar o sistema de Memória em 6 camadas (Short, Long, Knowledge, Conv, Task, Experience).
+## 4. Decisões Arquiteturais
+*   **Abstração de Ferramentas:** Agentes não chamam comandos shell diretamente; eles solicitam ao ToolRegistry.
+*   **Memória em 7 Camadas:** Adição da camada Semântica para busca de similaridade.
