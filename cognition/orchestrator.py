@@ -73,13 +73,20 @@ class Orchestrator:
         self.voice.speak(f"Comandante, iniciando missão: {user_input}")
         self.goal_manager.set_goal(user_input)
 
-        # 4. PLANEJAMENTO E SIMULAÇÃO
+        # 4. PLANEJAMENTO E SIMULAÇÃO (DIGITAL TWIN)
         self.executive.set_state("PLANEJANDO")
         task_tree = self.workflow.generate_task_tree(user_input, world_state)
         sim_report = self.simulator.simulate_plan(task_tree['branches'])
         
-        if sim_report['predicted_success_rate'] < 40:
-            return "❌ Risco de falha muito alto detectado na simulação."
+        if not sim_report['is_safe']:
+            warnings = "\n".join(sim_report['warnings'])
+            msg = f"❌ MISSÃO ABORTADA POR SEGURANÇA:\n{warnings}"
+            print(f"🛡️ [GATEKEEPER]: {msg}")
+            self.voice.speak("Comandante, detectei risco crítico à integridade do sistema. Missão abortada.")
+            return msg
+
+        if sim_report['predicted_success_rate'] < 30:
+            return "❌ Risco de falha operacional muito alto detectado na simulação."
 
         # 5. EXECUÇÃO PARALELA (MESH DE MICROSSERVIÇOS)
         self.executive.set_state("EXECUTANDO")
