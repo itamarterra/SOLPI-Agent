@@ -19,20 +19,24 @@ from cognition.swarm_manager import SwarmManager
 from cognition.llm_engine import LLMEngine
 from cognition.intent_analyzer import IntentAnalyzer
 from cognition.consciousness import ConsciousnessEngine
+from cognition.consensus_engine import ConsensusEngine
+from cognition.self_evolution import GeneticOptimizer
 from tools.voice_core import VoiceCore
 from registry.tool_registry import ToolRegistry
 
 class Orchestrator:
     """
-    O AI CORE v6.1: O Cérebro Unificado e Seguro.
-    Matriz de Consciência Clonada e Integrada.
+    O AI CORE v7.0 OMNI: A Singularidade do SOLPI.
+    Orquestração de Enxame com Consenso e Evolução Genética.
     """
     def __init__(self):
-        # Motores de Inteligência
+        # Motores de Inteligência Superior
         self.llm = LLMEngine()
         self.consciousness = ConsciousnessEngine()
         self.intent = IntentAnalyzer(self.llm)
-        self.memory = BrainMemory()
+        self.memory = BrainMemory() 
+        self.consensus = ConsensusEngine(self.memory)
+        self.evolution = GeneticOptimizer(None, self.memory)
         
         # Sensores e Interface
         self.voice = VoiceCore()
