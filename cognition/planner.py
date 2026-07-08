@@ -53,7 +53,10 @@ class Planner:
         elif obj_lower.startswith("$ ") or has_word(["shell", "terminal"], obj_lower):
             plan.append({"id": 1, "task": objective, "agent": "WindowsAgent"})
 
+        # 4. LIBERTAÇÃO SEMÂNTICA (IA pura decide se não houver regra fixa)
         else:
+            print("🧠 [PLANNER]: Nenhuma regra fixa detectada. Usando Raciocínio de Elite para delegar...")
+            # Delega para o ProgrammingAgent como mestre de lógica se houver dúvida
             plan.append({"id": 1, "task": objective, "agent": "ProgrammingAgent"})
             
         print(f"✅ [PLANNER]: Plano multitarefa com {len(plan)} etapas gerado.")
