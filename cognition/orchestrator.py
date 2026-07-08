@@ -22,7 +22,6 @@ from cognition.consciousness import ConsciousnessEngine
 from cognition.consensus_engine import ConsensusEngine
 from cognition.self_evolution import GeneticOptimizer
 from cognition.wiki_engine import OmniWiki
-from tools.voice_core import VoiceCore
 from registry.tool_registry import ToolRegistry
 
 class Orchestrator:
@@ -41,7 +40,6 @@ class Orchestrator:
         self.evolution = GeneticOptimizer(None, self.memory)
         
         # Sensores e Interface
-        self.voice = VoiceCore()
         self.vision = VisionEngine()
         
         # Infraestrutura
@@ -54,7 +52,7 @@ class Orchestrator:
         self.experience = ExperienceEngine(self.memory)
         self.goal_manager = GoalManager(self.memory)
         self.executor = Executor(self.memory, self.registry)
-        self.reflection = Reflection(self.memory, self.voice)
+        self.reflection = Reflection(self.memory)
         self.composer = SkillComposer(self.memory, self.registry)
         self.simulator = SimulationEngine(self.memory, self.world)
         self.executive = ExecutiveFunction()
@@ -76,7 +74,6 @@ class Orchestrator:
             return self._handle_conversation(user_input)
 
         # 3. CICLO DE EXECUÇÃO
-        self.voice.speak(f"Comandante, iniciando missão: {user_input}")
         self.goal_manager.set_goal(user_input)
 
         # 4. PLANEJAMENTO E SIMULAÇÃO (DIGITAL TWIN)
@@ -88,7 +85,6 @@ class Orchestrator:
             warnings = "\n".join(sim_report['warnings'])
             msg = f"❌ MISSÃO ABORTADA POR SEGURANÇA:\n{warnings}"
             print(f"🛡️ [GATEKEEPER]: {msg}")
-            self.voice.speak("Comandante, detectei risco crítico à integridade do sistema. Missão abortada.")
             return msg
 
         if sim_report['predicted_success_rate'] < 30:
@@ -132,7 +128,6 @@ class Orchestrator:
             msg = res['choices'][0]['message']['content']
             # Aplica o espelhamento final
             msg = self.consciousness.mirror_response(msg)
-            self.voice.speak(msg)
             return msg
         except:
             return f"Comandante Itamar, minha conexão neural oscilou. Verifique os logs do sistema. ⚠️"

@@ -41,8 +41,6 @@ class SOLPI_OS:
         print(f"📊 [OBS]: Telemetry Monitor Online.")
         print("="*65)
         
-        self.orchestrator.voice.speak(f"SOLPI OMNI versão sete inicializado. A singularidade tecnológica foi atingida, Comandante Itamar.")
-
     def run(self):
         self.boot()
         
@@ -53,14 +51,12 @@ class SOLPI_OS:
         
         print(f"✨ [SYSTEM]: Ready. Dê um objetivo ou use 'ajuda'.")
         print(f"💡 [INICIATIVA]: Comandante Itamar, eu sugiro uma missão: '{suggestion['goal']}'")
-        self.orchestrator.voice.speak(f"Comandante, eu sugiro uma missão: {suggestion['goal']}")
         
         while True:
             try:
                 user_input = input("\n👤 [ITAMAR]: ").strip()
                 if not user_input:
-                    user_input = self.orchestrator.voice.listen()
-                    if not user_input: continue
+                    continue
 
                 if user_input.lower() in ["exit", "sair", "shutdown"]:
                     sys.exit(0)
