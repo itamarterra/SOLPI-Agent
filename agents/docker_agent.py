@@ -6,20 +6,21 @@ class DockerAgent(BaseAgent):
     Agente especialista em orquestração de containers (Docker e Docker Compose).
     """
     def register_tools(self):
-        self.registry.register(
-            "DockerAgent", "list_containers", 
-            "Lista todos os containers ativos no sistema"
-        )
-        self.registry.register(
-            "DockerAgent", "compose_up", 
-            "Sobe serviços definidos em um arquivo docker-compose.yml",
-            {"path": "Caminho do arquivo"}
-        )
-        self.registry.register(
-            "DockerAgent", "container_logs", 
-            "Extrai os últimos logs de um container específico",
-            {"name": "Nome do container"}
-        )
+        if self.registry:
+            self.registry.register(
+                "DockerAgent", "list_containers", 
+                "Lista todos os containers ativos no sistema"
+            )
+            self.registry.register(
+                "DockerAgent", "compose_up", 
+                "Sobe serviços definidos em um arquivo docker-compose.yml",
+                {"path": "Caminho do arquivo"}
+            )
+            self.registry.register(
+                "DockerAgent", "container_logs", 
+                "Extrai os últimos logs de um container específico",
+                {"name": "Nome do container"}
+            )
 
     def execute(self, task_description):
         print(f"🐳 [DOCKER AGENT]: Operando -> {task_description}")

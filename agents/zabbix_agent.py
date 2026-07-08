@@ -7,8 +7,9 @@ class ZabbixAgent(BaseAgent):
     Agente especialista em monitoramento Zabbix.
     """
     def register_tools(self):
-        self.registry.register("ZabbixAgent", "get_alerts", "Recupera alertas ativos do Zabbix")
-        self.registry.register("ZabbixAgent", "ack_event", "Reconhece um evento no Zabbix")
+        if self.registry:
+            self.registry.register("ZabbixAgent", "get_alerts", "Recupera alertas ativos do Zabbix")
+            self.registry.register("ZabbixAgent", "ack_event", "Reconhece um evento no Zabbix")
 
     def execute(self, task_description):
         print(f"📡 [ZABBIX AGENT]: Consultando -> {task_description}")

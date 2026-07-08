@@ -7,17 +7,14 @@ class BrowserAgent(BaseAgent):
     Agente especializado em navegação na internet e automação web.
     """
     def register_tools(self):
-        self.tools = {
-            "open": "Abrir uma URL específica",
-            "search": "Pesquisar no Google ou YouTube",
-            "navigate": "Navegar entre abas ou sites"
-        }
+        if self.registry:
+            self.registry.register("BrowserAgent", "open", "Abrir uma URL específica")
+            self.registry.register("BrowserAgent", "search", "Pesquisar no Google ou YouTube")
 
     def execute(self, task_description):
         print(f"🌍 [BROWSER AGENT]: Processando -> {task_description}")
         task_lower = task_description.lower()
         
-        # Lógica de Reconhecimento de Intenção Web
         if "youtube" in task_lower:
             if "pesquise" in task_lower or "busque" in task_lower:
                 query = task_lower.split("por")[-1].strip()

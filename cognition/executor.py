@@ -6,8 +6,9 @@ class Executor:
     O Gerente de Execução do SOLPI-AIOS.
     Instancia agentes e delega tarefas conforme o plano.
     """
-    def __init__(self, memory):
+    def __init__(self, memory, registry=None):
         self.memory = memory
+        self.registry = registry
         self.active_agents = {}
 
     def run_plan(self, plan):
@@ -49,7 +50,7 @@ class Executor:
         try:
             module = importlib.import_module(f"agents.{file_name}")
             agent_class = getattr(module, agent_name)
-            instance = agent_class(self.memory)
+            instance = agent_class(self.memory, self.registry)
             self.active_agents[agent_name] = instance
             return instance
         except Exception as e:

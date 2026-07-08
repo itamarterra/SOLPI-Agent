@@ -44,7 +44,7 @@ class Orchestrator:
         self.workflow = WorkflowEngine(self.planner, self.reasoner)
         self.experience = ExperienceEngine(self.memory)
         self.goal_manager = GoalManager(self.memory)
-        self.executor = Executor(self.memory)
+        self.executor = Executor(self.memory, self.registry)
         self.reflection = Reflection(self.memory, self.voice)
         self.composer = SkillComposer(self.memory, self.registry)
         self.simulator = SimulationEngine(self.memory, self.world)

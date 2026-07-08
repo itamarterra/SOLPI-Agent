@@ -7,11 +7,12 @@ class DatabaseAgent(BaseAgent):
     Agente especialista em operações de Banco de Dados.
     """
     def register_tools(self):
-        self.registry.register(
-            "DatabaseAgent", "query", 
-            "Executa uma consulta SQL segura",
-            {"sql": "String SQL", "params": "Tupla de parâmetros"}
-        )
+        if self.registry:
+            self.registry.register(
+                "DatabaseAgent", "query", 
+                "Executa uma consulta SQL segura",
+                {"sql": "String SQL", "params": "Tupla de parâmetros"}
+            )
 
     def execute(self, task_description):
         print(f"🗄️ [DATABASE AGENT]: Executando -> {task_description}")

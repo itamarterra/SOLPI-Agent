@@ -8,16 +8,17 @@ class ClaudeAgent(BaseAgent):
     Focado em arquitetura, revisão de código e conformidade de segurança.
     """
     def register_tools(self):
-        self.registry.register(
-            "ClaudeAgent", "code_review", 
-            "Realiza uma revisão profunda de código seguindo os padrões de arquitetura do Claude Code",
-            {"path": "Caminho do arquivo ou diretório para revisão"}
-        )
-        self.registry.register(
-            "ClaudeAgent", "security_audit", 
-            "Audita scripts e arquivos em busca de vulnerabilidades usando os hooks de segurança do Claude",
-            {"target": "Alvo da auditoria"}
-        )
+        if self.registry:
+            self.registry.register(
+                "ClaudeAgent", "code_review", 
+                "Realiza uma revisão profunda de código seguindo os padrões de arquitetura do Claude Code",
+                {"path": "Caminho do arquivo ou diretório para revisão"}
+            )
+            self.registry.register(
+                "ClaudeAgent", "security_audit", 
+                "Audita scripts e arquivos em busca de vulnerabilidades usando os hooks de segurança do Claude",
+                {"target": "Alvo da auditoria"}
+            )
 
     def execute(self, task_description):
         print(f"🧠 [CLAUDE AGENT]: Iniciando análise de engenharia -> {task_description}")

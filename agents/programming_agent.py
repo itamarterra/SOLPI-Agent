@@ -7,9 +7,10 @@ class ProgrammingAgent(BaseAgent):
     O Engenheiro do SOLPI OS: Capaz de ler, escrever e testar o próprio código do sistema.
     """
     def register_tools(self):
-        self.registry.register("ProgrammingAgent", "read_code", "Lê o conteúdo de um arquivo fonte")
-        self.registry.register("ProgrammingAgent", "write_code", "Cria ou sobrescreve um arquivo de código")
-        self.registry.register("ProgrammingAgent", "run_validation", "Executa análise estática ou testes no código")
+        if self.registry:
+            self.registry.register("ProgrammingAgent", "read_code", "Lê o conteúdo de um arquivo fonte")
+            self.registry.register("ProgrammingAgent", "write_code", "Cria ou sobrescreve um arquivo de código")
+            self.registry.register("ProgrammingAgent", "run_validation", "Executa análise estática ou testes no código")
 
     def execute(self, task_description):
         print(f"💻 [PROGRAMMING AGENT]: Iniciando tarefa de engenharia -> {task_description}")

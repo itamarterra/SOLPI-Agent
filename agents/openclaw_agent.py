@@ -8,16 +8,17 @@ class OpenClawAgent(BaseAgent):
     Focado em controle de UI avançado, multi-mensageiros e fluxos de tarefas complexas.
     """
     def register_tools(self):
-        self.registry.register(
-            "OpenClawAgent", "ui_scan", 
-            "Realiza uma varredura profunda de elementos de UI usando a árvore de acessibilidade e visão do OpenClaw",
-            {"mode": "full|active_window"}
-        )
-        self.registry.register(
-            "OpenClawAgent", "message_gateway", 
-            "Envia notificações para múltiplos canais (Telegram, WhatsApp, Slack) via motor OpenClaw",
-            {"channel": "canal de destino", "message": "conteúdo da mensagem"}
-        )
+        if self.registry:
+            self.registry.register(
+                "OpenClawAgent", "ui_scan", 
+                "Realiza uma varredura profunda de elementos de UI usando a árvore de acessibilidade e visão do OpenClaw",
+                {"mode": "full|active_window"}
+            )
+            self.registry.register(
+                "OpenClawAgent", "message_gateway", 
+                "Envia notificações para múltiplos canais (Telegram, WhatsApp, Slack) via motor OpenClaw",
+                {"channel": "canal de destino", "message": "conteúdo da mensagem"}
+            )
 
     def execute(self, task_description):
         print(f"🦾 [OPENCLAW AGENT]: Assumindo automação de interface -> {task_description}")

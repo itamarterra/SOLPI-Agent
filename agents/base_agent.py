@@ -4,8 +4,9 @@ class BaseAgent(ABC):
     """
     Classe base para todos os agentes especializados do SOLPI-AIOS.
     """
-    def __init__(self, memory):
+    def __init__(self, memory, registry=None):
         self.memory = memory
+        self.registry = registry
         self.tools = {}
         self.register_tools()
 

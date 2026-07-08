@@ -8,13 +8,13 @@ class HermesAgent(BaseAgent):
     Agente de Alta Performance: Ponte de integração com o motor Hermes-Agent.
     Permite ao SOLPI OS utilizar o loop agêntico avançado do Hermes.
     """
-    def __init__(self, memory):
+    def __init__(self, memory, registry=None):
         # Adiciona o diretório do Hermes ao path do sistema para permitir imports internos dele
         self.hermes_path = os.path.abspath("hermes-core")
         if self.hermes_path not in sys.path:
             sys.path.append(self.hermes_path)
             
-        super().__init__(memory)
+        super().__init__(memory, registry)
 
     def register_tools(self):
         self.registry.register(

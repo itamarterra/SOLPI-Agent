@@ -12,34 +12,28 @@ class AutomationAgent(BaseAgent):
     Usa Visão Computacional (OCR) para não depender de coordenadas fixas.
     """
     def register_tools(self):
-        self.tools = {
-            "click_text": "Localizar texto na tela e clicar nele",
-            "type_text": "Digitar texto na janela ativa",
-            "press_key": "Pressionar uma tecla ou atalho",
-            "wait_for": "Esperar um elemento ou janela aparecer",
-            "screenshot": "Capturar imagem da tela para análise"
-        }
+        if self.registry:
+            self.registry.register("AutomationAgent", "click_text", "Localizar texto na tela e clicar nele")
+            self.registry.register("AutomationAgent", "type_text", "Digitar texto na janela ativa")
+            self.registry.register("AutomationAgent", "press_key", "Pressionar uma tecla ou atalho")
+            self.registry.register("AutomationAgent", "screenshot", "Capturar imagem da tela para análise")
 
     def execute(self, task_description):
         print(f"🖱️ [AUTOMATION AGENT]: Agindo -> {task_description}")
         task_lower = task_description.lower()
         
-        # 1. Comando de Clique por Texto (OCR)
         if "clique" in task_lower:
             target = task_lower.replace("clique no texto", "").replace("clique em", "").replace("clique", "").strip()
             return self._click_on_text(target)
             
-        # 2. Comando de Digitação
         elif "digite" in task_lower:
             content = task_description.split("digite")[-1].strip()
             return self._type_text(content)
 
-        # 3. Comando de Atalhos / Teclas
         elif "pressione" in task_lower or "aperte" in task_lower:
             key = task_lower.split()[-1].strip()
             return self._press_key(key)
 
-        # 4. Captura de Tela
         elif "print" in task_lower or "veja" in task_lower:
             return self._take_view_screenshot()
 

@@ -1,18 +1,24 @@
 import subprocess
 import os
 from agents.base_agent import BaseAgent
-from core.security import SecurityGatekeeper
+from security.gatekeeper import SecurityGatekeeper
 
 class WindowsAgent(BaseAgent):
     """
     Agente especializado em controle do Microsoft Windows.
     """
     def register_tools(self):
-        self.tools = {
-            "shell": "Executar comandos no CMD/PowerShell",
-            "info": "Obter informações do sistema",
-            "process": "Listar processos ativos"
-        }
+        if self.registry:
+            self.registry.register(
+                "WindowsAgent", "shell", 
+                "Executar comandos no CMD/PowerShell",
+                {"command": "O comando a ser executado"}
+            )
+            self.registry.register(
+                "WindowsAgent", "info", 
+                "Obter informações do sistema",
+                {}
+            )
 
     def execute(self, task_description):
         print(f"🪟 [WINDOWS AGENT]: Analisando tarefa -> {task_description}")

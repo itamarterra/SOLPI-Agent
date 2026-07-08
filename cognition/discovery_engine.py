@@ -29,7 +29,7 @@ class DiscoveryEngine:
                     for name, obj in inspect.getmembers(module):
                         if inspect.isclass(obj) and name.endswith("Agent") and name != "BaseAgent":
                             # Instancia para disparar o register_tools
-                            instance = obj(self.memory)
+                            instance = obj(self.memory, self.registry)
                             print(f"✅ [DISCOVERY]: Agente detectado -> {name}")
                 except Exception as e:
                     print(f"❌ [DISCOVERY]: Falha ao carregar agente {file}: {e}")
