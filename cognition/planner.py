@@ -1,7 +1,7 @@
 class Planner:
     """
     O Planejador Universal do SOLPI OS v6.0.
-    Agora capaz de delegar tarefas de alto desempenho para Hermes e Claude Code.
+    Agora capaz de delegar tarefas de alto desempenho para Hermes, Claude Code e OpenClaw.
     """
     def __init__(self, memory):
         self.memory = memory
@@ -11,19 +11,25 @@ class Planner:
         plan = []
         obj_lower = objective.lower()
         
-        # 1. Detecção de Especialidade de Engenharia (Salto para o Claude)
+        # 1. Detecção de Especialidade de Interface/Mensagem (Salto para o OpenClaw)
+        if any(x in obj_lower for x in ["ui", "botão", "clique", "menu", "whatsapp", "telegram", "mensagem", "notifica"]):
+             print("🦾 [PLANNER]: Detectada necessidade de automação de UI/Mensagem. Delegando para OpenClawAgent.")
+             plan.append({"id": 1, "task": objective, "agent": "OpenClawAgent"})
+             return plan
+
+        # 2. Detecção de Especialidade de Engenharia (Salto para o Claude)
         if any(x in obj_lower for x in ["revis", "audit", "segurança", "arquitetura", "qualidade", "refat"]):
              print("🧠 [PLANNER]: Detectada necessidade de engenharia. Delegando para ClaudeAgent.")
              plan.append({"id": 1, "task": objective, "agent": "ClaudeAgent"})
              return plan
 
-        # 2. Detecção de Complexidade Operacional (Salto para o Hermes)
+        # 3. Detecção de Complexidade Operacional (Salto para o Hermes)
         if len(obj_lower.split()) > 10 or any(x in obj_lower for x in ["instale", "configure", "projeto", "migre", "setup"]):
              print("🏛️ [PLANNER]: Detectada alta complexidade operacional. Delegando para HermesAgent.")
              plan.append({"id": 1, "task": objective, "agent": "HermesAgent"})
              return plan
 
-        # 3. Sequência de Ações Tradicional
+        # 4. Sequência de Ações Tradicional
         if "abra" in obj_lower and "pesquise" in obj_lower:
             parts = obj_lower.split(" e ")
             for i, part in enumerate(parts):
