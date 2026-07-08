@@ -21,20 +21,22 @@ from cognition.intent_analyzer import IntentAnalyzer
 from cognition.consciousness import ConsciousnessEngine
 from cognition.consensus_engine import ConsensusEngine
 from cognition.self_evolution import GeneticOptimizer
+from cognition.wiki_engine import OmniWiki
 from tools.voice_core import VoiceCore
 from registry.tool_registry import ToolRegistry
 
 class Orchestrator:
     """
     O AI CORE v7.0 OMNI: A Singularidade do SOLPI.
-    Orquestração de Enxame com Consenso e Evolução Genética.
+    Matriz de Conhecimento Global Integrada.
     """
     def __init__(self):
         # Motores de Inteligência Superior
         self.llm = LLMEngine()
         self.consciousness = ConsciousnessEngine()
-        self.intent = IntentAnalyzer(self.llm)
         self.memory = BrainMemory() 
+        self.wiki = OmniWiki(self.memory)
+        self.intent = IntentAnalyzer(self.llm)
         self.consensus = ConsensusEngine(self.memory)
         self.evolution = GeneticOptimizer(None, self.memory)
         
