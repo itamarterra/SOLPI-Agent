@@ -81,9 +81,15 @@ class Orchestrator:
         if sim_report['predicted_success_rate'] < 40:
             return "❌ Risco de falha muito alto detectado na simulação."
 
-        # 5. EXECUÇÃO
+        # 5. EXECUÇÃO PARALELA (MESH DE MICROSSERVIÇOS)
         self.executive.set_state("EXECUTANDO")
         swarm_results = self.swarm.execute_swarm(task_tree['branches'])
+        
+        # Consolida resultados para o aprendizado e resposta
+        final_summary = []
+        for res in swarm_results:
+            status_icon = "✅" if res['status'] == "completed" else "❌"
+            final_summary.append(f"{status_icon} [{res['agent']}]: {res['result']}")
 
         # 6. REFLEXÃO & APRENDIZADO
         self.executive.set_state("OBSERVANDO")
@@ -91,13 +97,13 @@ class Orchestrator:
             "problem": user_input,
             "context": world_state,
             "duration": time.time() - start_time,
-            "result": str(swarm_results),
-            "errors": [],
+            "swarm_raw_results": swarm_results,
             "confidence": sim_report['predicted_success_rate']
         })
 
         self.executive.set_state("DORMINDO")
-        summary_prompt = f"Missão concluída: {user_input}. Dê um resumo técnico de elite sobre o resultado final da operação."
+        summary_text = "\n".join(final_summary)
+        summary_prompt = f"Missão concluída: {user_input}. Resultados da Malha de Microsserviços:\n{summary_text}\n\nDê um resumo técnico de elite sobre o sucesso da operação multitarefa."
         return self._handle_conversation(summary_prompt)
 
     def _handle_conversation(self, text):
