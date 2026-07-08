@@ -5,24 +5,32 @@ class IntentAnalyzer:
     def analyze(self, user_input, world_state):
         ui = user_input.lower()
         
-        # Vocabulário Estendido de Conversa (Manual para evitar chamadas de API caras/lentas)
+        # Palavras de Ação Imediata (Forçam GOAL)
+        action_keywords = [
+            "abra", "pesquise", "busque", "crie", "delete", "configure", 
+            "instale", "rode", "execute", "verifique", "revise", "audite",
+            "notifique", "mande", "clique", "digite", "scan"
+        ]
+
+        if any(word in ui for word in action_keywords):
+            return "GOAL"
+
+        # Vocabulário Estendido de Conversa
         conversational_phrases = [
             "oi", "ola", "olá", "bom dia", "boa tarde", "boa noite", 
             "tudo bem", "como voce esta", "como vai", "quem e voce", 
-            "o que voce faz", "obrigado", "valeu", "tchau", "adeus",
-            "clima", "tempo", "voce e real", "inteligente"
+            "o que voce faz", "obrigado", "valeu", "tchau", "adeus"
         ]
 
         if any(phrase in ui for phrase in conversational_phrases):
             return "CONVERSATION"
 
-        # Se não for uma saudação óbvia, tenta o LLM
+        # Se não for uma saudação óbvia, tenta o LLM usando o DNA do Trinity
         prompt = f"""
-        Classifique a intenção do usuário: "{user_input}"
-        Considere se o usuário quer apenas conversar ou se quer que eu execute uma tarefa técnica.
-        Categorias:
-        - CONVERSATION: Papo furado, perguntas sobre o eu, saudações, curiosidades.
-        - GOAL: Comandos para o PC, automação, busca de produtos, análise de sistemas.
+        Você é o Kernel do SOLPI OS. Analise a ordem do Comandante Itamar: "{user_input}"
+        
+        Sua tarefa é classificar se ele quer conversar/perguntar algo (CONVERSATION) ou se ele quer que você realize uma ação técnica/operação (GOAL).
+
         Responda APENAS: CONVERSATION ou GOAL.
         """
         messages = [{"role": "user", "content": prompt}]

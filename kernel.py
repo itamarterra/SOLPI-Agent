@@ -62,5 +62,10 @@ class SOLPI_OS:
                 print(f"⚠️ [SYSTEM ALERT]: {e}")
 
 if __name__ == "__main__":
+    # Garante que o sistema rode a partir do diretório raiz do SOLPI-Agent
+    root_dir = os.path.dirname(os.path.abspath(__file__))
+    os.chdir(root_dir)
+    sys.path.append(root_dir)
+
     system = SOLPI_OS()
     system.run()

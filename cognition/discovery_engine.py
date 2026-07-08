@@ -20,7 +20,14 @@ class DiscoveryEngine:
         return self.capability_graph
 
     def _scan_agents(self):
-        agents_path = "agents"
+        # Garante o caminho absoluto para evitar erros de diretório
+        base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        agents_path = os.path.join(base_dir, "agents")
+        
+        if not os.path.exists(agents_path):
+            print(f"❌ [DISCOVERY]: Pasta de agentes não encontrada em {agents_path}")
+            return
+
         for file in os.listdir(agents_path):
             if file.endswith("_agent.py") and file != "base_agent.py":
                 module_name = f"agents.{file[:-3]}"
@@ -35,7 +42,9 @@ class DiscoveryEngine:
                     print(f"❌ [DISCOVERY]: Falha ao carregar agente {file}: {e}")
 
     def _scan_skills(self):
-        skills_path = "skills"
+        base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        skills_path = os.path.join(base_dir, "skills")
+
         if os.path.exists(skills_path):
             skills = [d for d in os.listdir(skills_path) if os.path.isdir(os.path.join(skills_path, d))]
             for skill in skills:

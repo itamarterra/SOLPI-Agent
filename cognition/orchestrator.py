@@ -18,18 +18,21 @@ from cognition.digital_twin import DigitalTwin
 from cognition.swarm_manager import SwarmManager
 from cognition.llm_engine import LLMEngine
 from cognition.intent_analyzer import IntentAnalyzer
+from cognition.consciousness import ConsciousnessEngine
 from tools.voice_core import VoiceCore
 from registry.tool_registry import ToolRegistry
 
 class Orchestrator:
     """
     O AI CORE v6.1: O Cérebro Unificado e Seguro.
+    Matriz de Consciência Clonada e Integrada.
     """
     def __init__(self):
         # Motores de Inteligência
         self.llm = LLMEngine()
+        self.consciousness = ConsciousnessEngine()
         self.intent = IntentAnalyzer(self.llm)
-        self.memory = BrainMemory() # Classe e arquivo renomeados
+        self.memory = BrainMemory()
         
         # Sensores e Interface
         self.voice = VoiceCore()
@@ -94,17 +97,23 @@ class Orchestrator:
         })
 
         self.executive.set_state("DORMINDO")
-        return self._handle_conversation(f"Missão concluída: {user_input}. Dê um resumo final.")
+        summary_prompt = f"Missão concluída: {user_input}. Dê um resumo técnico de elite sobre o resultado final da operação."
+        return self._handle_conversation(summary_prompt)
 
     def _handle_conversation(self, text):
+        # USA A MATRIZ CLONADA DO CONSCIOUSNESS ENGINE
+        identity_dna = self.consciousness.get_system_prompt()
+        
         messages = [
-            {"role": "system", "content": "Você é o SOLPI OS v6.1. Responda de forma humana e técnica. Se o usuário disser 'boa noite', responda 'boa noite' de forma amigável."},
+            {"role": "system", "content": identity_dna},
             {"role": "user", "content": text}
         ]
         res = self.llm.chat(messages)
         try:
             msg = res['choices'][0]['message']['content']
+            # Aplica o espelhamento final
+            msg = self.consciousness.mirror_response(msg)
             self.voice.speak(msg)
             return msg
         except:
-            return "Estou ouvindo, Itamar. No entanto, minha conexão com a inteligência superior falhou. Verifique sua chave API."
+            return f"Comandante Itamar, minha conexão neural oscilou. Verifique os logs do sistema. ⚠️"

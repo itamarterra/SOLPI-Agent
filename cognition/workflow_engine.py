@@ -15,7 +15,7 @@ class WorkflowEngine:
             
             branch = {
                 "id": step['id'],
-                "sub_goal": step['task'],
+                "task": step['task'],
                 "agent": step['agent'],
                 "strategy": strategy_info.get('strategy', 'Default'),
                 "status": "pending"
