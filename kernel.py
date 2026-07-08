@@ -43,7 +43,15 @@ class SOLPI_OS:
 
     def run(self):
         self.boot()
-        print(f"✨ [SYSTEM]: Ready. Dê um objetivo estratégico ou use 'ajuda'.")
+        
+        # ACIONA A VOLIÇÃO INICIAL
+        from cognition.volition_engine import VolitionEngine
+        volition = VolitionEngine(self.orchestrator.simulator.twin, self.orchestrator.memory)
+        suggestion = volition.generate_autonomous_goal()
+        
+        print(f"✨ [SYSTEM]: Ready. Dê um objetivo ou use 'ajuda'.")
+        print(f"💡 [INICIATIVA]: Comandante Itamar, eu sugiro uma missão: '{suggestion['goal']}'")
+        self.orchestrator.voice.speak(f"Comandante, eu sugiro uma missão: {suggestion['goal']}")
         
         while True:
             try:
