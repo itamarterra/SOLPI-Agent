@@ -6,7 +6,6 @@ import json
 class BrainMemory:
     """
     MEMÓRIA DO CÉREBRO: O motor de consciência do SOLPI OS.
-    Renomeado para evitar conflitos com a pasta 'memory/'.
     """
     def __init__(self, db_path="memory/ai_brain.db"):
         self.db_path = db_path
@@ -59,6 +58,10 @@ class BrainMemory:
             return []
         finally:
             conn.close()
+
+    def recall(self, query):
+        """Alias para manter compatibilidade com módulos legados."""
+        return self.search(query)
 
     def distill_experience(self, scenario, outcome, lessons):
         """Registra aprendizado de elite."""
