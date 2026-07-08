@@ -1,45 +1,52 @@
 import pyttsx3
-import speech_recognition as sr
 import threading
+import queue
+import time
 
 class VoiceCore:
-    """Motor de Voz do SOLPI OS: Fala e Escuta como serviço do sistema."""
-    
+    """Motor de Voz Robusto: Usa uma fila para evitar conflitos de fala."""
     def __init__(self):
-        self.engine = pyttsx3.init()
-        self._setup_voice()
+        self.speech_queue = queue.Queue()
+        self.stop_event = threading.Event()
+        threading.Thread(target=self._worker, daemon=True).start()
 
-    def _setup_voice(self):
-        voices = self.engine.getProperty('voices')
+    def _worker(self):
+        # O motor deve ser inicializado dentro da thread que vai rodar o loop
+        engine = pyttsx3.init()
+        voices = engine.getProperty('voices')
         for voice in voices:
-            if "brazil" in voice.name.lower() or "portuguese" in voice.name.lower():
-                self.engine.setProperty('voice', voice.id)
+            if "brazil" in voice.name.lower():
+                engine.setProperty('voice', voice.id)
                 break
-        self.engine.setProperty('rate', 175) # Velocidade natural
+        engine.setProperty('rate', 180)
+
+        while not self.stop_event.is_set():
+            try:
+                text = self.speech_queue.get(timeout=0.5)
+                if text:
+                    print(f"🤖 [VOICE]: {text}")
+                    engine.say(text)
+                    engine.runAndWait()
+                self.speech_queue.task_done()
+            except queue.Empty:
+                continue
+            except Exception as e:
+                print(f"⚠️ [VOICE ERROR]: {e}")
+                time.sleep(1)
 
     def speak(self, text, block=False):
-        """Faz o agente falar. Se block for False, fala em background."""
-        print(f"🤖 [VOICE]: {text}")
+        """Adiciona o texto à fila de fala."""
+        self.speech_queue.put(text)
         if block:
-            self._do_speak(text)
-        else:
-            threading.Thread(target=self._do_speak, args=(text,), daemon=True).start()
-
-    def _do_speak(self, text):
-        self.engine.say(text)
-        self.engine.runAndWait()
+            self.speech_queue.join()
 
     def listen(self):
-        """Ouve o microfone e retorna o texto em português."""
+        import speech_recognition as sr
         r = sr.Recognizer()
         try:
             with sr.Microphone() as source:
-                print("🎤 [LISTENING]...")
+                print("🎤 [OUVINDO]...")
                 r.adjust_for_ambient_noise(source, duration=0.5)
-                audio = r.listen(source, timeout=10, phrase_time_limit=15)
-            
-            text = r.recognize_google(audio, language='pt-BR')
-            print(f"🗣️ [USER]: {text}")
-            return text
-        except Exception as e:
-            return None
+                audio = r.listen(source, timeout=5)
+            return r.recognize_google(audio, language='pt-BR')
+        except: return None

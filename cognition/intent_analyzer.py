@@ -1,30 +1,24 @@
 class IntentAnalyzer:
-    """
-    Classifica a intenção do usuário usando o LLM.
-    """
     def __init__(self, llm_engine):
         self.llm = llm_engine
 
     def analyze(self, user_input, world_state):
-        prompt = f"""
-        Analise a mensagem do usuário e o estado do sistema.
-        Estado: {world_state}
-        Mensagem: "{user_input}"
+        ui = user_input.lower()
         
-        Classifique em uma destas categorias:
-        - CONVERSATION: Apenas bate-papo.
-        - GOAL: Pedido para executar uma tarefa no PC ou Web.
-        - QUESTION: Pergunta sobre dados ou sistema.
-        - TROUBLESHOOTING: Pedido para resolver um erro detectado.
+        # Filtro de Regras Local (Garante que conversa simples não vire 'Missão')
+        if any(greet in ui for key, greet in [("oi", "oi"), ("ola", "olá"), ("boa noite", "boa noite"), ("bom dia", "bom dia")]):
+            return "CONVERSATION"
 
-        Responda apenas com o nome da categoria em MAIÚSCULAS.
+        prompt = f"""
+        Classifique a intenção do usuário: "{user_input}"
+        Responda APENAS: CONVERSATION ou GOAL.
         """
-        
-        messages = [{"role": "system", "content": "Você é o Intent Analyzer do SOLPI OS."},
-                    {"role": "user", "content": prompt}]
-        
+        messages = [{"role": "user", "content": prompt}]
         res = self.llm.chat(messages)
+        
         try:
-            return res['choices'][0]['message']['content'].strip()
+            content = res['choices'][0]['message']['content'].upper()
+            if "GOAL" in content: return "GOAL"
+            return "CONVERSATION"
         except:
             return "CONVERSATION"
