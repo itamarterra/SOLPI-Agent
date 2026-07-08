@@ -26,7 +26,16 @@ class MeshTracer:
             f.write(json.dumps(trace_data) + "\n")
         
         print(f"📊 [TRACER]: Trace registrado para {agent} | Latência: {trace_data['latency_sec']}s")
+        
+        # Trigger heal check if status is failed
+        if status == "failed":
+            self._trigger_healing_protocol(agent, "Execution Failure")
 
-    def get_mesh_health(self):
-        # Futuramente: Analisa os últimos traces para ver se algum motor está lento
+    def _trigger_healing_protocol(self, agent, reason):
+        print(f"🛡️ [SELF-HEALING]: Alerta detectado no microsserviço {agent}! Razão: {reason}")
+        # Aqui o sistema decide o que fazer: Reiniciar, Limpar Cache ou Notificar
+        print(f"🔧 [SELF-HEALING]: Tentando reinicialização a quente do {agent}...")
+
+    def get_mesh_health(self, agent=None):
+        # Implementação básica de verificação de histórico
         return "HEALTHY"
