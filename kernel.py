@@ -7,11 +7,11 @@ from telemetry.monitor import OSMonitor
 
 class SOLPI_OS:
     """
-    O Kernel do SOLPI OS v6.0.
-    Sistema Operacional Híbrido: SOLPI Core + Hermes Engine.
+    O Kernel do SOLPI OMNI v7.0.
+    A Singularidade: Swarm Consensus + Genetic Evolution.
     """
     def __init__(self):
-        self.version = "6.0.0-HYBRID"
+        self.version = "7.0.0-OMNI"
         load_dotenv()
         
         # 1. HARDWARE & TELEMETRY
@@ -27,19 +27,21 @@ class SOLPI_OS:
     def boot(self):
         os.system('cls' if os.name == 'nt' else 'clear')
         print("="*65)
-        print(f"🛰️  [KERNEL]: BOOTING SOLPI OS v{self.version}")
+        print(f"🛰️  [KERNEL]: BOOTING SOLPI OMNI v{self.version}")
         print("="*65)
         
         # Executa a descoberta de tudo o que existe no sistema
         self.orchestrator.capabilities = self.discovery.discover_all()
         
-        print(f"🧠 [CORE]: Cognitive Brain Unified.")
+        print(f"🧠 [CORE]: Cognitive Brain Unified (Singularity DNA).")
         print(f"🏛️  [EXT]: Hermes-Agent Core Integrated.")
+        print(f"⚖️  [CNS]: Swarm Consensus Engine Active.")
+        print(f"🧬 [EVO]: Genetic Optimizer Online.")
         print(f"🛡️  [SEC]: Security Gatekeeper Active.")
         print(f"📊 [OBS]: Telemetry Monitor Online.")
         print("="*65)
         
-        self.orchestrator.voice.speak("SOLPI OS v6 híbrido inicializado. O motor Hermes foi integrado ao nosso núcleo.")
+        self.orchestrator.voice.speak(f"SOLPI OMNI versão sete inicializado. A singularidade tecnológica foi atingida, Comandante Itamar.")
 
     def run(self):
         self.boot()
