@@ -5,49 +5,44 @@ from core.memory import AgentMemory
 from core.tools import AgentTools
 from core.neural_core import SOLPINeuralCore
 from core.knowledge import KnowledgeEngine
-from core.dataset import SOLPIDataset
-from core.rag import SOLPIRAGEngine
-from core.security import SecuritySandbox
+from core.event_bus import SOLPIEventBus
 from core.experts import InfraExpert, DevExpert, KnowledgeExpert, SQLExpert
-from core.context_manager import SOLPIContextManager
-from core.sampler import SOLPISampler
 
 class SOLPIBrain:
     """
-    INTERFACE OPERACIONAL v36.0 (Context & SQL Singularity)
-    Capaz de diálogos longos e consultas diretas ao banco de ativos.
+    INTERFACE OPERACIONAL v37.0 (EDA & Gateway)
+    Integrado com Barramento de Eventos e API Externa.
     """
     def __init__(self):
         self.kernel = SOLPIKernel()
         self.memory = AgentMemory()
         self.tools = AgentTools()
-        self.knowledge = KnowledgeEngine()
-        self.rag = SOLPIRAGEngine()
-        self.sandbox = SecuritySandbox(self.kernel)
-        self.context = SOLPIContextManager() # Novo!
+        self.bus = SOLPIEventBus(self.kernel) # Novo Barramento!
         self.native_core = SOLPINeuralCore()
         self.supervisor = SOLPISupervisor(self)
+        self.infra_expert = InfraExpert(self)
         
-        # Especialistas
-        self.sql_expert = SQLExpert(self) # Novo!
+        # Subscreve para eventos críticos
+        self.bus.subscribe("DB_DOWN", lambda data: self.infra_expert.run())
+        self.bus.start_listening()
 
     def process(self, user_input):
-        self.context.add_to_context("user", user_input)
+        self.memory.add_episodic("user", user_input)
         cmd = user_input.lower().strip()
         
-        # 1. DELEGAÇÃO PARA SQL (Ativos/Banco)
-        if any(x in cmd for x in ["lista", "computadores", "ativos", "banco", "database"]):
-            return self.sql_expert.run(user_input)
+        # 1. EMITE EVENTO (Se for algo importante)
+        if "alerta" in cmd: self.bus.publish("SYSTEM_ALERT", {"msg": user_input})
 
-        # 2. FLUXO PADRÃO COM CONTEXTO (Etapa 1307)
-        expert, _ = self.supervisor.delegate(user_input)
-        if expert == "INFRA_EXPERT": return "📡 [INFRA]: " + " | ".join(self.tools.self_audit())
+        # 2. FLUXO DE SUPERVISÃO
+        expert_tag, _ = self.supervisor.delegate(user_input)
+        if expert_tag == "INFRA_EXPERT": return self.infra_expert.run()
 
-        # 3. PESQUISA WEB (Fallback)
+        # 3. GLOBAL FALLBACK
         results = self.tools.search(user_input)
-        response = "🧠 [GLOBAL]: " + "\n".join(results[:1])
-        self.context.add_to_context("assistant", response)
-        return response
+        return "🧠 [ORQUESTRADOR]: " + "\n".join(results[:1])
 
     def heartbeat_check(self):
-        return self.tools.self_audit()
+        audit = self.tools.self_audit()
+        if "OFFLINE" in str(audit):
+            self.bus.publish("DB_DOWN", {"status": "critical"})
+        return audit

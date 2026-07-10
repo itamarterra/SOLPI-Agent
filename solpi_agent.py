@@ -3,29 +3,32 @@ import threading
 import time
 from dotenv import load_dotenv
 from core.brain import SOLPIBrain
+from core.api_gateway import SOLPIGateway
 
 load_dotenv()
 
 class SOLPIOS:
     """
-    SOLPI-OS: ENTERPRISE AI OPERATING SYSTEM (v28.0)
-    Gerenciador Central de Agentes e Recursos.
+    SOLPI-OS: ENTERPRISE AI OPERATING SYSTEM (v37.0)
+    Gerenciador Central com API Gateway e Event Bus.
     """
     def __init__(self):
         self.brain = SOLPIBrain()
+        self.gateway = SOLPIGateway(self.brain) # Gateway Ativo
         self.active = True
 
     def run(self):
         os.system('cls' if os.name == 'nt' else 'clear')
-        print(f"🚀 SOLPI-OS ENTERPRISE v28.0 (Kernel: {self.brain.kernel.version})")
+        print(f"🚀 SOLPI-OS ENTERPRISE v37.0 (Kernel: {self.brain.kernel.version})")
         print("=" * 60)
-        print(f"SISTEMA: ONLINE | MOTOR: TRANSFORMER RMSNORM")
-        print(f"UPTIME: {self.brain.kernel.get_uptime()}")
+        print(f"STATUS: OPERACIONAL | GATEWAY: PORTA 8090 | BUS: ATIVO")
         print("=" * 60)
         
-        # Monitoramento Proativo (Vigilância)
-        observer = threading.Thread(target=self.proactive_monitor, daemon=True)
-        observer.start()
+        # 1. Inicia API Gateway
+        self.gateway.start()
+        
+        # 2. Inicia Monitoramento Proativo
+        threading.Thread(target=self.proactive_monitor, daemon=True).start()
 
         while self.active:
             try:
