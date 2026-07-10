@@ -112,7 +112,38 @@ class AgentTools:
         payload = {
             "number": phone,
             "options": {"delay": 1200, "presence": "composing", "linkPreview": False},
-            "textMessage": {"text": f"🤖 *SOLPI AGENT v15.0*\n\n{message}"}
+            "textMessage": {"text": f"🤖 *SOLPI AGENT v40.0*\n\n{message}"}
+        }
+
+        try:
+            res = requests.post(endpoint, headers=headers, json=payload, timeout=10)
+            return res.status_code in [200, 201]
+        except: return False
+
+    @staticmethod
+    def send_whatsapp_approval(plan_text, action_id):
+        """Envia botões interativos para aprovação de planos de ação (v40.0)."""
+        url = os.getenv("SOLPI_EVOLUTION_URL")
+        token = os.getenv("SOLPI_EVOLUTION_TOKEN")
+        instance = os.getenv("SOLPI_EVOLUTION_INSTANCE", "SOLPI")
+        phone = os.getenv("DIRECTOR_PHONE")
+
+        if not all([url, token, phone]): return False
+
+        endpoint = f"{url}/message/sendButtons/{instance}"
+        headers = {"apikey": token, "Content-Type": "application/json"}
+        
+        payload = {
+            "number": phone,
+            "buttonMessage": {
+                "text": f"📋 *SOLPI-OS: PLANO DE AÇÃO*\n\n{plan_text}\n\nDeseja autorizar?",
+                "footer": f"ID: {action_id}",
+                "buttons": [
+                    {"buttonId": f"approve_{action_id}", "buttonText": {"displayText": "✅ APROVAR"}, "type": 1},
+                    {"buttonId": f"reject_{action_id}", "buttonText": {"displayText": "❌ REJEITAR"}, "type": 1}
+                ],
+                "headerType": 1
+            }
         }
 
         try:

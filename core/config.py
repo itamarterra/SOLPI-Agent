@@ -7,6 +7,7 @@ class SOLPIConfig:
     VOCAB_SIZE = 5000
     EMBED_DIM = 256
     NUM_HEADS = 8
+    NUM_KV_HEADS = 2 # Para GQA (v40.0)
     NUM_LAYERS = 4
     MAX_SEQ_LEN = 512
     

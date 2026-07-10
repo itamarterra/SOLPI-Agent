@@ -2,16 +2,20 @@ import os
 import time
 from datetime import datetime
 
+from core.event_bus import SOLPIEventBus
+
 class SOLPIKernel:
     """
-    KERNEL DO SOLPI-OS v22.0
-    Gerencia recursos, permissões e orquestração central.
+    KERNEL DO SOLPI-OS v40.0
+    Gerencia recursos, permissões e barramento de eventos.
     """
     def __init__(self):
         self.start_time = datetime.now()
-        self.version = "22.0-ENTERPRISE"
+        self.version = "40.0-ENTERPRISE"
         self.active_agents = []
-        self.permissions_level = "ADMIN" # RBAC Base (Etapa 8)
+        self.permissions_level = "ADMIN"
+        self.event_bus = SOLPIEventBus(self) # Inicializa o barramento
+        self.event_bus.start_listening()
         
     def log_event(self, layer, event):
         """Camada 9: Observabilidade"""

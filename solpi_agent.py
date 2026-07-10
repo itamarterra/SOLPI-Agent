@@ -9,7 +9,7 @@ load_dotenv()
 
 class SOLPIOS:
     """
-    SOLPI-OS: ENTERPRISE AI OPERATING SYSTEM (v37.0)
+    SOLPI-OS: ENTERPRISE AI OPERATING SYSTEM (v40.0)
     Gerenciador Central com API Gateway e Event Bus.
     """
     def __init__(self):
@@ -19,7 +19,7 @@ class SOLPIOS:
 
     def run(self):
         os.system('cls' if os.name == 'nt' else 'clear')
-        print(f"🚀 SOLPI-OS ENTERPRISE v37.0 (Kernel: {self.brain.kernel.version})")
+        print(f"🚀 SOLPI-OS ENTERPRISE v40.0 (Kernel: {self.brain.kernel.version})")
         print("=" * 60)
         print(f"STATUS: OPERACIONAL | GATEWAY: PORTA 8090 | BUS: ATIVO")
         print("=" * 60)

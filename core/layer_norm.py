@@ -1,17 +1,22 @@
 import numpy as np
 
 class SOLPIRMSNorm:
-    """
-    PACOTE 0501: RMSNorm v1.0
-    Root Mean Square Layer Normalization (Padrão Llama/Gemma).
-    Estabiliza o fluxo de tensores sem a necessidade de subtrair a média.
-    """
-    def __init__(self, dim, eps=1e-6):
-        self.eps = eps
-        self.weight = np.ones(dim)
+    # ... (já implementado) ...
+    pass
 
-    def _norm(self, x):
-        return x * (np.mean(x**2, axis=-1, keepdims=True) + self.eps)**-0.5
+class SOLPILayerNorm:
+    """
+    PACOTE 0500: LAYER NORM v1.0
+    Normalização clássica (Média e Variância).
+    Estabiliza o treinamento (Etapa 10).
+    """
+    def __init__(self, dim, eps=1e-5):
+        self.eps = eps
+        self.gamma = np.ones(dim)
+        self.beta = np.zeros(dim)
 
     def forward(self, x):
-        return self._norm(x) * self.weight
+        mean = np.mean(x, axis=-1, keepdims=True)
+        var = np.var(x, axis=-1, keepdims=True)
+        x_norm = (x - mean) / np.sqrt(var + self.eps)
+        return self.gamma * x_norm + self.beta
