@@ -16,6 +16,11 @@ class SOLPIConfig:
     BATCH_SIZE = 32
     EPOCHS = 10
     
+    # Caminhos e Modelos (Fase 1)
+    MODEL_TYPE = "native" # "native" ou "transformers"
+    MODEL_PATH = "models/qwen"
+    DEVICE = "auto"
+    
     # Caminhos
     WEIGHTS_PATH = "brain_weights.npy"
     KNOWLEDGE_DIR = "knowledge"

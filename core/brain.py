@@ -19,6 +19,7 @@ from core.scheduler import SOLPIScheduler
 from core.state_manager import SOLPIStateManager
 from core.prompt_compiler import SOLPIPromptCompiler
 from core.policy_engine import SOLPIPolicyEngine
+from core.inference_engine import SOLPIInferenceEngine
 from core.experts import InfraExpert, DevExpert, KnowledgeExpert, SQLExpert, VisionExpert
 from core.formatter import SOLPIFormatter
 from core.persona import SOLPIPersona
@@ -43,7 +44,8 @@ class SOLPIBrain:
         self.state_manager = SOLPIStateManager(self)
         self.scheduler = SOLPIScheduler(self)
         self.prompt_compiler = SOLPIPromptCompiler(self)
-        self.policy_engine = SOLPIPolicyEngine(self) # 🟢 Policy
+        self.policy_engine = SOLPIPolicyEngine(self)
+        self.inference_engine = SOLPIInferenceEngine(self)
         
         self.event_bus = self.kernel.event_bus
         self.reflection = SOLPIReflectionEngine(self.kernel)
