@@ -5,41 +5,48 @@ from core.memory import AgentMemory
 from core.tools import AgentTools
 from core.neural_core import SOLPINeuralCore
 from core.knowledge import KnowledgeEngine
-from core.researcher import SOLPIResearcher
+from core.dataset import SOLPIDataset
+from core.trainer import SOLPITrainer
 
 class SOLPIBrain:
     """
-    INTERFACE OPERACIONAL v32.0 (Research & Speed)
-    Integra KV Cache e Explorador de Código de Elite do Disco E:.
+    INTERFACE OPERACIONAL v33.0 (Self-Training Singularity)
+    Primeira versão com ciclo de aprendizado Backprop real.
     """
     def __init__(self):
         self.kernel = SOLPIKernel()
         self.memory = AgentMemory()
         self.tools = AgentTools()
         self.knowledge = KnowledgeEngine()
-        self.researcher = SOLPIResearcher() # Novo!
         self.native_core = SOLPINeuralCore()
+        self.supervisor = SOLPISupervisor(self)
+        self.dataset = SOLPIDataset()
+        self.trainer = SOLPITrainer(self) # Motor de Treino!
 
     def process(self, user_input):
         self.memory.add_episodic("user", user_input)
         cmd = user_input.lower().strip()
         
-        # 1. PENSAMENTO COM KV CACHE (Fase 18)
-        thought = self.native_core.think_native(user_input)
-        print(f"\n{thought}")
+        # 1. COMANDO DE EVOLUÇÃO REAL (Fase 11)
+        if any(x in cmd for x in ["treinar", "iniciar evolução", "aprenda com a pesquisa"]):
+            return self.run_deep_learning()
 
-        # 2. COMANDO DE PESQUISA TÉCNICA (Fase 23)
-        if any(x in cmd for x in ["como os outros fazem", "procure no código", "exemplo de"]):
-            examples = self.researcher.scan_for_patterns(user_input)
-            return "🔬 [RESEARCH]: Encontrei exemplos reais nos repositórios de elite:\n- " + "\n- ".join(examples)
+        # 2. FLUXO PADRÃO (Supervisão + Especialistas)
+        expert, mission = self.supervisor.delegate(user_input)
+        
+        if expert == "INFRA_EXPERT":
+            return "📡 [INFRA]: " + "\n- ".join(self.tools.self_audit())
 
-        # 3. COMANDOS DE INFRA/SAÚDE
-        if any(x in cmd for x in ["status", "saúde", "check-up"]):
-            return "📡 [OS-STATUS]:\n- " + "\n- ".join(self.tools.self_audit())
+        return "🧠 [ORQUESTRADOR]: " + "\n".join(self.tools.search(user_input)[:1])
 
-        # 4. PESQUISA WEB (Fallback)
-        results = self.tools.search(user_input)
-        return "🧠 [GLOBAL]: " + "\n".join(results[:2])
-
-    def heartbeat_check(self):
-        return self.tools.self_audit()
+    def run_deep_learning(self):
+        """O Agente estuda o código do disco E: e ajusta seus pesos reais."""
+        self.kernel.log_event("TRAINING", "Iniciando Deep Learning Ciclo 1.")
+        
+        batch = self.dataset.get_batch(size=3)
+        for i, code in enumerate(batch):
+            loss = self.trainer.train_on_sample(code)
+            print(f"📉 [EPOCH {i+1}]: Loss = {loss:.4f}")
+            
+        self.native_core.save_weights() # Salva a inteligência adquirida
+        return f"✅ Evolução v33.0 concluída. Pesos atualizados com base em código de elite."
