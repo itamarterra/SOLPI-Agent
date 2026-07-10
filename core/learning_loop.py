@@ -28,7 +28,7 @@ class SOLPILearningLoop:
                 time.sleep(60)
 
     def execute_training_epoch(self):
-        """Varre o disco E: e treina sobre arquivos de elite."""
+        """Varre o disco E: e treina sobre arquivos de elite com baixo impacto."""
         if not os.path.exists(self.research_dir):
             return
             
@@ -37,21 +37,29 @@ class SOLPILearningLoop:
         
         for root, _, files in os.walk(self.research_dir):
             for f in files:
+                if not self.is_running: return # Permite parar o loop
+                
                 if f.endswith('.py'):
                     path = os.path.join(root, f)
                     try:
                         with open(path, 'r', encoding='utf-8', errors='ignore') as content:
                             text = content.read()
-                            if len(text) > 100:
+                            if 100 < len(text) < 50000: # Evita arquivos gigantescos
                                 loss = self.trainer.train_on_sample(text)
                                 total_loss += loss
                                 files_count += 1
                                 
-                        if files_count % 10 == 0:
-                            self.brain.kernel.log_event("LEARNING", f"Progresso: {files_count} arquivos | Avg Loss: {total_loss/files_count:.4f}")
+                                # 🟢 OTIMIZAÇÃO: Sleep entre arquivos para não travar o PC
+                                time.sleep(0.5) 
+                                
+                        if files_count % 5 == 0:
+                            self.brain.kernel.log_event("LEARNING", f"Progresso: {files_count} arquivos | Loss: {total_loss/files_count:.4f}")
                             
                     except: pass
                     
-            if files_count >= 100: break # Limite por época para estabilidade
+                # Interrompe após um pequeno lote para dar respiro ao sistema
+                if files_count >= 20: 
+                    self.brain.kernel.log_event("LEARNING", "Lote de aprendizado concluído. Pausando para respiro do sistema.")
+                    return 
 
-        self.brain.kernel.log_event("LEARNING", f"Época concluída. {files_count} arquivos processados.")
+        self.brain.kernel.log_event("LEARNING", f"Época parcial concluída. {files_count} arquivos processados.")

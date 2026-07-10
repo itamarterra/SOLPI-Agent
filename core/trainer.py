@@ -24,6 +24,8 @@ class SOLPITrainer:
         
         # Simplificando para o passo de treino (Etapa 1102-1105)
         for i in range(len(tokens)-1):
+            if i % 50 == 0: time.sleep(0.01) # 🟢 Respiro para o Sistema Operacional
+
             input_seq = tokens[:i+1]
             target = tokens[i+1]
             

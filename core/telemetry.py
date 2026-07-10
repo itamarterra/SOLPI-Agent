@@ -11,10 +11,25 @@ class SOLPITelemetry:
         self.start_time = time.time()
         self.total_tokens = 0
         self.requests_count = 0
+        self.history = [] # Histórico para análise preditiva (v40.0)
 
     def log_request(self, tokens):
         self.total_tokens += tokens
         self.requests_count += 1
+        self._capture_snapshot()
+
+    def _capture_snapshot(self):
+        """Captura métricas atuais para o histórico."""
+        import shutil
+        _, _, free = shutil.disk_usage("/")
+        self.history.append({
+            "t": time.time(),
+            "cpu": psutil.cpu_percent(),
+            "ram": psutil.virtual_memory().percent,
+            "disk_free": free // (2**30)
+        })
+        # Mantém apenas as últimas 100 capturas
+        if len(self.history) > 100: self.history.pop(0)
 
     def get_stats(self):
         uptime = time.time() - self.start_time

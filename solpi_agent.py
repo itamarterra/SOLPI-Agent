@@ -33,10 +33,15 @@ class SOLPIOS:
         while self.active:
             try:
                 user_input = input("\n[SOLPI-OS] 👤 Itamar: ").strip()
+                if not user_input: continue
                 if user_input.lower() in ['exit', 'shutdown', 'poweroff']: break
                 
+                print("🧠 [PENSANDO]...", end="\r")
                 response = self.brain.process(user_input)
-                print(f"\n[SOLPI-OS] 🧠 AI-RUNTIME:\n{response}")
+                
+                # Limpa a linha de "pensando" e imprime a resposta
+                print(" " * 20, end="\r")
+                print(f"\n{response}")
 
             except KeyboardInterrupt: break
             except Exception as e: print(f"🚨 KERNEL PANIC: {e}")

@@ -23,4 +23,12 @@ class SOLPISupervisor:
         if any(x in cmd for x in ["como", "manual", "procedimento", "baixe"]):
             return "KNOWLEDGE_EXPERT", "Consultando base de dados corporativa e RAG."
 
+        # 4. Especialista em SQL (Banco GLPI)
+        if any(x in cmd for x in ["listar", "quem", "chamado", "ticket", "computador", "ativo", "documente", "registre"]):
+            return "SQL_EXPERT", "Acessando banco de dados MariaDB/GLPI para extração ou documentação de dados."
+
+        # 5. Especialista em Visão (Captura e Interface)
+        if any(x in cmd for x in ["tela", "veja", "olhe", "clique", "print", "screenshot"]):
+            return "VISION_EXPERT", "Ativando visão computacional para análise de interface."
+
         return "GENERALIST", "Processamento neural genérico."

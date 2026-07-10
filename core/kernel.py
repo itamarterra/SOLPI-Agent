@@ -18,12 +18,19 @@ class SOLPIKernel:
         self.event_bus.start_listening()
         
     def log_event(self, layer, event):
-        """Camada 9: Observabilidade"""
+        """Camada 9: Observabilidade com proteção contra flood."""
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         log_entry = f"[{timestamp}] [{layer}] {event}\n"
-        print(f"📡 [KERNEL]: {event}")
-        with open("kernel_events.log", "a", encoding="utf-8") as f:
-            f.write(log_entry)
+        
+        # Só imprime no terminal se não for flood de aprendizado
+        if layer != "LEARNING" or "concluído" in event:
+            print(f"📡 [{layer}]: {event}")
+            
+        # Mantém o log no arquivo para auditoria
+        try:
+            with open("kernel_events.log", "a", encoding="utf-8") as f:
+                f.write(log_entry)
+        except: pass
 
     def authorize_action(self, action_type):
         """Camada 8: Segurança / RBAC"""

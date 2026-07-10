@@ -1,16 +1,18 @@
 import os
+import time
 from core.skills import SkillManager
 from core.researcher import SOLPIResearcher
 
 class EvolutionEngine:
     """
     PACOTE 3000: RECURSIVE AUTO-EVOLUTION v40.0
-    Escuta anomalias do Reflection Engine e evolui o código fonte.
+    Escuta anomalias do Reflection Engine e evolui o código fonte com controle de carga.
     """
     def __init__(self, brain):
         self.brain = brain
         self.skill_manager = SkillManager()
         self.researcher = SOLPIResearcher()
+        self.last_research_time = 0
         
         # Inscreve-se nos eventos de falha e anomalia
         self.brain.event_bus.subscribe("neural_anomaly", self.on_neural_anomaly)
@@ -18,11 +20,16 @@ class EvolutionEngine:
         self.brain.event_bus.subscribe("action_approved", self.on_action_approved)
 
     def on_neural_anomaly(self, data):
-        """Reage a falhas de confiança no pensamento."""
-        self.brain.kernel.log_event("EVOLUTION", f"Processando anomalia neural: {data.get('status')}")
-        # Busca no E:/SOLPI-RESEARCH como lidar com baixa confiança
+        """Reage a falhas de confiança com Cooldown."""
+        now = time.time()
+        if now - self.last_research_time < 300: # 5 minutos de pausa entre pesquisas
+            return
+            
+        self.last_research_time = now
+        self.brain.kernel.log_event("EVOLUTION", f"Analisando anomalia neural profunda...")
         patterns = self.researcher.scan_for_patterns("temperature scaling")
-        self.brain.kernel.log_event("EVOLUTION", f"Padrões encontrados para correção: {patterns}")
+        if patterns:
+            self.propose_evolution(f"Ajustar calibração de confiança baseado em: {patterns[0]}")
 
     def on_training_anomaly(self, data):
         """Reage a explosão de gradiente ou loss alta."""
