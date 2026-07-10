@@ -6,54 +6,47 @@ from core.tools import AgentTools
 from core.neural_core import SOLPINeuralCore
 from core.knowledge import KnowledgeEngine
 from core.dataset import SOLPIDataset
-from core.trainer import SOLPITrainer
-from core.decoder import SOLPIDecoder
-from core.researcher import SOLPIResearcher
-from core.experts import InfraExpert, DevExpert, KnowledgeExpert
+from core.rag import SOLPIRAGEngine
+from core.security import SecuritySandbox
 
 class SOLPIBrain:
     """
-    INTERFACE OPERACIONAL v34.0 (Full Expert Orchestration)
-    Arquitetura com Agentes Reais e Geração Autoregressiva.
+    INTERFACE OPERACIONAL v35.0 (Secure RAG Singularity)
+    Capaz de usar o conhecimento do disco E: para agir com segurança.
     """
     def __init__(self):
         self.kernel = SOLPIKernel()
         self.memory = AgentMemory()
         self.tools = AgentTools()
         self.knowledge = KnowledgeEngine()
-        self.researcher = SOLPIResearcher()
+        self.rag = SOLPIRAGEngine() # Motor RAG
+        self.sandbox = SecuritySandbox(self.kernel) # Sandbox
         self.native_core = SOLPINeuralCore()
         self.supervisor = SOLPISupervisor(self)
-        self.dataset = SOLPIDataset()
-        
-        # Motores e Especialistas
-        self.trainer = SOLPITrainer(self)
-        self.decoder = SOLPIDecoder(self)
-        self.infra_expert = InfraExpert(self)
-        self.dev_expert = DevExpert(self)
-        self.kn_expert = KnowledgeExpert(self)
 
     def process(self, user_input):
         self.memory.add_episodic("user", user_input)
         cmd = user_input.lower().strip()
         
-        # 1. DELEGAÇÃO PELO SUPERVISOR
-        expert_tag, mission = self.supervisor.delegate(user_input)
-        print(f"👮 [SUPERVISOR]: Delegando para {expert_tag}")
+        # 1. CONSULTA RAG (Recuperação de Conhecimento de Elite - E:)
+        if any(x in cmd for x in ["como os outros fazem", "referência técnica", "código de elite"]):
+            rag_results = self.rag.retrieve(user_input)
+            response = "🔬 [RAG-KNOWLEDGE]: Baseado em projetos de elite:\n"
+            for r in rag_results:
+                response += f"\n📂 Fonte: {r['source']}\n📝 Lógica: {r['chunk']}...\n"
+            return response
 
-        # 2. EXECUÇÃO POR OBJETO ESPECIALISTA (Fase 16)
-        if expert_tag == "INFRA_EXPERT":
-            response = self.infra_expert.run()
-        elif expert_tag == "DEV_EXPERT":
-            response = self.dev_expert.run(user_input)
-        elif expert_tag == "KNOWLEDGE_EXPERT":
-            response = self.kn_expert.run(user_input)
-        else:
-            # 3. GERAÇÃO AUTOREGRESSIVA (Fase 12)
-            response = self.decoder.generate(user_input)
+        # 2. COMANDO DE EXECUÇÃO EM SANDBOX
+        if cmd.startswith("teste esta skill"):
+            # Ex: "teste esta skill skills/test_logic.py"
+            script = cmd.replace("teste esta skill", "").strip()
+            return self.sandbox.safe_execute(script)
 
-        self.memory.add_episodic("assistant", response)
-        return response
+        # 3. FLUXO PADRÃO
+        expert, _ = self.supervisor.delegate(user_input)
+        if expert == "INFRA_EXPERT": return "📡 [INFRA]: " + " | ".join(self.tools.self_audit())
+
+        return "🧠 [ORQUESTRADOR]: " + "\n".join(self.tools.search(user_input)[:1])
 
     def heartbeat_check(self):
         return self.tools.self_audit()

@@ -1,36 +1,30 @@
-import re
+import subprocess
+import os
 
-class SecurityGatekeeper:
+class SecuritySandbox:
     """
-    O Escudo do SOLPI Agent. 
-    Analisa intenções maliciosas e protege o Sistema Operacional.
+    PACOTE 1806: SECURE SANDBOX v1.0
+    Executa habilidades criadas pela IA em ambiente isolado.
     """
-    
-    # Comandos e palavras terminantemente proibidas
-    BLACKLIST = [
-        "rmdir", "del /s", "format", "mkfs", "shutdown", 
-        "registry delete", "netsh firewall set", "powershell -enc",
-        "rm -rf", ":(){ :|:& };:", "drop table", "truncate"
-    ]
+    def __init__(self, kernel):
+        self.kernel = kernel
 
-    @staticmethod
-    def is_safe(input_string):
-        """
-        Verifica se o comando ou texto contém padrões de ataque conhecidos.
-        """
-        # 1. Checa contra a lista negra
-        for forbidden in SecurityGatekeeper.BLACKLIST:
-            if forbidden in input_string.lower():
-                return False, f"⚠️ BLOQUEIO DE SEGURANÇA: O termo '{forbidden}' é restrito."
-
-        # 2. Bloqueia tentativas de concatenação de comandos (&&, ||, ;)
-        if re.search(r"[&|;]{2,}", input_string):
-            return False, "⚠️ BLOQUEIO DE SEGURANÇA: Tentativa de encadeamento de comandos suspeita."
-
-        return True, "Safe"
-
-    @staticmethod
-    def sanitize_shell(command):
-        """Limpa o comando shell antes da execução."""
-        clean_cmd = re.sub(r"[><|&;]", "", command)
-        return clean_cmd.strip()
+    def safe_execute(self, script_path, args=[]):
+        """Executa script com restrições de permissão."""
+        self.kernel.log_event("SECURITY", f"Iniciando execução em Sandbox: {script_path}")
+        
+        try:
+            # Usa subprocess para isolar o processo do Agente principal
+            result = subprocess.run(
+                ["python", script_path] + args,
+                capture_output=True,
+                text=True,
+                timeout=10 # Limite de tempo (Etapa 1209)
+            )
+            
+            if result.returncode == 0:
+                return f"✅ Execução Segura: {result.stdout}"
+            return f"❌ Falha na Sandbox: {result.stderr}"
+            
+        except Exception as e:
+            return f"🚨 Bloqueio de Segurança: {str(e)}"
