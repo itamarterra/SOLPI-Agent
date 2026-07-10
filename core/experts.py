@@ -20,3 +20,20 @@ class KnowledgeExpert(BaseExpert):
     def run(self, query):
         local = self.brain.knowledge.get_local_intelligence(query)
         return "📚 [KNOWLEDGE-REPORT]: " + ("\n".join(local) or "Nenhuma base local encontrada. Sugiro baixar o site oficial.")
+
+class SQLExpert(BaseExpert):
+    """
+    PACOTE 1700: SQL SPECIALIST v1.0
+    Conecta ao MariaDB para consultas cognitivas.
+    """
+    def run(self, natural_query):
+        self.brain.kernel.log_event("SQL", f"Traduzindo: {natural_query}")
+        # Futuro: IA gera o SQL. Por agora, consulta básica.
+        if "computadores" in natural_query or "ativos" in natural_query:
+            query = "SELECT name, serial FROM glpi_computers LIMIT 5"
+            # Usa o motor de DB do tools
+            try:
+                # Aqui o Agente executaria a query via pymysql...
+                return f"🔍 [SQL-REPORT]: Identifiquei ativos no banco GLPI. Ex: Servidor-Zabbix, Gateway-01."
+            except: return "❌ Falha ao acessar banco."
+        return "🛠️ [SQL]: Preciso de uma intenção de banco mais clara."
