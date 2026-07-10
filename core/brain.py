@@ -21,6 +21,9 @@ from core.prompt_compiler import SOLPIPromptCompiler
 from core.policy_engine import SOLPIPolicyEngine
 from core.inference_engine import SOLPIInferenceEngine
 from core.rag import SOLPIRAG
+from core.context_engine import SOLPIContextEngine
+from core.executor import SOLPIExecutor
+from core.storage_layer import SOLPIStorageLayer
 from core.experts import InfraExpert, DevExpert, KnowledgeExpert, SQLExpert, VisionExpert
 from core.formatter import SOLPIFormatter
 from core.persona import SOLPIPersona
@@ -47,7 +50,10 @@ class SOLPIBrain:
         self.prompt_compiler = SOLPIPromptCompiler(self)
         self.policy_engine = SOLPIPolicyEngine(self)
         self.inference_engine = SOLPIInferenceEngine(self)
-        self.rag = SOLPIRAG(self) # 🟢 RAG Engine
+        self.rag = SOLPIRAG(self)
+        self.context_engine = SOLPIContextEngine(self)
+        self.executor = SOLPIExecutor(self)
+        self.storage = SOLPIStorageLayer(self)
         
         self.event_bus = self.kernel.event_bus
         self.reflection = SOLPIReflectionEngine(self.kernel)
