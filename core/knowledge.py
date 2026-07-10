@@ -4,12 +4,14 @@ from bs4 import BeautifulSoup
 
 class KnowledgeEngine:
     """
-    MOTOR DE INGESTÃO DE CONHECIMENTO v1.0
-    Transforma arquivos e sites em inteligência local.
+    MOTOR DE INGESTÃO DE CONHECIMENTO v40.0
+    Transforma arquivos e sites em inteligência local no drive E:.
     """
-    def __init__(self, knowledge_dir="knowledge"):
+    def __init__(self, brain, knowledge_dir="E:/SOLPI-RESEARCH"):
+        self.brain = brain
         self.knowledge_dir = knowledge_dir
-        os.makedirs(self.knowledge_dir, exist_ok=True)
+        if not os.path.exists(self.knowledge_dir):
+            os.makedirs(self.knowledge_dir, exist_ok=True)
 
     def download_site(self, url, name):
         """Baixa o conteúdo de um site e salva como inteligência."""

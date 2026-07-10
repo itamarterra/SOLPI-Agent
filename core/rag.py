@@ -1,33 +1,42 @@
 import os
+import numpy as np
 
-class SOLPIRAGEngine:
+class SOLPIRAG:
     """
-    PACOTE 2100: RAG ENGINE v1.0
-    Recuperação e Ranking de conhecimento da pasta RESEARCH (Disco E:).
+    PACOTE 8600: RAG ENGINE v40.0
+    Sistema de Recuperação Aumentada por Geração.
+    Conecta o Cérebro (LLM) aos documentos técnicos do SOLPI.
     """
-    def __init__(self, research_dir="E:/SOLPI-RESEARCH"):
-        self.research_dir = research_dir
-        self.index = {}
+    def __init__(self, brain):
+        self.brain = brain
+        self.research_dir = "E:/SOLPI-RESEARCH"
 
-    def retrieve(self, query):
-        """Busca os 'Chunks' mais relevantes nos repositórios (Etapa 1402)."""
-        print(f"🔍 [RAG]: Recuperando contexto de elite para '{query}'...")
-        results = []
+    def retrieve(self, query, top_k=3):
+        """Busca os trechos mais relevantes para a pergunta."""
+        self.brain.kernel.log_event("RAG", f"Buscando contexto para: {query}")
         
-        # Simula busca vetorial/textual nos projetos clonados
-        for root, _, files in os.walk(self.research_dir):
-            for f in files:
-                if f.endswith(('.py', '.cpp', '.md')):
-                    path = os.path.join(root, f)
-                    try:
-                        with open(path, 'r', encoding='utf-8', errors='ignore') as content:
-                            text = content.read()
-                            if query.lower() in text.lower():
-                                # Retorna o arquivo e um trecho (Chunk - Etapa 1400)
-                                start = text.lower().find(query.lower())
-                                results.append({
-                                    "source": f"{os.path.basename(root)}/{f}",
-                                    "chunk": text[max(0, start-100):start+300]
-                                })
-                    except: pass
-        return results[:3] # Retorna os 3 melhores (Etapa 1403)
+        # 1. Usa o KnowledgeEngine para buscar trechos
+        chunks = self.brain.knowledge.get_local_intelligence(query)
+        
+        if not chunks:
+            # Se não achou por palavra-chave simples, tenta o Researcher
+            self.brain.kernel.log_event("RAG", "Busca simples falhou. Tentando Researcher...")
+            patterns = self.brain.evolution.researcher.scan_for_patterns(query)
+            if patterns:
+                return [f"💻 Padrão de código encontrado: {p}" for p in patterns]
+        
+        return chunks[:top_k]
+
+    def augment(self, query, expert_name="Generalist"):
+        """Compila o prompt final com o contexto recuperado."""
+        context = self.retrieve(query)
+        context_str = "\n\n".join(context) if context else "Nenhum contexto adicional encontrado."
+        
+        # 2. Usa o Prompt Compiler para montar o prompt final para o modelo
+        prompt = self.brain.prompt_compiler.compile(
+            user_input=query,
+            expert_name=expert_name,
+            context_data=context_str
+        )
+        
+        return prompt, context_str

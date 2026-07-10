@@ -16,11 +16,11 @@ class SOLPIConfig:
     BATCH_SIZE = 32
     EPOCHS = 10
     
-    # Caminhos e Modelos (Fase 1)
-    MODEL_TYPE = "native" # "native" ou "transformers"
-    MODEL_PATH = "models/qwen"
+    # Caminhos e Modelos (Fase 1 - Enterprise)
+    MODEL_TYPE = "transformers"
+    MODEL_PATH = "E:/SOLPI-MODELS/qwen"
     DEVICE = "auto"
     
     # Caminhos
     WEIGHTS_PATH = "brain_weights.npy"
-    KNOWLEDGE_DIR = "knowledge"
+    KNOWLEDGE_DIR = "E:/SOLPI-RESEARCH" # Usa a biblioteca de elite como base RAG
