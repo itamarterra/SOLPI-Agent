@@ -48,9 +48,13 @@ class SOLPIBrain:
         threading.Thread(target=self.learning.start, daemon=True).start()
 
     def process(self, user_input):
+        # 1. Recupera contexto da memória para "lembrar" do diálogo
+        history = self.memory.short_term[-5:] # Últimas 5 interações
+        context_summary = " | ".join([f"{h['r']}: {h['c']}" for h in history])
+        
         self.memory.add_episodic("user", user_input)
         
-        # 1. LOG DE TELEMETRIA
+        # 2. LOG DE TELEMETRIA
         tokens_count = len(user_input.split())
         self.telemetry.log_request(tokens_count)
 

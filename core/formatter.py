@@ -1,29 +1,28 @@
 class SOLPIFormatter:
     """
     PACOTE 5000: SEMANTIC FORMATTER v40.0
-    Garante que a comunicação do SOLPI seja estruturada, profissional e executiva.
+    Garante que a comunicação do SOLPI seja natural e parceira (Estilo Humano).
     """
     @staticmethod
     def format_response(expert_name, content, thought_process=None):
-        """Formata a resposta final com estrutura Enterprise."""
-        header = f"🚀 [SOLPI-OS v40.0] | ESPECIALISTA: {expert_name}"
-        divider = "=" * 50
-        
-        # Constrói o corpo da mensagem
-        body = []
-        body.append(header)
-        body.append(divider)
+        """Formata a resposta para parecer um diálogo de consultoria."""
+        # Se for uma resposta genérica ou de orquestrador, remove o header pesado
+        if expert_name == "ORQUESTRADOR":
+            return content
+
+        res = []
+        res.append(f"🤖 **SOLPI** ({expert_name}):")
+        res.append("-" * 20)
         
         if thought_process:
-            body.append(f"🧠 PENSAMENTO: {thought_process}")
-            body.append("-" * 30)
+            res.append(f"*Analisei seu pedido e {thought_process.lower()}*")
+            res.append("")
             
-        body.append(content)
+        res.append(content)
+        res.append("-" * 20)
+        res.append("O que você achou dessa solução? Podemos avançar para o próximo passo?")
         
-        body.append(divider)
-        body.append("⚙️ STATUS: OPERACIONAL | 🛡️ SEGURANÇA: ATIVA")
-        
-        return "\n".join(body)
+        return "\n".join(res)
 
     @staticmethod
     def format_infra_report(audit_data, alerts):
