@@ -17,6 +17,8 @@ from core.model_registry import SOLPIModelRegistry
 from core.capability_registry import SOLPICapabilityRegistry
 from core.scheduler import SOLPIScheduler
 from core.state_manager import SOLPIStateManager
+from core.prompt_compiler import SOLPIPromptCompiler
+from core.policy_engine import SOLPIPolicyEngine
 from core.experts import InfraExpert, DevExpert, KnowledgeExpert, SQLExpert, VisionExpert
 from core.formatter import SOLPIFormatter
 from core.persona import SOLPIPersona
@@ -40,6 +42,8 @@ class SOLPIBrain:
         self.capability_registry = SOLPICapabilityRegistry(self)
         self.state_manager = SOLPIStateManager(self)
         self.scheduler = SOLPIScheduler(self)
+        self.prompt_compiler = SOLPIPromptCompiler(self)
+        self.policy_engine = SOLPIPolicyEngine(self) # 🟢 Policy
         
         self.event_bus = self.kernel.event_bus
         self.reflection = SOLPIReflectionEngine(self.kernel)
@@ -87,7 +91,15 @@ class SOLPIBrain:
         # 4. REFLECTION AUDIT
         self.reflection.audit_moe_routing(self.native_core.moe.routing_stats)
 
-        # 5. EXECUÇÃO VIA ESPECIALISTA COM FORMATAÇÃO (Perfect Communication)
+        # 5. COMPILAÇÃO DE PROMPT (v40.2)
+        compiled_prompt = self.prompt_compiler.compile(user_input, expert_type, reason)
+
+        # 6. VALIDAÇÃO DE POLÍTICAS (v40.2)
+        allowed, message = self.policy_engine.validate_action("PROMPT_INPUT", user_input)
+        if not allowed:
+            return self.formatter.format_response("SECURITY", f"❌ Bloqueio de Política: {message}", "Violação de Governança.")
+
+        # 7. EXECUÇÃO VIA ESPECIALISTA COM FORMATAÇÃO
         response_content = ""
         expert_name = expert_type
         
