@@ -12,14 +12,20 @@ from core.evolution import EvolutionEngine
 from core.learning_loop import SOLPILearningLoop
 from core.predictor import SOLPIPredictor
 from core.experts import InfraExpert, DevExpert, KnowledgeExpert, SQLExpert, VisionExpert
+from core.predictor import SOLPIPredictor
+from core.model_registry import SOLPIModelRegistry
+from core.capability_registry import SOLPICapabilityRegistry
+from core.scheduler import SOLPIScheduler
+from core.state_manager import SOLPIStateManager
+from core.experts import InfraExpert, DevExpert, KnowledgeExpert, SQLExpert, VisionExpert
 from core.formatter import SOLPIFormatter
 from core.persona import SOLPIPersona
 import threading
 
 class SOLPIBrain:
     """
-    INTERFACE OPERACIONAL v40.0 (Ultimate Enterprise)
-    Cérebro com Auto-Evolução, Twin 3D e Continuous Learning.
+    INTERFACE OPERACIONAL v40.2 (Platform Infrastructure)
+    Cérebro orquestrado com Scheduler e State Manager.
     """
     def __init__(self):
         self.kernel = SOLPIKernel()
@@ -28,6 +34,13 @@ class SOLPIBrain:
         self.telemetry = SOLPITelemetry()
         self.knowledge = KnowledgeEngine()
         self.native_core = SOLPINeuralCore()
+        
+        # 🟢 Registries & Infrastructure (v40.2)
+        self.model_registry = SOLPIModelRegistry(self)
+        self.capability_registry = SOLPICapabilityRegistry(self)
+        self.state_manager = SOLPIStateManager(self)
+        self.scheduler = SOLPIScheduler(self)
+        
         self.event_bus = self.kernel.event_bus
         self.reflection = SOLPIReflectionEngine(self.kernel)
         self.twin = SOLPIDigitalTwin(self)
@@ -35,7 +48,7 @@ class SOLPIBrain:
         self.learning = SOLPILearningLoop(self)
         self.supervisor = SOLPISupervisor(self)
         self.formatter = SOLPIFormatter()
-        self.predictor = SOLPIPredictor(self) # Motor Preditivo
+        self.predictor = SOLPIPredictor(self)
         
         # Especialistas Instanciados
         self.infra_expert = InfraExpert(self)
@@ -44,8 +57,10 @@ class SOLPIBrain:
         self.sql_expert = SQLExpert(self)
         self.vision_expert = VisionExpert(self)
         
-        # Inicia o aprendizado em thread separada
-        threading.Thread(target=self.learning.start, daemon=True).start()
+        # Inicia Infraestrutura de Background
+        self.scheduler.start(num_workers=2)
+        # Transfere o aprendizado para o Scheduler (Prioridade Baixa)
+        self.scheduler.schedule(self.learning.start, priority=5, name="ContinuousLearning")
 
     def process(self, user_input):
         # 1. Recupera contexto da memória para "lembrar" do diálogo
