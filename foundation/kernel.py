@@ -41,8 +41,9 @@ class SOLPIKernel:
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         entry = f"[{timestamp}] [{layer}] {event}\n"
         
-        if layer != "LEARNING" or "concluído" in event:
-            print(f"⚙️ [{layer}]: {event}")
+        # 🟢 UPGRADE v70.6: Silenciamos o console para uma interface limpa
+        # O log continua sendo gravado no arquivo kernel_events.log para auditoria
+        # print(f"⚙️ [{layer}]: {event}")
             
         try:
             with open("kernel_events.log", "a", encoding="utf-8") as f:

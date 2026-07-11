@@ -1,6 +1,7 @@
 import os
 import time
 import threading
+import random
 
 from foundation.kernel import SOLPIKernel
 from foundation.config import SOLPIConfig
@@ -156,11 +157,26 @@ class SOLPIBrain:
         return final_response
 
     def chat_logic(self, user_input):
-        """Motor de Diálogo do SOLPI-OS."""
+        """Motor de Diálogo do SOLPI-OS v70.5 (Empatia e Proatividade)."""
+        # 1. Tenta o Corpus de Diálogo (Persona)
         social_response = self.social_engine.get_response(user_input)
         if social_response:
             return social_response
-        return self.inference_engine.execute(user_input, model_name=self.config.MODEL_TYPE)
+
+        # 2. Se não estiver no corpus, usa a Inferência Real
+        inference_response = self.inference_engine.execute(user_input, model_name=self.config.MODEL_TYPE)
+        
+        # Adiciona um toque de proatividade se for uma resposta curta
+        if len(inference_response.split()) < 10:
+            proactive_suffixes = [
+                " Como posso acelerar nossa jornada hoje?",
+                " Algum pilar da arquitetura que você queira revisar?",
+                " Estou pronto para a próxima missão.",
+                " O drive E: está livre para novas operações."
+            ]
+            inference_response += random.choice(proactive_suffixes)
+            
+        return inference_response
 
     def heartbeat_check(self):
         try: return self.tools.self_audit()

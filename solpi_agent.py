@@ -4,70 +4,57 @@ import time
 import sys
 from dotenv import load_dotenv
 
-# Adiciona o diretório atual ao path para garantir que os domínios sejam encontrados
+# Adiciona o diretório atual ao path
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from core.brain import SOLPIBrain
-from developer.gateway import SOLPIGateway
 
 load_dotenv()
 
 class SOLPIOS:
     """
-    SOLPI-OS: ENTERPRISE AI OPERATING SYSTEM v70.4 (Singularity Hermes)
-    Ponto de Entrada Unificado da Singularidade.
+    SOLPI-OS: ENTERPRISE AI OPERATING SYSTEM v70.6 (Singularity Elite)
+    Interface Terminal Minimalista e Conversacional.
     """
     def __init__(self):
-        # Inicializa o Cérebro (Que sobe o Kernel, BIOS e Service Bus)
         self.brain = SOLPIBrain()
-        # Inicializa o Gateway no domínio Developer
-        self.gateway = SOLPIGateway(self.brain)
         self.active = True
 
     def run(self):
         os.system('cls' if os.name == 'nt' else 'clear')
         k_ver = self.brain.kernel.version
         
-        print(f"🚀 SOLPI-OS SINGULARITY v{k_ver} (Enterprise Hardened)")
-        print("=" * 65)
-        print(f"KERNEL: ATIVO | BUS: OPERACIONAL | DRIVE E: CONECTADO | SEC: ON")
-        print("=" * 65)
-        
-        # 1. Inicia API Gateway Externo
-        self.gateway.start()
-        
-        # 2. Inicia Monitoramento de Telemetria e Previsão
-        threading.Thread(target=self.proactive_monitor, daemon=True).start()
+        print(f"\033[1;32m🚀 SOLPI-OS SINGULARITY v{k_ver}\033[0m")
+        print("\033[1;34m" + "=" * 60 + "\033[0m")
+        print(f"ESTADO: \033[1;32mPRONTO\033[0m | DRIVE E: \033[1;32mCONECTADO\033[0m | SEC: \033[1;32mON\033[0m")
+        print("\033[1;34m" + "=" * 60 + "\033[0m")
+        print("\n(Digite 'sair' para encerrar a sessão)\n")
 
         while self.active:
             try:
-                # Interface Humana
-                user_input = input("\n[SOLPI-OS] 👤 Itamar: ").strip()
+                # Entrada do Usuário com estilo
+                user_input = input(f"\033[1;36m👤 Itamar:\033[0m ").strip()
+                
                 if not user_input: continue
-                if user_input.lower() in ['exit', 'shutdown', 'poweroff']: 
+                if user_input.lower() in ['sair', 'exit', 'shutdown']: 
+                    print("\nEncerrando consciência SOLPI... Até logo, Arquiteto.")
                     self.active = False
                     break
                 
-                print("🧠 [PROCESSANDO]...", end="\r")
+                # Feedback de pensamento discreto
+                print("\033[1;30m🧠 Pensando...\033[0m", end="\r")
+                
+                # Processamento
                 response = self.brain.process(user_input)
                 
-                # Feedback Limpo
-                print(" " * 30, end="\r")
-                print(f"\n{response}")
+                # Limpa a linha de pensamento e imprime a resposta
+                print(" " * 20, end="\r")
+                print(f"{response}\n")
 
             except KeyboardInterrupt: break
             except Exception as e: 
-                print(f"🚨 KERNEL PANIC: {e}")
-                # Log do erro no domínio de Operações
+                print(f"\n\033[1;31m🚨 ERRO DE NÚCLEO: {e}\033[0m")
                 self.brain.kernel.log_event("CRITICAL", f"Panic: {e}")
-
-    def proactive_monitor(self):
-        """Monitora o ecossistema a cada 5 minutos."""
-        while self.active:
-            try:
-                self.brain.heartbeat_check()
-            except: pass
-            time.sleep(300)
 
 if __name__ == "__main__":
     try:
