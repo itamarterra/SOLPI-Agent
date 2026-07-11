@@ -6,7 +6,8 @@ from core.kernel import SOLPIKernel
 from core.orchestrator import SOLPISupervisor
 from core.memory import AgentMemory
 from core.tools import AgentTools
-from core.neural_core import SOLPINeuralCore
+from intelligence.runtime import SOLPINeuralRuntime
+from intelligence.loader import SOLPIModelLoader
 from core.knowledge import KnowledgeEngine
 from core.telemetry import SOLPITelemetry
 from core.reflection import SOLPIReflectionEngine
@@ -21,11 +22,11 @@ from core.state_manager import SOLPIStateManager
 from core.prompt_compiler import SOLPIPromptCompiler
 from core.policy_engine import SOLPIPolicyEngine
 from core.inference_engine import SOLPIInferenceEngine
-from core.rag import SOLPIRAG
-from core.context_engine import SOLPIContextEngine
+from intelligence.rag import SOLPIRAG
+from intelligence.context import SOLPIContextEngine
 from core.executor import SOLPIExecutor
 from core.storage_layer import SOLPIStorageLayer
-from core.evaluation_engine import SOLPIEvaluationEngine
+from intelligence.evaluation import SOLPIEvaluationEngine
 from core.feature_store import SOLPIFeatureStore
 from core.experts import InfraExpert, DevExpert, KnowledgeExpert, SQLExpert, VisionExpert
 from core.formatter import SOLPIFormatter
@@ -45,7 +46,8 @@ class SOLPIBrain:
         self.tools = AgentTools()
         self.telemetry = SOLPITelemetry()
         self.knowledge = KnowledgeEngine(self)
-        self.native_core = SOLPINeuralCore()
+        self.native_core = SOLPINeuralRuntime() # 🟢 Neural Runtime v50
+        self.model_loader = SOLPIModelLoader(self)
         
         # Infraestrutura de Plataforma
         self.model_registry = SOLPIModelRegistry(self)
