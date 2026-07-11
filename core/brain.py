@@ -13,6 +13,8 @@ from intelligence.executive import SOLPIExecutiveFunction
 from intelligence.causal import SOLPICausalEngine
 from intelligence.architecture import SOLPISelfArchitecture
 from intelligence.hypothesis import SOLPIHypothesisEngine
+from intelligence.trust import SOLPITrustNetwork
+from intelligence.process_manager import SOLPICognitiveProcessManager
 from execution.supervisor import SOLPISupervisor
 from execution.registry import SOLPICapabilityRegistry
 from execution.workflow import SOLPIWorkflowEngine
@@ -20,6 +22,7 @@ from operations.telemetry import SOLPITelemetryEngine
 from operations.predictor import SOLPIPredictiveEngine
 from operations.reflection import SOLPIReflectionEngine
 from operations.twin import SOLPIDigitalTwin
+from operations.self_repair import SOLPISelfRepairEngine
 from developer.gateway import SOLPIGateway
 from developer.cli import SOLPICLI
 from developer.sdk import SOLPISDK
@@ -46,8 +49,8 @@ from core.persona import SOLPIPersona
 
 class SOLPIBrain:
     """
-    INTERFACE OPERACIONAL v50.4 (Full Domain Migration)
-    Cérebro orquestrado via domínios Platform, Intelligence, Execution e Operations.
+    INTERFACE OPERACIONAL v51.0 (Singularity Core)
+    Cérebro de Singularidade com Consciência, Reputação e Auto-Cura Proativa.
     """
     def __init__(self):
         # 1. PLATFORM
@@ -56,7 +59,7 @@ class SOLPIBrain:
         self.scheduler = self.kernel.scheduler
         self.storage = self.kernel.storage
         
-        # 2. INTELLIGENCE
+        # 2. INTELLIGENCE (Cognitive Singularity)
         self.native_core = SOLPINeuralRuntime()
         self.trainer = SOLPITrainer(self)
         self.rag = SOLPIRAG(self)
@@ -64,9 +67,11 @@ class SOLPIBrain:
         self.evaluation = SOLPIEvaluationEngine(self)
         self.cognitive = SOLPICognitiveEngine(self)
         self.executive = SOLPIExecutiveFunction(self)
-        self.causal = SOLPICausalEngine(self) # 🟢 Causal
-        self.architecture = SOLPISelfArchitecture(self) # 🟢 Architecture
-        self.hypothesis = SOLPIHypothesisEngine(self) # 🟢 Hypothesis
+        self.causal = SOLPICausalEngine(self)
+        self.architecture = SOLPISelfArchitecture(self)
+        self.hypothesis = SOLPIHypothesisEngine(self)
+        self.trust = SOLPITrustNetwork(self)
+        self.process_manager = SOLPICognitiveProcessManager(self)
         self.memory = AgentMemory()
         self.model_registry = SOLPIModelRegistry(self)
         self.inference_engine = SOLPIInferenceEngine(self)
@@ -74,10 +79,8 @@ class SOLPIBrain:
         # 3. OPERATIONS
         self.telemetry = SOLPITelemetryEngine(self.kernel)
         self.predictor = SOLPIPredictiveEngine(self)
-        self.gateway = SOLPIGateway(self) # 🟢 Gateway
-        self.cli = SOLPICLI(self)         # 🟢 CLI
-        self.sdk = SOLPISDK(self)         # 🟢 SDK
         self.reflection = SOLPIReflectionEngine(self.kernel)
+        self.self_repair = SOLPISelfRepairEngine(self)
         self.twin = SOLPIDigitalTwin(self)
         
         # 4. EXECUTION
@@ -85,7 +88,12 @@ class SOLPIBrain:
         self.workflow = SOLPIWorkflowEngine(self)
         self.supervisor = SOLPISupervisor(self)
         
-        # Utilities
+        # 5. DEVELOPER
+        self.gateway = SOLPIGateway(self)
+        self.cli = SOLPICLI(self)
+        self.sdk = SOLPISDK(self)
+        
+        # Base Helpers
         self.tools = AgentTools()
         self.knowledge = KnowledgeEngine(self)
         self.state_manager = SOLPIStateManager(self)
@@ -110,33 +118,32 @@ class SOLPIBrain:
     def _setup_bus_subscriptions(self):
         self.service_bus.subscribe("MEMORY_UPDATE", lambda msg: self.memory.add_episodic(msg.payload["role"], msg.payload["content"]))
         self.service_bus.subscribe("TELEMETRY_LOG", lambda msg: self.telemetry.log_event(msg.payload["tokens"]))
+        self.service_bus.subscribe("TRAINING_ANOMALY", lambda msg: self.self_repair.diagnose_and_fix(msg.payload))
 
     def process(self, user_input):
         start_time = time.time()
+        pid = self.process_manager.spawn_thought(f"Query: {user_input[:15]}", "EXECUTION")
+        
         self.state_manager.transition_to("THINKING")
         self.service_bus.publish("BRAIN", "MEMORY_UPDATE", {"role": "user", "content": user_input})
         
         agent_type, reason = self.supervisor.delegate(user_input)
-        compiled_prompt = self.prompt_compiler.compile(user_input, agent_type, reason)
         
-        # 5. EXECUÇÃO EXECUTIVA (v50.8)
-        # O Executive Engine decide se executa agora ou agenda baseado na prioridade.
-        def run_logic():
+        # Trust Layer: Avalia se a fonte do comando (RAG ou Usuário) é confiável
+        trust_score = self.trust.evaluate_source("USER_ITAMAR")
+        
+        # Executive Execution
+        def execute_logic():
             if agent_type == "INFRA_AGENT": return self.infra_agent.run()
             elif agent_type == "SQL_AGENT": return self.sql_agent.run(user_input)
             elif agent_type == "VISION_AGENT": return self.vision_agent.run(user_input)
             elif agent_type == "DEV_AGENT": return self.dev_agent.run(user_input)
             elif agent_type == "KNOWLEDGE_AGENT": return self.knowledge_agent.run(user_input)
-            return "Ação não mapeada pelo Executor."
+            return "Processamento concluído."
 
-        response_content = self.executive.request_execution(
-            name=f"Task_{agent_type}",
-            priority=2, # Prioridade de Interação Humana
-            action=run_logic
-        )
-
+        response_content = self.executive.request_execution(f"Task_{agent_type}", 2, execute_logic)
         final_response = self.formatter.format_response(agent_type, response_content, reason)
         
-        self.telemetry.log_event(len(user_input.split()), time.time() - start_time)
+        self.process_manager.terminate_thought(pid)
         self.state_manager.transition_to("IDLE")
         return final_response
