@@ -156,8 +156,8 @@ class AgentTools:
 
     @staticmethod
     def write_project_file(relative_path, content):
-        """Escrita Cirúrgica: O Agente altera o código do projeto SOLPI v16.0."""
-        base_project = "C:/SOLPI/SOLPI-main/glpi/plugins/solpi/"
+        """Escrita Cirúrgica: O Agente altera o código do projeto SOLPI v40.0."""
+        base_project = "E:/SOLPI/SOLPI-main/glpi/plugins/solpi/"
         target = os.path.abspath(os.path.join(base_project, relative_path))
         if not target.startswith(os.path.abspath(base_project)):
             return "❌ BLOQUEIO: Fora do escopo SOLPI."

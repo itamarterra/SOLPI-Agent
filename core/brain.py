@@ -24,6 +24,7 @@ from core.rag import SOLPIRAG
 from core.context_engine import SOLPIContextEngine
 from core.executor import SOLPIExecutor
 from core.storage_layer import SOLPIStorageLayer
+from core.evaluation_engine import SOLPIEvaluationEngine
 from core.experts import InfraExpert, DevExpert, KnowledgeExpert, SQLExpert, VisionExpert
 from core.formatter import SOLPIFormatter
 from core.persona import SOLPIPersona
@@ -54,6 +55,7 @@ class SOLPIBrain:
         self.context_engine = SOLPIContextEngine(self)
         self.executor = SOLPIExecutor(self)
         self.storage = SOLPIStorageLayer(self)
+        self.evaluation = SOLPIEvaluationEngine(self) # 🟢 Evaluation
         
         self.event_bus = self.kernel.event_bus
         self.reflection = SOLPIReflectionEngine(self.kernel)
@@ -77,6 +79,7 @@ class SOLPIBrain:
         self.scheduler.schedule(self.learning.start, priority=5, name="ContinuousLearning")
 
     def process(self, user_input):
+        start_time = time.time()
         # 1. Recupera contexto da memória para "lembrar" do diálogo
         history = self.memory.short_term[-5:] # Últimas 5 interações
         context_summary = " | ".join([f"{h['r']}: {h['c']}" for h in history])
@@ -129,7 +132,12 @@ class SOLPIBrain:
             response_content = "🔍 Buscando informações externas:\n" + "\n".join(search_res[:2])
 
         # Aplica a formatação final "Perfect Communication"
-        return self.formatter.format_response(expert_name, response_content, reason)
+        final_response = self.formatter.format_response(expert_name, response_content, reason)
+        
+        # 8. AUTO-AVALIAÇÃO (v40.6)
+        self.evaluation.evaluate_response(compiled_prompt, final_response, start_time)
+        
+        return final_response
 
     def heartbeat_check(self):
         # 1. Auditoria de Saúde

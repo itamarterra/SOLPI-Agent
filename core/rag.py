@@ -10,6 +10,7 @@ class SOLPIRAG:
     def __init__(self, brain):
         self.brain = brain
         self.research_dir = "E:/SOLPI-RESEARCH"
+        self.contexts_last_query = [] # Histórico para o Evaluation Engine
 
     def retrieve(self, query, top_k=3):
         """Busca os trechos mais relevantes para a pergunta."""
@@ -23,8 +24,9 @@ class SOLPIRAG:
             self.brain.kernel.log_event("RAG", "Busca simples falhou. Tentando Researcher...")
             patterns = self.brain.evolution.researcher.scan_for_patterns(query)
             if patterns:
-                return [f"💻 Padrão de código encontrado: {p}" for p in patterns]
+                chunks = [f"💻 Padrão de código encontrado: {p}" for p in patterns]
         
+        self.contexts_last_query = chunks
         return chunks[:top_k]
 
     def augment(self, query, expert_name="Generalist"):
