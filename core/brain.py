@@ -49,6 +49,7 @@ from operations.reflection import SOLPIReflectionEngine
 from operations.twin import SOLPIDigitalTwin
 from operations.self_repair import SOLPISelfRepairEngine
 from operations.profiler import SOLPINeuralProfiler
+from operations.wisdom_auditor import SOLPIWisdomAuditor
 
 from developer.gateway import SOLPIGateway
 from developer.cli import SOLPICLI
@@ -101,6 +102,7 @@ class SOLPIBrain:
         self.profiler = SOLPINeuralProfiler(self)
         self.self_repair = SOLPISelfRepairEngine(self)
         self.twin = SOLPIDigitalTwin(self)
+        self.wisdom_auditor = SOLPIWisdomAuditor(self)
         
         # 4. EXECUTION
         self.capability_registry = SOLPICapabilityRegistry(self)
@@ -128,6 +130,9 @@ class SOLPIBrain:
         
         self._setup_bus_subscriptions()
         self.scheduler.start(workers=2)
+        
+        # Agenda o primeiro Auto-Audit de Sabedoria para 1 minuto após o boot
+        self.scheduler.schedule(self.wisdom_auditor.run_audit, priority=5, name="WisdomAudit")
 
     def _setup_bus_subscriptions(self):
         self.service_bus.subscribe("MEMORY_UPDATE", lambda msg: self.memory.add_episodic(msg.payload["role"], msg.payload["content"]))
@@ -152,6 +157,7 @@ class SOLPIBrain:
             elif agent_type == "DEV_AGENT": return self.dev_agent.run(user_input)
             elif agent_type == "KNOWLEDGE_AGENT": return self.knowledge_agent.run(user_input)
             elif agent_type == "SOLPI_ENGINE_AGENT": return self.solpi_engine_agent.run(user_input)
+            elif agent_type == "AUDITOR_AGENT": return self.wisdom_auditor.run_audit()
             
             return self.chat_logic(user_input)
 

@@ -15,7 +15,8 @@ class SOLPICapabilityRegistry:
             "github": {"agent": "SOLPI_ENGINE_AGENT", "tags": ["github", "repositório", "git push", "pull request"]},
             "email": {"agent": "SOLPI_ENGINE_AGENT", "tags": ["enviar email", "correio", "outlook", "gmail"]},
             "automation": {"agent": "SOLPI_ENGINE_AGENT", "tags": ["automação", "fluxo complexo", "agendamento", "cron"]},
-            "software_eng": {"agent": "SOLPI_ENGINE_AGENT", "tags": ["desenvolvimento", "refatorar sistema", "arquitetura"]}
+            "software_eng": {"agent": "SOLPI_ENGINE_AGENT", "tags": ["desenvolvimento", "refatorar sistema", "arquitetura"]},
+            "auditor": {"agent": "AUDITOR_AGENT", "tags": ["auditoria", "relatório de sabedoria", "evolução", "status de conhecimento"]}
         }
 
     def resolve(self, query):
