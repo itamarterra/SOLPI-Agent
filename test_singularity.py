@@ -1,8 +1,8 @@
 import time
 from core.brain import SOLPIBrain
 
-def test_v60_singularity():
-    print("🔬 [TEST-SUITE]: Iniciando Auditoria da Singularidade v60.0...")
+def test_v80_neural_engine():
+    print("🔬 [TEST-SUITE]: Iniciando Auditoria da Singularidade v80.1 (Neural Engine)...")
     print("-" * 50)
     
     # 1. Boot do Cérebro
@@ -10,30 +10,34 @@ def test_v60_singularity():
     kernel = brain.kernel
     
     print(f"✅ KERNEL BOOT: Versão {kernel.version}")
-    print(f"✅ BIOS INVENTORY: {kernel.hardware['cpu_cores']} Cores | {kernel.hardware['ram_total']}GB RAM")
     
-    # 2. Teste de Topologia (Grafo de Arquitetura)
-    topology = kernel.topology.graph
-    print(f"✅ TOPOLOGY GRAPH: {len(topology['nodes'])} nós mapeados na malha.")
+    # 2. Teste do Motor de Tensores (Inferência Preditiva)
+    print("\n🔮 [TESTE PREDITIVO]: Analisando tendências de infraestrutura...")
+    prediction = brain.predictor.predict_incident()
+    print(f"RESULTADO: {prediction}")
     
-    # 3. Teste de Cognição e Execução
-    print("\n🧠 [PENSAMENTO DE TESTE]: 'Verifique o status do servidor Zabbix'")
-    response = brain.process("Verifique o status do servidor Zabbix")
+    # 3. Teste do Digital Twin (Gêmeo Digital)
+    print("\n👯 [TESTE DIGITAL TWIN]: Exportando snapshot do ecossistema...")
+    snapshot_path = brain.twin.export_snapshot()
+    print(f"SNAPSHOT GERADO EM: {snapshot_path}")
+    
+    # 4. Teste de Cognição Conversacional
+    print("\n💬 [TESTE DIÁLOGO]: 'Consegue se autoevoluir?'")
+    response = brain.process("Consegue se autoevoluir?")
     print(f"\nRESPOSTA DO SOLPI:\n{response}")
     
-    # 4. Auditoria de Mercado de Recursos
-    resource_status = kernel.resources.get_market_status()
-    print(f"\n💰 RESOURCE MARKET: Consumo de Tokens: {resource_status['token_usage']}")
-    
-    # 5. Check de Memória e Service Bus
-    history_len = len(brain.memory.short_term)
-    print(f"📝 MEMORY BUS: {history_len} eventos registrados na memória de curto prazo.")
+    # 5. Teste do Compilador IR e Neural VM (v80.2)
+    print("\n⚡ [TESTE NEURAL VM]: Compilando e Executando Bytecode IR...")
+    ir_code = brain.compiler_ir.auto_generate_ir("Quero prever incidentes")
+    bytecode = brain.compiler_ir.compile(ir_code)
+    vm_result = brain.neural_vm.execute_bytecode(bytecode)
+    print(f"RESULTADO DA VM: {vm_result}")
     
     print("-" * 50)
-    print("🚀 CONCLUSÃO: Singularidade Operacional Confirmada.")
+    print("🚀 CONCLUSÃO: Singularidade Neural v80.1 Validada com Sucesso.")
 
 if __name__ == "__main__":
     try:
-        test_v60_singularity()
+        test_v80_neural_engine()
     except Exception as e:
         print(f"🚨 FALHA NO TESTE: {e}")

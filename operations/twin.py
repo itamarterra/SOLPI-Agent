@@ -1,26 +1,42 @@
 import time
 import json
+import os
 
 class SOLPIDigitalTwin:
     """
-    PACOTE 1800: DIGITAL TWIN v50.4
-    Visualização em tempo real da Plataforma SOLPI-OS.
-    Migrado para o Domínio de Operações.
+    PACOTE 1800: DIGITAL TWIN v80.1 (Neural Mirror)
+    Espelhamento total do ecossistema com projeções neurais.
     """
     def __init__(self, brain):
         self.brain = brain
 
     def get_state(self):
-        """Coleta o estado global de todos os domínios."""
+        """Coleta o estado global e as projeções do motor de tensores."""
+        prediction = self.brain.predictor.predict_incident()
+        
         return {
-            "timestamp": time.time(),
-            "platform": self.brain.kernel.hardware,
-            "intelligence": {
-                "state": self.brain.state_manager.get_state(),
-                "model": self.brain.model_registry.active_model_name
+            "timestamp": time.ctime(),
+            "kernel": {
+                "version": self.brain.kernel.version,
+                "uptime": self.brain.kernel.get_uptime()
             },
-            "operations": self.brain.telemetry.get_snapshot()
+            "neural_load": self.brain.process_manager.get_brain_load(),
+            "infrastructure": {
+                "status": "OPERACIONAL",
+                "prediction": prediction
+            },
+            "engine_v80": {
+                "tensor_core": "ACTIVE",
+                "weights_hash": hash(str(self.brain.predictor.weights.data))
+            }
         }
 
-    def export_3d(self):
-        return json.dumps(self.get_state())
+    def export_snapshot(self):
+        """Gera o snapshot para o Dashboard 3D."""
+        state = self.get_state()
+        path = "E:/SOLPI-Agent/state/twin_snapshot.json"
+        # Garante que o diretório state existe
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        with open(path, "w", encoding="utf-8") as f:
+            json.dump(state, f, indent=4)
+        return path

@@ -7,6 +7,8 @@ from foundation.kernel import SOLPIKernel
 from foundation.config import SOLPIConfig
 
 from intelligence.runtime import SOLPINeuralRuntime
+from engine.tensor import NeuralVM
+from engine.compiler import SOLPICompilerIR
 from intelligence.trainer import SOLPITrainer
 from intelligence.rag import SOLPIRAG
 from intelligence.context import SOLPIContextEngine
@@ -119,6 +121,10 @@ class SOLPIBrain:
         self.cli = SOLPICLI(self)
         self.sdk = SOLPISDK(self)
         self.formatter = SOLPIFormatter()
+        
+        # 6. ENGINE (Singularity v80)
+        self.compiler_ir = SOLPICompilerIR(self)
+        self.neural_vm = NeuralVM(self)
         
         self._setup_bus_subscriptions()
         self.scheduler.start(workers=2)
