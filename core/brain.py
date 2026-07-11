@@ -15,6 +15,9 @@ from operations.telemetry import SOLPITelemetryEngine
 from operations.predictor import SOLPIPredictiveEngine
 from operations.reflection import SOLPIReflectionEngine
 from operations.twin import SOLPIDigitalTwin
+from developer.gateway import SOLPIGateway
+from developer.cli import SOLPICLI
+from developer.sdk import SOLPISDK
 
 from core.memory import AgentMemory
 from core.tools import AgentTools
@@ -61,6 +64,9 @@ class SOLPIBrain:
         # 3. OPERATIONS
         self.telemetry = SOLPITelemetryEngine(self.kernel)
         self.predictor = SOLPIPredictiveEngine(self)
+        self.gateway = SOLPIGateway(self) # 🟢 Gateway
+        self.cli = SOLPICLI(self)         # 🟢 CLI
+        self.sdk = SOLPISDK(self)         # 🟢 SDK
         self.reflection = SOLPIReflectionEngine(self.kernel)
         self.twin = SOLPIDigitalTwin(self)
         
