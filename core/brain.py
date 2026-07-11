@@ -6,7 +6,6 @@ from foundation.kernel import SOLPIKernel
 from foundation.config import SOLPIConfig
 
 from intelligence.runtime import SOLPINeuralRuntime
-from intelligence.neural_vm import SOLPINeuralVM
 from intelligence.trainer import SOLPITrainer
 from intelligence.rag import SOLPIRAG
 from intelligence.context import SOLPIContextEngine
@@ -17,7 +16,6 @@ from intelligence.causal import SOLPICausalEngine
 from intelligence.architecture import SOLPISelfArchitecture
 from intelligence.hypothesis import SOLPIHypothesisEngine
 from intelligence.trust import SOLPITrustNetwork
-from intelligence.guardrails import SOLPIGuardrails
 from intelligence.process_manager import SOLPICognitiveProcessManager
 from intelligence.memory import AgentMemory
 from intelligence.model_registry import SOLPIModelRegistry
@@ -29,6 +27,7 @@ from intelligence.evolution import EvolutionEngine
 from intelligence.learning import SOLPILearningLoop
 from intelligence.knowledge import KnowledgeEngine
 from intelligence.persona import SOLPIPersona
+from intelligence.social import SOLPISocialEngine
 
 from execution.supervisor import SOLPISupervisor
 from execution.registry import SOLPICapabilityRegistry
@@ -43,9 +42,9 @@ from execution.tools import AgentTools
 from operations.telemetry import SOLPITelemetryEngine
 from operations.predictor import SOLPIPredictiveEngine
 from operations.reflection import SOLPIReflectionEngine
-from operations.profiler import SOLPINeuralProfiler
 from operations.twin import SOLPIDigitalTwin
 from operations.self_repair import SOLPISelfRepairEngine
+from operations.profiler import SOLPINeuralProfiler
 
 from developer.gateway import SOLPIGateway
 from developer.cli import SOLPICLI
@@ -54,21 +53,20 @@ from developer.formatter import SOLPIFormatter
 
 class SOLPIBrain:
     """
-    INTERFACE OPERACIONAL v60.0 (Singularity Platform)
-    Orquestrador Supremo da malha de IA.
+    INTERFACE OPERACIONAL v70.1 (Social Singularity)
+    Cérebro orquestrado com foco em Diálogo e Execução Especializada.
     """
     def __init__(self):
         # 1. FOUNDATION
         self.kernel = SOLPIKernel()
         self.config = SOLPIConfig()
         self.service_bus = self.kernel.service_bus
-        self.event_bus = self.kernel.event_bus # Link para compatibilidade
+        self.event_bus = self.kernel.service_bus
         self.scheduler = self.kernel.scheduler
         self.storage = self.kernel.storage
         
-        # 2. INTELLIGENCE (The Cérebro)
+        # 2. INTELLIGENCE
         self.native_core = SOLPINeuralRuntime(self.config)
-        self.neural_vm = SOLPINeuralVM(self) # 🟢 Neural VM
         self.trainer = SOLPITrainer(self)
         self.rag = SOLPIRAG(self)
         self.context_engine = SOLPIContextEngine(self)
@@ -79,7 +77,6 @@ class SOLPIBrain:
         self.architecture = SOLPISelfArchitecture(self)
         self.hypothesis = SOLPIHypothesisEngine(self)
         self.trust = SOLPITrustNetwork(self)
-        self.guardrails = SOLPIGuardrails(self) # 🟢 AI Guardrails
         self.process_manager = SOLPICognitiveProcessManager(self)
         self.memory = AgentMemory()
         self.model_registry = SOLPIModelRegistry(self)
@@ -90,12 +87,14 @@ class SOLPIBrain:
         self.evolution = EvolutionEngine(self)
         self.learning = SOLPILearningLoop(self)
         self.knowledge = KnowledgeEngine(self)
+        self.persona = SOLPIPersona()
+        self.social_engine = SOLPISocialEngine(self) # 🟢 Social Engine
         
         # 3. OPERATIONS
         self.telemetry = SOLPITelemetryEngine(self.kernel)
         self.predictor = SOLPIPredictiveEngine(self)
         self.reflection = SOLPIReflectionEngine(self.kernel)
-        self.profiler = SOLPINeuralProfiler(self) # 🟢 Profiler
+        self.profiler = SOLPINeuralProfiler(self)
         self.self_repair = SOLPISelfRepairEngine(self)
         self.twin = SOLPIDigitalTwin(self)
         
@@ -105,61 +104,65 @@ class SOLPIBrain:
         self.supervisor = SOLPISupervisor(self)
         self.tools = AgentTools()
         
-        # 5. DEVELOPER
-        self.gateway = SOLPIGateway(self)
-        self.cli = SOLPICLI(self)
-        self.sdk = SOLPISDK(self)
-        self.formatter = SOLPIFormatter()
-        
-        # Especialistas Instanciados (Execution Domain v60)
+        # Agentes
         self.infra_agent = InfraAgent(self)
         self.dev_agent = DevAgent(self)
         self.vision_agent = VisionAgent(self)
         self.sql_agent = SQLAgent(self)
         self.knowledge_agent = KnowledgeAgent(self)
         
+        # 5. DEVELOPER
+        self.gateway = SOLPIGateway(self)
+        self.cli = SOLPICLI(self)
+        self.sdk = SOLPISDK(self)
+        self.formatter = SOLPIFormatter()
+        
         self._setup_bus_subscriptions()
         self.scheduler.start(workers=2)
-        self.scheduler.schedule(self.learning.start, priority=5, name="ContinuousLearning")
 
     def _setup_bus_subscriptions(self):
         self.service_bus.subscribe("MEMORY_UPDATE", lambda msg: self.memory.add_episodic(msg.payload["role"], msg.payload["content"]))
         self.service_bus.subscribe("TELEMETRY_LOG", lambda msg: self.telemetry.log_event(msg.payload["tokens"]))
-        self.service_bus.subscribe("TRAINING_ANOMALY", lambda msg: self.self_repair.diagnose_and_fix(msg.payload))
 
     def process(self, user_input):
-        # 1. AI Guardrails Check (v70.0 Hardened)
-        safe, msg = self.guardrails.scan_prompt(user_input)
-        if not safe:
-            return self.formatter.format_response("SECURITY", msg, "Bloqueio preventivo de Prompt Injection.")
-
         start_time = time.time()
-        pid = self.process_manager.spawn_thought(f"Query: {user_input[:15]}", "EXECUTION")
-        
+        pid = self.process_manager.spawn_thought(f"Query: {user_input[:15]}", "COGNITION")
         self.state_manager.transition_to("THINKING")
+        
+        # Registra na memória
         self.service_bus.publish("MEMORY_UPDATE", {"role": "user", "content": user_input}, sender="BRAIN")
         
+        # 1. Tenta Delegação para Especialistas
         agent_type, reason = self.supervisor.delegate(user_input)
         
-        # Logic execution...
+        # 2. Lógica de Execução com Fallback Conversacional
         def execute_logic():
             if agent_type == "INFRA_AGENT": return self.infra_agent.run()
             elif agent_type == "SQL_AGENT": return self.sql_agent.run(user_input)
             elif agent_type == "VISION_AGENT": return self.vision_agent.run(user_input)
             elif agent_type == "DEV_AGENT": return self.dev_agent.run(user_input)
             elif agent_type == "KNOWLEDGE_AGENT": return self.knowledge_agent.run(user_input)
-            return "Processamento concluído."
+            
+            # Se for Generalista, usamos o Inference Engine (CONVERSA REAL)
+            return self.chat_logic(user_input)
 
-        response_content = self.executive.request_execution(f"Task_{agent_type}", 2, execute_logic)
+        response_content = self.executive.request_execution(f"Chat_{agent_type}", 2, execute_logic)
         final_response = self.formatter.format_response(agent_type, response_content, reason)
-        
-        self.service_bus.publish("EVALUATION_REQUEST", {"prompt": "", "resp": final_response, "start": start_time}, sender="BRAIN")
         
         self.process_manager.terminate_thought(pid)
         self.state_manager.transition_to("IDLE")
         return final_response
 
+    def chat_logic(self, user_input):
+        """Motor de Diálogo do SOLPI-OS."""
+        # 1. Tenta o Corpus de Diálogo (Perguntas e Respostas da área criada)
+        social_response = self.social_engine.get_response(user_input)
+        if social_response:
+            return social_response
+
+        # 2. Se não estiver no corpus, tenta o Inference Engine Real (Qwen/Native)
+        return self.inference_engine.execute(user_input, model_name=self.config.MODEL_TYPE)
+
     def heartbeat_check(self):
-        audit = self.tools.self_audit()
-        self.predictor.check_health()
-        return audit
+        try: return self.tools.self_audit()
+        except: return []

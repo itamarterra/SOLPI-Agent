@@ -3,7 +3,7 @@ import os
 class SOLPIResearcher:
     """
     PACOTE 1000: RESEARCH PARSER v1.0
-    Vigia a pasta E:\SOLPI-RESEARCH em busca de inspiração técnica.
+    Vigia a pasta E:/SOLPI-RESEARCH em busca de inspiração técnica.
     """
     def __init__(self, research_dir="E:/SOLPI-RESEARCH"):
         self.research_dir = research_dir

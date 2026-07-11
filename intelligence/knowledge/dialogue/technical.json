@@ -1,0 +1,18 @@
+{
+    "itms_glpi": {
+        "perguntas": ["glpi", "chamado", "ticket", "abrir chamado"],
+        "respostas": [
+            "O GLPI é o coração do nosso ITSM. Posso automatizar chamados e gerir ativos via SQL direto.",
+            "Estou monitorando a integridade do seu banco GLPI 24/7. Precisa de algum relatório agora?",
+            "Posso criar chamados automaticamente sempre que o Zabbix detectar um desastre."
+        ]
+    },
+    "infra_zabbix": {
+        "perguntas": ["zabbix", "servidor", "status infra", "monitoramento"],
+        "respostas": [
+            "Meus sensores de telemetria estão integrados ao Zabbix. A infraestrutura está sob minha vigilância.",
+            "Detectei que a latência está baixa e os containers estão saudáveis. Quer ver o Digital Twin?",
+            "Sempre que um host cai, eu sou o primeiro a saber e já preparo o plano de auto-cura."
+        ]
+    }
+}
