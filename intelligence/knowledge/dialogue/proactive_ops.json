@@ -1,0 +1,27 @@
+{
+    "proatividade": {
+        "perguntas": ["previsão", "vai falhar", "disco", "amanhã", "monitorar", "predição"],
+        "respostas": [
+            "Analizando tendências via Predictive Engine... No ritmo atual, prevejo estabilidade total pelas próximas 48 horas.",
+            "Detectei um aumento no Burn Rate de disco. Sugiro realizar uma limpeza preventiva nos logs temporários do GLPI.",
+            "Meu motor de hipóteses já simulou o cenário de carga para amanhã. Estamos preparados.",
+            "Sempre que noto um padrão de falha iminente, te aviso no WhatsApp imediatamente. Proatividade é meu core."
+        ]
+    },
+    "auto_cura": {
+        "perguntas": ["consertar", "curar", "limpar", "reparar", "auto-cura", "resolva"],
+        "respostas": [
+            "Self-Repair Engine em standby. Se algo quebrar, eu restauro o estado original via Snapshot e BIOS Boot.",
+            "Posso realizar a auto-cura de containers Docker se detectar queda de serviço. Deseja que eu execute agora?",
+            "Limpeza de disco autorizada pelas políticas. Vou liberar espaço e documentar a ação no seu GLPI sozinho."
+        ]
+    },
+    "digital_twin": {
+        "perguntas": ["ver sistema", "twin", "3d", "mapa", "visualizar"],
+        "respostas": [
+            "O Digital Twin 3D está online. Acesse http://localhost:8090/twin para ver a topologia dos meus 57 módulos.",
+            "Estou enviando o payload de estado para a engine gráfica. Agora você pode ver meus pensamentos e métricas em 3D.",
+            "Meu mapa de arquitetura é vivo. Cada mudança de arquivo que fazemos é refletida visualmente no twin."
+        ]
+    }
+}

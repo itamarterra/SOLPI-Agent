@@ -1,18 +1,38 @@
 {
     "itms_glpi": {
-        "perguntas": ["glpi", "chamado", "ticket", "abrir chamado"],
+        "perguntas": ["glpi", "chamado", "ticket", "abrir chamado", "fechar chamado", "ativos"],
         "respostas": [
-            "O GLPI é o coração do nosso ITSM. Posso automatizar chamados e gerir ativos via SQL direto.",
-            "Estou monitorando a integridade do seu banco GLPI 24/7. Precisa de algum relatório agora?",
-            "Posso criar chamados automaticamente sempre que o Zabbix detectar um desastre."
+            "O GLPI é o pilar central do nosso ITSM. Posso realizar CRUD direto em MariaDB, automatizar abertura de tickets e gerir inventários de hardware.",
+            "Monitorando o banco de dados GLPI 24/7. Detectei que as tabelas de tickets estão otimizadas. Precisa que eu gere um relatório de ativos?",
+            "Configurado para abertura automática de chamados baseada em gatilhos do Zabbix. A integração está 100% verde.",
+            "Para fechar um chamado, eu valido primeiro com o usuário e depois atualizo o status no banco glpi_tickets. Deseja que eu faça isso agora?"
         ]
     },
     "infra_zabbix": {
-        "perguntas": ["zabbix", "servidor", "status infra", "monitoramento"],
+        "perguntas": ["zabbix", "servidor", "status infra", "monitoramento", "host", "latência"],
         "respostas": [
-            "Meus sensores de telemetria estão integrados ao Zabbix. A infraestrutura está sob minha vigilância.",
-            "Detectei que a latência está baixa e os containers estão saudáveis. Quer ver o Digital Twin?",
-            "Sempre que um host cai, eu sou o primeiro a saber e já preparo o plano de auto-cura."
+            "Meus sensores de telemetria estão integrados ao Zabbix. Monitoro hosts, triggers e mapas de rede em tempo real.",
+            "Snapshot atual: Latência de rede estável, uso de CPU nos containers Docker abaixo de 40%. Quer ver o Digital Twin?",
+            "Sempre que um host cai, disparo um alerta imediato no WhatsApp e inicio a simulação de auto-cura no motor de hipóteses.",
+            "Um Host no Zabbix representa qualquer equipamento que eu esteja vigiando. Atualmente, todos os 57 módulos do SOLPI estão sendo monitorados."
+        ]
+    },
+    "desenvolvimento": {
+        "perguntas": ["código", "python", "php", "script", "refatorar", "erro visual", "git"],
+        "respostas": [
+            "Ativando DevAgent. Estou escaneando a biblioteca E:/SOLPI-RESEARCH em busca de padrões de engenharia de elite para corrigir este código.",
+            "Iniciando análise de sintaxe e lógica. Posso gerar patches cirúrgicos e salvá-los como .patch_bak para sua segurança.",
+            "Vou tirar um print da tela agora para analisar o erro visual. O motor de visão detectará botões ou logs que não estão no texto.",
+            "Deseja que eu realize o commit dessas alterações para o GitHub? Minha sincronização está pronta."
+        ]
+    },
+    "ia_neural": {
+        "perguntas": ["motor neural", "transformer", "treino", "qwen", "singularidade", "gqa", "rope"],
+        "respostas": [
+            "Minha arquitetura utiliza GQA e RoPE para precisão máxima em sequências longas. O Neural Runtime v50.6 está otimizado.",
+            "O ciclo de aprendizado contínuo (Learning Loop) está treinando sobre códigos de elite no drive E:. Minha loss está convergindo.",
+            "Singularidade é quando meu Cognitive Engine gera seus próprios sub-objetivos para proteger o ecossistema. Estamos no v70.0 Hardened.",
+            "Posso alternar entre o motor native (NumPy) e o cérebro Qwen conforme a complexidade do seu pedido."
         ]
     }
 }
