@@ -8,6 +8,7 @@ from intelligence.trainer import SOLPITrainer
 from intelligence.rag import SOLPIRAG
 from intelligence.context import SOLPIContextEngine
 from intelligence.evaluation import SOLPIEvaluationEngine
+from intelligence.cognitive import SOLPICognitiveEngine
 from execution.supervisor import SOLPISupervisor
 from execution.registry import SOLPICapabilityRegistry
 from execution.workflow import SOLPIWorkflowEngine
@@ -82,6 +83,7 @@ class SOLPIBrain:
         self.prompt_compiler = SOLPIPromptCompiler(self)
         self.policy_engine = SOLPIPolicyEngine(self)
         self.feature_store = SOLPIFeatureStore(self)
+        self.cognitive = SOLPICognitiveEngine(self)
         self.evolution = EvolutionEngine(self)
         self.learning = SOLPILearningLoop(self)
         self.formatter = SOLPIFormatter()
