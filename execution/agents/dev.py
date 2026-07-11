@@ -6,10 +6,10 @@ class DevAgent(BaseAgent):
     Especialista em Engenharia de Software e Refatoração.
     """
     def run(self, task):
-        # 🟢 UPGRADE v70.5: Se a tarefa for complexa, delega para o motor Hermes
+        # 🟢 UPGRADE v70.5: Se a tarefa for complexa, delega para o motor solpi-engine
         if len(task.split()) > 10 or any(x in task.lower() for x in ["projeto", "arquitetura", "refatorar"]):
-            self.kernel.log_event("DEV", "Tarefa complexa detectada. Acionando motor Hermes de Engenharia.")
-            return self.brain.hermes_agent.run(task)
+            self.kernel.log_event("DEV", "Tarefa complexa detectada. Acionando motor solpi-engine de Engenharia.")
+            return self.brain.solpi-engine_agent.run(task)
 
         # Caso contrário, mantém o fluxo leve nativo
         vision_info = ""

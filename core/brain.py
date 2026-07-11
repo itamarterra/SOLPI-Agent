@@ -37,7 +37,7 @@ from execution.agents.dev import DevAgent
 from execution.agents.vision import VisionAgent
 from execution.agents.sql import SQLAgent
 from execution.agents.knowledge import KnowledgeAgent
-from execution.agents.hermes import HermesAgent
+from execution.agents.engine_agent import SolpiEngineAgent
 from execution.tools import AgentTools
 
 from operations.telemetry import SOLPITelemetryEngine
@@ -54,8 +54,8 @@ from developer.formatter import SOLPIFormatter
 
 class SOLPIBrain:
     """
-    INTERFACE OPERACIONAL v70.4 (Singularity Hermes)
-    Cérebro orquestrado com foco em Diálogo e Execução Especializada.
+    INTERFACE OPERACIONAL v70.5 (Singularity Engine)
+    Orquestrador Supremo da malha de IA com integração de Motor de Elite.
     """
     def __init__(self):
         # 1. FOUNDATION
@@ -89,7 +89,7 @@ class SOLPIBrain:
         self.learning = SOLPILearningLoop(self)
         self.knowledge = KnowledgeEngine(self)
         self.persona = SOLPIPersona()
-        self.social_engine = SOLPISocialEngine(self) # 🟢 Social Engine
+        self.social_engine = SOLPISocialEngine(self)
         
         # 3. OPERATIONS
         self.telemetry = SOLPITelemetryEngine(self.kernel)
@@ -111,7 +111,7 @@ class SOLPIBrain:
         self.vision_agent = VisionAgent(self)
         self.sql_agent = SQLAgent(self)
         self.knowledge_agent = KnowledgeAgent(self)
-        self.hermes_agent = HermesAgent(self) # 🟢 Hermes Agent v60
+        self.solpi_engine_agent = SolpiEngineAgent(self) # 🟢 SOLPI Engine v60
         
         # 5. DEVELOPER
         self.gateway = SOLPIGateway(self)
@@ -144,9 +144,8 @@ class SOLPIBrain:
             elif agent_type == "VISION_AGENT": return self.vision_agent.run(user_input)
             elif agent_type == "DEV_AGENT": return self.dev_agent.run(user_input)
             elif agent_type == "KNOWLEDGE_AGENT": return self.knowledge_agent.run(user_input)
-            elif agent_type == "HERMES_AGENT": return self.hermes_agent.run(user_input)
+            elif agent_type == "SOLPI_ENGINE_AGENT": return self.solpi_engine_agent.run(user_input)
             
-            # Se for Generalista, usamos o Inference Engine (CONVERSA REAL)
             return self.chat_logic(user_input)
 
         response_content = self.executive.request_execution(f"Chat_{agent_type}", 2, execute_logic)
@@ -158,12 +157,9 @@ class SOLPIBrain:
 
     def chat_logic(self, user_input):
         """Motor de Diálogo do SOLPI-OS."""
-        # 1. Tenta o Corpus de Diálogo (Perguntas e Respostas da área criada)
         social_response = self.social_engine.get_response(user_input)
         if social_response:
             return social_response
-
-        # 2. Se não estiver no corpus, tenta o Inference Engine Real (Qwen/Native)
         return self.inference_engine.execute(user_input, model_name=self.config.MODEL_TYPE)
 
     def heartbeat_check(self):

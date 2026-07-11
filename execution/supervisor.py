@@ -24,7 +24,7 @@ class SOLPISupervisor:
             "DEV_EXPERT": "DEV_AGENT",
             "VISION_EXPERT": "VISION_AGENT",
             "KNOWLEDGE_EXPERT": "KNOWLEDGE_AGENT",
-            "HERMES": "HERMES_AGENT"
+            "solpi-engine": "SOLPI_ENGINE_AGENT"
         }
         
         final_agent = mapping.get(agent_type, agent_type)

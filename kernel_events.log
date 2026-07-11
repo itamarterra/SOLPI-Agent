@@ -77,3 +77,8 @@
 [2026-07-11 01:51:50] [INFERENCE] Executando via: transformers
 [2026-07-11 01:52:08] [EXECUTIVE] ✅ Concluído: Chat_GENERALIST em 17.04s
 [2026-07-11 01:52:08] [STATE] Transição: EXECUTING -> IDLE
+[2026-07-11 14:00:14] [BIOS] Iniciando detecção de hardware...
+[2026-07-11 14:00:14] [BIOS] Hardware: 6 Cores | 23.91GB RAM | GPU: None
+[2026-07-11 14:00:14] [TOPOLOGY] Iniciando mapeamento da malha de módulos...
+[2026-07-11 14:00:14] [TOPOLOGY] Mapeamento concluído: 59 componentes detectados.
+[2026-07-11 14:00:14] [KERNEL] SOLPI-OS 70.4-SINGULARITY-HERMES Meta-Kernel Ativo.

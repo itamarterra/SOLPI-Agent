@@ -15,7 +15,7 @@ class SOLPIKernel:
     """
     def __init__(self):
         self.start_time = datetime.now()
-        self.version = "70.4-SINGULARITY-HERMES"
+        self.version = "70.5-SINGULARITY-ELITE"
         
         # 1. Inicializa Segurança ANTES de tudo
         self.security = SOLPISecurity(self)
