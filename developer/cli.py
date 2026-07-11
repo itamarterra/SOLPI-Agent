@@ -24,5 +24,9 @@ class SOLPICLI:
         elif cmd == "twin":
             print(f"🌐 Link Digital Twin: http://localhost:8090/twin")
 
+        elif cmd == "audit":
+            print("🛡️ Iniciando Auditoria de Auto-Arquitetura...")
+            print(self.brain.architecture.scan_architecture())
+
         else:
             print(f"❓ Comando desconhecido: {cmd}")

@@ -9,6 +9,9 @@ from intelligence.rag import SOLPIRAG
 from intelligence.context import SOLPIContextEngine
 from intelligence.evaluation import SOLPIEvaluationEngine
 from intelligence.cognitive import SOLPICognitiveEngine
+from intelligence.executive import SOLPIExecutiveFunction
+from intelligence.causal import SOLPICausalEngine
+from intelligence.architecture import SOLPISelfArchitecture
 from execution.supervisor import SOLPISupervisor
 from execution.registry import SOLPICapabilityRegistry
 from execution.workflow import SOLPIWorkflowEngine
@@ -58,6 +61,10 @@ class SOLPIBrain:
         self.rag = SOLPIRAG(self)
         self.context_engine = SOLPIContextEngine(self)
         self.evaluation = SOLPIEvaluationEngine(self)
+        self.cognitive = SOLPICognitiveEngine(self)
+        self.executive = SOLPIExecutiveFunction(self)
+        self.causal = SOLPICausalEngine(self) # 🟢 Causal
+        self.architecture = SOLPISelfArchitecture(self) # 🟢 Architecture
         self.memory = AgentMemory()
         self.model_registry = SOLPIModelRegistry(self)
         self.inference_engine = SOLPIInferenceEngine(self)
@@ -83,7 +90,6 @@ class SOLPIBrain:
         self.prompt_compiler = SOLPIPromptCompiler(self)
         self.policy_engine = SOLPIPolicyEngine(self)
         self.feature_store = SOLPIFeatureStore(self)
-        self.cognitive = SOLPICognitiveEngine(self)
         self.evolution = EvolutionEngine(self)
         self.learning = SOLPILearningLoop(self)
         self.formatter = SOLPIFormatter()
@@ -111,10 +117,21 @@ class SOLPIBrain:
         agent_type, reason = self.supervisor.delegate(user_input)
         compiled_prompt = self.prompt_compiler.compile(user_input, agent_type, reason)
         
-        # Logic execution...
-        if agent_type == "INFRA_AGENT": response_content = self.infra_agent.run()
-        elif agent_type == "SQL_AGENT": response_content = self.sql_agent.run(user_input)
-        else: response_content = "Processamento concluído."
+        # 5. EXECUÇÃO EXECUTIVA (v50.8)
+        # O Executive Engine decide se executa agora ou agenda baseado na prioridade.
+        def run_logic():
+            if agent_type == "INFRA_AGENT": return self.infra_agent.run()
+            elif agent_type == "SQL_AGENT": return self.sql_agent.run(user_input)
+            elif agent_type == "VISION_AGENT": return self.vision_agent.run(user_input)
+            elif agent_type == "DEV_AGENT": return self.dev_agent.run(user_input)
+            elif agent_type == "KNOWLEDGE_AGENT": return self.knowledge_agent.run(user_input)
+            return "Ação não mapeada pelo Executor."
+
+        response_content = self.executive.request_execution(
+            name=f"Task_{agent_type}",
+            priority=2, # Prioridade de Interação Humana
+            action=run_logic
+        )
 
         final_response = self.formatter.format_response(agent_type, response_content, reason)
         
