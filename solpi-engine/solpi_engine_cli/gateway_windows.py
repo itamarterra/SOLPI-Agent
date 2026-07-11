@@ -403,7 +403,7 @@ def _build_gateway_cmd_script(
     lines.append('set "HERMES_GATEWAY_DETACHED=1"')
     pythonw_path, venv_dir, extra_pythonpath = _resolve_detached_python(python_path)
     # VIRTUAL_ENV lets the gateway's own python detection find the venv
-    # if someone imports hermes_constants-based logic during startup.
+    # if someone imports solpi_engine_constants-based logic during startup.
     lines.append(f'set "VIRTUAL_ENV={_preserve_hermes_home_path(venv_dir)}"')
     pythonpath_entries = [
         _preserve_hermes_home_path(Path(__file__).resolve().parent.parent),

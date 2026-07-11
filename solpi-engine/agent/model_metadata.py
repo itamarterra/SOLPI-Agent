@@ -19,7 +19,7 @@ import yaml
 
 from utils import atomic_json_write, base_url_host_matches, base_url_hostname
 
-from hermes_constants import OPENROUTER_MODELS_URL
+from solpi_engine_constants import OPENROUTER_MODELS_URL
 
 logger = logging.getLogger(__name__)
 
@@ -124,7 +124,7 @@ _endpoint_probe_path_cache: Dict[str, tuple] = {}
 
 def _get_model_metadata_cache_path() -> Path:
     """Return path to the OpenRouter model metadata disk cache."""
-    from hermes_constants import get_hermes_home
+    from solpi_engine_constants import get_hermes_home
     return get_hermes_home() / "cache" / "openrouter_model_metadata.json"
 
 
@@ -1065,7 +1065,7 @@ def _resolve_endpoint_context_length(
 
 def _get_context_cache_path() -> Path:
     """Return path to the persistent context length cache file."""
-    from hermes_constants import get_hermes_home
+    from solpi_engine_constants import get_hermes_home
     return get_hermes_home() / "context_length_cache.yaml"
 
 

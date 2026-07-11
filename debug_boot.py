@@ -1,41 +1,32 @@
 import sys
 import os
 
-# Adiciona a raiz ao path
-root = "E:/SOLPI-Agent"
-sys.path.append(root)
-
-print("🔍 [DEBUG]: Iniciando Diagnóstico de Importações...")
-
+print("--- DEBUG BOOT START ---")
 try:
-    print("1. Testando foundation.kernel...")
+    print("Tentando importar foundation.kernel...")
     from foundation.kernel import SOLPIKernel
-    print("   ✅ OK")
-except Exception as e:
-    print(f"   ❌ ERRO: {e}")
+    print("OK")
+    
+    print("Tentando importar foundation.config...")
+    from foundation.config import SOLPIConfig
+    print("OK")
 
-try:
-    print("2. Testando intelligence.runtime...")
-    from intelligence.runtime import SOLPINeuralRuntime
-    print("   ✅ OK")
-except Exception as e:
-    print(f"   ❌ ERRO: {e}")
-
-try:
-    print("3. Testando execution.supervisor...")
-    from execution.supervisor import SOLPISupervisor
-    print("   ✅ OK")
-except Exception as e:
-    print(f"   ❌ ERRO: {e}")
-
-try:
-    print("4. Testando core.brain...")
+    print("Tentando importar core.brain...")
     from core.brain import SOLPIBrain
-    print("   ✅ OK")
-    print("\n🚀 [BOOT TEST]: Tentando instanciar SOLPIBrain...")
+    print("OK")
+
+    print("Tentando inicializar SOLPIBrain...")
     brain = SOLPIBrain()
-    print("✅ Cérebro instanciado com sucesso!")
+    print("OK")
+
+    print("Tentando importar developer.gateway...")
+    from developer.gateway import SOLPIGateway
+    print("OK")
+
+    print("Boot Debug concluído com sucesso. Nenhum erro crítico de importação.")
+
 except Exception as e:
-    print(f"❌ FALHA FATAL NO BRAIN: {e}")
+    print(f"!!! ERRO DETECTADO: {e}")
     import traceback
     traceback.print_exc()
+    sys.exit(1)

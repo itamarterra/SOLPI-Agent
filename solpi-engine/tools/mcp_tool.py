@@ -154,7 +154,7 @@ def _get_mcp_stderr_log() -> Any:
         if _mcp_stderr_log_fh is not None:
             return _mcp_stderr_log_fh
         try:
-            from hermes_constants import get_hermes_home
+            from solpi_engine_constants import get_hermes_home
             log_dir = get_hermes_home() / "logs"
             log_dir.mkdir(parents=True, exist_ok=True)
             log_path = log_dir / "mcp-stderr.log"
@@ -1681,7 +1681,7 @@ class MCPServerTask:
         """Build a ``logging_callback`` for ``ClientSession``.
 
         Routes MCP ``notifications/message`` log notifications from the
-        server into Hermes' logging (agent.log via hermes_logging), tagged
+        server into Hermes' logging (agent.log via solpi_engine_logging), tagged
         with the server name.  Without this, the SDK's default callback
         silently discards them, so server-side warnings/errors during a
         tool call were invisible.  Port of anomalyco/opencode#34529.
@@ -3589,7 +3589,7 @@ def _wrap_with_home_override(coro: "Coroutine") -> "Coroutine":
     carrying different scopes don't interfere.
     """
     try:
-        from hermes_constants import (
+        from solpi_engine_constants import (
             get_hermes_home_override,
             reset_hermes_home_override,
             set_hermes_home_override,

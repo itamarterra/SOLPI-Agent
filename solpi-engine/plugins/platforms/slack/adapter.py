@@ -980,7 +980,7 @@ class SlackAdapter(BasePlatformAdapter):
         bot_tokens = [t.strip() for t in raw_token.split(",") if t.strip()]
 
         # Also load tokens from OAuth token file
-        from hermes_constants import get_hermes_home
+        from solpi_engine_constants import get_hermes_home
 
         tokens_file = get_hermes_home() / "slack_tokens.json"
         if tokens_file.exists():
@@ -4390,7 +4390,7 @@ def interactive_setup() -> None:
         paste-into-Slack instructions. Failures are non-fatal."""
         try:
             from hermes_cli.slack_cli import _build_full_manifest
-            from hermes_constants import get_hermes_home
+            from solpi_engine_constants import get_hermes_home
             import json as _json
 
             manifest = _build_full_manifest(

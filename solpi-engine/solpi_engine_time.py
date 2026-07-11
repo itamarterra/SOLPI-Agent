@@ -5,7 +5,7 @@ Provides a single ``now()`` helper that returns a timezone-aware datetime
 based on the user's configured IANA timezone (e.g. ``Asia/Kolkata``).
 
 Resolution order:
-  1. ``HERMES_TIMEZONE`` environment variable
+  1. ``solpi_engine_timeZONE`` environment variable
   2. ``timezone`` key in ``~/.hermes/config.yaml``
   3. Falls back to the server's local time (``datetime.now().astimezone()``)
 
@@ -16,7 +16,7 @@ crashes due to a bad timezone string.
 import logging
 import os
 from datetime import datetime
-from hermes_constants import get_config_path
+from solpi_engine_constants import get_config_path
 from typing import Optional
 
 logger = logging.getLogger(__name__)
@@ -41,7 +41,7 @@ def _resolve_timezone_name() -> str:
     should cache the result rather than calling on every ``now()``.
     """
     # 1. Environment variable (highest priority — set by Supervisor, etc.)
-    tz_env = os.getenv("HERMES_TIMEZONE", "").strip()
+    tz_env = os.getenv("solpi_engine_timeZONE", "").strip()
     if tz_env:
         return tz_env
 
@@ -110,7 +110,7 @@ def reset_cache() -> None:
     """Clear the cached timezone so the next call re-resolves it.
 
     Call this after the configured timezone may have changed (e.g. after a
-    config edit or ``HERMES_TIMEZONE`` update) to force ``get_timezone()`` /
+    config edit or ``solpi_engine_timeZONE`` update) to force ``get_timezone()`` /
     ``now()`` to read the new value instead of the value cached at first use.
     """
     global _cached_tz, _cached_tz_name, _cache_resolved

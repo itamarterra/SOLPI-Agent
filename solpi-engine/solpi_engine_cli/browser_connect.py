@@ -11,7 +11,7 @@ import subprocess
 import time
 from dataclasses import dataclass, field
 
-from hermes_constants import get_hermes_home
+from solpi_engine_constants import get_hermes_home
 
 logger = logging.getLogger(__name__)
 

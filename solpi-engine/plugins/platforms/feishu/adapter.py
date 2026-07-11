@@ -142,7 +142,7 @@ from gateway.platforms.base import (
     cache_image_from_bytes,
 )
 from gateway.status import acquire_scoped_lock, release_scoped_lock
-from hermes_constants import get_hermes_home
+from solpi_engine_constants import get_hermes_home
 from utils import atomic_json_write, env_float, env_int
 
 logger = logging.getLogger(__name__)

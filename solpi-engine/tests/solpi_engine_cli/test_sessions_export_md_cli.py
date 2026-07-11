@@ -3,7 +3,7 @@ import sys
 
 def test_sessions_export_md_writes_single_session(monkeypatch, tmp_path, capsys):
     import hermes_cli.main as main_mod
-    import hermes_state
+    import solpi_engine_state
 
     captured = {}
 
@@ -31,7 +31,7 @@ def test_sessions_export_md_writes_single_session(monkeypatch, tmp_path, capsys)
         def close(self):
             captured["closed"] = True
 
-    monkeypatch.setattr(hermes_state, "SessionDB", lambda: FakeDB())
+    monkeypatch.setattr(solpi_engine_state, "SessionDB", lambda: FakeDB())
     monkeypatch.setattr(
         sys,
         "argv",
@@ -67,7 +67,7 @@ def test_sessions_export_md_writes_single_session(monkeypatch, tmp_path, capsys)
 
 def test_sessions_export_md_reports_unknown_session(monkeypatch, tmp_path, capsys):
     import hermes_cli.main as main_mod
-    import hermes_state
+    import solpi_engine_state
 
     output_dir = tmp_path / "exports"
 
@@ -81,7 +81,7 @@ def test_sessions_export_md_reports_unknown_session(monkeypatch, tmp_path, capsy
         def close(self):
             pass
 
-    monkeypatch.setattr(hermes_state, "SessionDB", lambda: FakeDB())
+    monkeypatch.setattr(solpi_engine_state, "SessionDB", lambda: FakeDB())
     monkeypatch.setattr(
         sys,
         "argv",
@@ -106,7 +106,7 @@ def test_sessions_export_md_reports_unknown_session(monkeypatch, tmp_path, capsy
 
 def test_sessions_export_md_supports_qmd_format(monkeypatch, tmp_path, capsys):
     import hermes_cli.main as main_mod
-    import hermes_state
+    import solpi_engine_state
 
     class FakeDB:
         def resolve_session_id(self, session_id):
@@ -118,7 +118,7 @@ def test_sessions_export_md_supports_qmd_format(monkeypatch, tmp_path, capsys):
         def close(self):
             pass
 
-    monkeypatch.setattr(hermes_state, "SessionDB", lambda: FakeDB())
+    monkeypatch.setattr(solpi_engine_state, "SessionDB", lambda: FakeDB())
     monkeypatch.setattr(
         sys,
         "argv",
@@ -142,7 +142,7 @@ def test_sessions_export_md_supports_qmd_format(monkeypatch, tmp_path, capsys):
 
 def test_sessions_export_md_rejects_stdout_target(monkeypatch, tmp_path, capsys):
     import hermes_cli.main as main_mod
-    import hermes_state
+    import solpi_engine_state
 
     class FakeDB:
         def resolve_session_id(self, session_id):
@@ -151,7 +151,7 @@ def test_sessions_export_md_rejects_stdout_target(monkeypatch, tmp_path, capsys)
         def close(self):
             pass
 
-    monkeypatch.setattr(hermes_state, "SessionDB", lambda: FakeDB())
+    monkeypatch.setattr(solpi_engine_state, "SessionDB", lambda: FakeDB())
     monkeypatch.setattr(
         sys,
         "argv",
@@ -165,7 +165,7 @@ def test_sessions_export_md_rejects_stdout_target(monkeypatch, tmp_path, capsys)
 
 def test_sessions_export_jsonl_requires_output_path(monkeypatch, capsys):
     import hermes_cli.main as main_mod
-    import hermes_state
+    import solpi_engine_state
 
     class FakeDB:
         def export_all(self, **kwargs):
@@ -174,7 +174,7 @@ def test_sessions_export_jsonl_requires_output_path(monkeypatch, capsys):
         def close(self):
             pass
 
-    monkeypatch.setattr(hermes_state, "SessionDB", lambda: FakeDB())
+    monkeypatch.setattr(solpi_engine_state, "SessionDB", lambda: FakeDB())
     monkeypatch.setattr(sys, "argv", ["hermes", "sessions", "export"])
 
     main_mod.main()
@@ -184,7 +184,7 @@ def test_sessions_export_jsonl_requires_output_path(monkeypatch, capsys):
 
 def test_sessions_export_md_bulk_dry_run_lists_candidates(monkeypatch, tmp_path, capsys):
     import hermes_cli.main as main_mod
-    import hermes_state
+    import solpi_engine_state
 
     class FakeDB:
         def list_prune_candidates(self, **kwargs):
@@ -200,7 +200,7 @@ def test_sessions_export_md_bulk_dry_run_lists_candidates(monkeypatch, tmp_path,
         def close(self):
             pass
 
-    monkeypatch.setattr(hermes_state, "SessionDB", lambda: FakeDB())
+    monkeypatch.setattr(solpi_engine_state, "SessionDB", lambda: FakeDB())
     monkeypatch.setattr(
         sys,
         "argv",
@@ -230,7 +230,7 @@ def test_sessions_export_md_bulk_dry_run_lists_candidates(monkeypatch, tmp_path,
 
 def test_sessions_export_md_bulk_requires_filter(monkeypatch, tmp_path, capsys):
     import hermes_cli.main as main_mod
-    import hermes_state
+    import solpi_engine_state
 
     class FakeDB:
         def list_prune_candidates(self, **kwargs):
@@ -239,7 +239,7 @@ def test_sessions_export_md_bulk_requires_filter(monkeypatch, tmp_path, capsys):
         def close(self):
             pass
 
-    monkeypatch.setattr(hermes_state, "SessionDB", lambda: FakeDB())
+    monkeypatch.setattr(solpi_engine_state, "SessionDB", lambda: FakeDB())
     monkeypatch.setattr(
         sys,
         "argv",
@@ -253,7 +253,7 @@ def test_sessions_export_md_bulk_requires_filter(monkeypatch, tmp_path, capsys):
 
 def test_sessions_export_md_bulk_writes_manifest(monkeypatch, tmp_path, capsys):
     import hermes_cli.main as main_mod
-    import hermes_state
+    import solpi_engine_state
 
     class FakeDB:
         def list_prune_candidates(self, **kwargs):
@@ -265,7 +265,7 @@ def test_sessions_export_md_bulk_writes_manifest(monkeypatch, tmp_path, capsys):
         def close(self):
             pass
 
-    monkeypatch.setattr(hermes_state, "SessionDB", lambda: FakeDB())
+    monkeypatch.setattr(solpi_engine_state, "SessionDB", lambda: FakeDB())
     monkeypatch.setattr(
         sys,
         "argv",
@@ -295,13 +295,13 @@ def test_sessions_export_md_bulk_writes_manifest(monkeypatch, tmp_path, capsys):
 
 def test_sessions_export_md_delete_after_verified_requires_yes(monkeypatch, tmp_path, capsys):
     import hermes_cli.main as main_mod
-    import hermes_state
+    import solpi_engine_state
 
     class FakeDB:
         def close(self):
             pass
 
-    monkeypatch.setattr(hermes_state, "SessionDB", lambda: FakeDB())
+    monkeypatch.setattr(solpi_engine_state, "SessionDB", lambda: FakeDB())
     monkeypatch.setattr(
         sys,
         "argv",
@@ -325,7 +325,7 @@ def test_sessions_export_md_delete_after_verified_requires_yes(monkeypatch, tmp_
 
 def test_sessions_export_md_delete_after_verified_deletes_after_file_check(monkeypatch, tmp_path, capsys):
     import hermes_cli.main as main_mod
-    import hermes_state
+    import solpi_engine_state
 
     captured = {}
 
@@ -343,7 +343,7 @@ def test_sessions_export_md_delete_after_verified_deletes_after_file_check(monke
         def close(self):
             pass
 
-    monkeypatch.setattr(hermes_state, "SessionDB", lambda: FakeDB())
+    monkeypatch.setattr(solpi_engine_state, "SessionDB", lambda: FakeDB())
     monkeypatch.setattr(
         sys,
         "argv",
@@ -371,7 +371,7 @@ def test_sessions_export_md_delete_after_verified_deletes_after_file_check(monke
 def test_sessions_export_md_accepts_duration_age_grammar(monkeypatch, tmp_path, capsys):
     """--older-than accepts the same AGE grammar as prune ('2w', '5h', ISO)."""
     import hermes_cli.main as main_mod
-    import hermes_state
+    import solpi_engine_state
 
     class FakeDB:
         def list_prune_candidates(self, **kwargs):
@@ -381,7 +381,7 @@ def test_sessions_export_md_accepts_duration_age_grammar(monkeypatch, tmp_path, 
         def close(self):
             pass
 
-    monkeypatch.setattr(hermes_state, "SessionDB", lambda: FakeDB())
+    monkeypatch.setattr(solpi_engine_state, "SessionDB", lambda: FakeDB())
     monkeypatch.setattr(
         sys,
         "argv",
@@ -399,7 +399,7 @@ def test_sessions_export_md_accepts_duration_age_grammar(monkeypatch, tmp_path, 
 def test_sessions_export_md_supports_extended_prune_filters(monkeypatch, tmp_path, capsys):
     """Filters like --model/--min-messages pass through the shared machinery."""
     import hermes_cli.main as main_mod
-    import hermes_state
+    import solpi_engine_state
 
     captured = {}
 
@@ -411,7 +411,7 @@ def test_sessions_export_md_supports_extended_prune_filters(monkeypatch, tmp_pat
         def close(self):
             pass
 
-    monkeypatch.setattr(hermes_state, "SessionDB", lambda: FakeDB())
+    monkeypatch.setattr(solpi_engine_state, "SessionDB", lambda: FakeDB())
     monkeypatch.setattr(
         sys,
         "argv",
@@ -434,7 +434,7 @@ def test_sessions_export_jsonl_honors_filters(monkeypatch, tmp_path, capsys):
     import json
 
     import hermes_cli.main as main_mod
-    import hermes_state
+    import solpi_engine_state
 
     class FakeDB:
         def list_prune_candidates(self, **kwargs):
@@ -451,7 +451,7 @@ def test_sessions_export_jsonl_honors_filters(monkeypatch, tmp_path, capsys):
             pass
 
     out = tmp_path / "out.jsonl"
-    monkeypatch.setattr(hermes_state, "SessionDB", lambda: FakeDB())
+    monkeypatch.setattr(solpi_engine_state, "SessionDB", lambda: FakeDB())
     monkeypatch.setattr(
         sys,
         "argv",
@@ -469,7 +469,7 @@ def test_sessions_export_jsonl_honors_filters(monkeypatch, tmp_path, capsys):
 def test_sessions_export_redact_scrubs_secrets(monkeypatch, tmp_path):
     """--redact runs exported content through force-mode secret redaction."""
     import hermes_cli.main as main_mod
-    import hermes_state
+    import solpi_engine_state
 
     secret = "sk-proj-Zz12345678901234567890123456789012345678"
 
@@ -489,7 +489,7 @@ def test_sessions_export_redact_scrubs_secrets(monkeypatch, tmp_path):
         def close(self):
             pass
 
-    monkeypatch.setattr(hermes_state, "SessionDB", lambda: FakeDB())
+    monkeypatch.setattr(solpi_engine_state, "SessionDB", lambda: FakeDB())
     monkeypatch.setattr(
         sys,
         "argv",
@@ -531,11 +531,11 @@ def test_sessions_export_trace_writes_claude_jsonl(monkeypatch, tmp_path, capsys
     import json
 
     import hermes_cli.main as main_mod
-    import hermes_state
+    import solpi_engine_state
 
     captured = {}
     out = tmp_path / "trace.jsonl"
-    monkeypatch.setattr(hermes_state, "SessionDB", lambda: _trace_fake_db(captured))
+    monkeypatch.setattr(solpi_engine_state, "SessionDB", lambda: _trace_fake_db(captured))
     monkeypatch.setattr(
         sys,
         "argv",
@@ -556,10 +556,10 @@ def test_sessions_export_trace_stdout(monkeypatch, capsys):
     import json
 
     import hermes_cli.main as main_mod
-    import hermes_state
+    import solpi_engine_state
 
     captured = {}
-    monkeypatch.setattr(hermes_state, "SessionDB", lambda: _trace_fake_db(captured))
+    monkeypatch.setattr(solpi_engine_state, "SessionDB", lambda: _trace_fake_db(captured))
     monkeypatch.setattr(
         sys,
         "argv",
@@ -575,11 +575,11 @@ def test_sessions_export_trace_stdout(monkeypatch, capsys):
 
 def test_sessions_export_trace_upload_routes_to_uploader(monkeypatch, capsys):
     import hermes_cli.main as main_mod
-    import hermes_state
+    import solpi_engine_state
     from agent import trace_upload as trace_mod
 
     captured = {}
-    monkeypatch.setattr(hermes_state, "SessionDB", lambda: _trace_fake_db(captured))
+    monkeypatch.setattr(solpi_engine_state, "SessionDB", lambda: _trace_fake_db(captured))
 
     def fake_upload(session_id, **kwargs):
         captured["uploaded"] = session_id
@@ -606,10 +606,10 @@ def test_sessions_export_trace_upload_routes_to_uploader(monkeypatch, capsys):
 
 def test_sessions_export_trace_only_flag_rejected(monkeypatch, capsys):
     import hermes_cli.main as main_mod
-    import hermes_state
+    import solpi_engine_state
 
     captured = {}
-    monkeypatch.setattr(hermes_state, "SessionDB", lambda: _trace_fake_db(captured))
+    monkeypatch.setattr(solpi_engine_state, "SessionDB", lambda: _trace_fake_db(captured))
     monkeypatch.setattr(
         sys,
         "argv",

@@ -11,7 +11,7 @@ import threading
 import time
 from pathlib import Path
 from urllib.parse import urlparse
-from hermes_constants import get_hermes_home
+from solpi_engine_constants import get_hermes_home
 from typing import TYPE_CHECKING, Dict, List, Optional
 
 # rich and prompt_toolkit are imported lazily (inside the functions that use

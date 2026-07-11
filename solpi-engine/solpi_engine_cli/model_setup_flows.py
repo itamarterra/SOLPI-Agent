@@ -121,7 +121,7 @@ def _prompt_auth_credentials_choice(title: str) -> str:
 def _model_flow_openrouter(config, current_model=""):
     """OpenRouter provider: ensure API key, then pick model."""
     from hermes_cli.main import _prompt_api_key
-    from hermes_constants import OPENROUTER_BASE_URL
+    from solpi_engine_constants import OPENROUTER_BASE_URL
     from hermes_cli.auth import (
         ProviderConfig,
         _prompt_model_selection,

@@ -119,7 +119,7 @@ def _setup_isolated_home(tmp_path, monkeypatch, model_yaml_value):
         lambda *a, **k: 272000,
     )
     # save_config writes to ``get_hermes_home() / config.yaml`` — point it here.
-    monkeypatch.setattr("hermes_constants.get_hermes_home", lambda: hermes_home)
+    monkeypatch.setattr("solpi_engine_constants.get_hermes_home", lambda: hermes_home)
     monkeypatch.setattr("hermes_cli.config.get_hermes_home", lambda: hermes_home)
     return cfg_path
 

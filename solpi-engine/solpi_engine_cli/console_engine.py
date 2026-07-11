@@ -1566,7 +1566,7 @@ def _sessions_list(_engine: HermesConsoleEngine, args: list[str]) -> str:
     if ns.limit < 1 or ns.limit > 200:
         raise ConsoleCommandError("sessions list --limit must be between 1 and 200")
 
-    from hermes_state import SessionDB
+    from solpi_engine_state import SessionDB
 
     db = SessionDB()
     try:
@@ -1582,7 +1582,7 @@ def _sessions_list(_engine: HermesConsoleEngine, args: list[str]) -> str:
 
 def _sessions_stats(_engine: HermesConsoleEngine, args: list[str]) -> str:
     _expect_no_args(args, "sessions stats")
-    from hermes_state import SessionDB
+    from solpi_engine_state import SessionDB
 
     db = SessionDB()
     try:
@@ -1653,7 +1653,7 @@ def _sessions_export(_engine: HermesConsoleEngine, args: list[str]) -> str:
     ns = parser.parse_args(args)
 
     def _run() -> None:
-        from hermes_state import SessionDB
+        from solpi_engine_state import SessionDB
 
         db = SessionDB()
         try:
@@ -1690,7 +1690,7 @@ def _sessions_rename(_engine: HermesConsoleEngine, args: list[str]) -> str:
     ns = parser.parse_args(args)
 
     def _run() -> None:
-        from hermes_state import SessionDB
+        from solpi_engine_state import SessionDB
 
         db = SessionDB()
         try:
@@ -1711,7 +1711,7 @@ def _sessions_optimize(_engine: HermesConsoleEngine, args: list[str]) -> str:
     _expect_no_args(args, "sessions optimize")
 
     def _run() -> None:
-        from hermes_state import SessionDB
+        from solpi_engine_state import SessionDB
 
         db = SessionDB()
         try:
@@ -1730,7 +1730,7 @@ def _sessions_repair(_engine: HermesConsoleEngine, args: list[str]) -> str:
     ns = parser.parse_args(args)
 
     def _run() -> None:
-        from hermes_state import DEFAULT_DB_PATH, _db_opens_cleanly, repair_state_db_schema
+        from solpi_engine_state import DEFAULT_DB_PATH, _db_opens_cleanly, repair_state_db_schema
 
         db_path = DEFAULT_DB_PATH
         if not db_path.exists():

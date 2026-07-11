@@ -20,7 +20,7 @@ from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import IO, Callable, Protocol
 
-from hermes_constants import get_hermes_home
+from solpi_engine_constants import get_hermes_home
 from hermes_cli._subprocess_compat import windows_hide_flags
 from tools.interrupt import is_interrupted
 

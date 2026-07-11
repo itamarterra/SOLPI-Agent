@@ -22,8 +22,8 @@ from pathlib import Path
 
 import pytest
 
-from hermes_constants import get_hermes_home
-from hermes_state import SessionDB
+from solpi_engine_constants import get_hermes_home
+from solpi_engine_state import SessionDB
 from run_agent import AIAgent
 
 from agent.agent_init import (

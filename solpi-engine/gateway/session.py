@@ -97,7 +97,7 @@ from .whatsapp_identity import (
 from utils import atomic_replace
 
 # Session keys/ids flow into filesystem paths downstream (e.g.
-# ``sessions_dir / f"{session_id}.json"`` in hermes_state, request-dump
+# ``sessions_dir / f"{session_id}.json"`` in solpi_engine_state, request-dump
 # filenames in agent_runtime_helpers). Any value that could escape the
 # sessions directory as a path must be rejected at the entry boundary.
 # Rejects: parent traversal (``..``), a path separator anywhere (``/`` or
@@ -585,7 +585,7 @@ def build_session_context_prompt(
     lines.append("")
     lines.append("**Delivery options for scheduled tasks:**")
 
-    from hermes_constants import display_hermes_home
+    from solpi_engine_constants import display_hermes_home
 
     # Origin delivery
     if context.source.platform == Platform.LOCAL:
@@ -1017,7 +1017,7 @@ class SessionStore:
         # Initialize SQLite session database
         self._db = None
         try:
-            from hermes_state import SessionDB
+            from solpi_engine_state import SessionDB
             self._db = SessionDB()
         except Exception as e:
             print(f"[gateway] Warning: SQLite session store unavailable, falling back to JSONL: {e}")

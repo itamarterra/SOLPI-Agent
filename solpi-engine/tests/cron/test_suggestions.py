@@ -20,8 +20,8 @@ def store(tmp_path, monkeypatch):
     home.mkdir()
     monkeypatch.setenv("HERMES_HOME", str(home))
     # Reload so module-level CRON_DIR/SUGGESTIONS_FILE pick up the temp home.
-    import hermes_constants
-    importlib.reload(hermes_constants)
+    import solpi_engine_constants
+    importlib.reload(solpi_engine_constants)
     import cron.suggestions as s
     importlib.reload(s)
     return s

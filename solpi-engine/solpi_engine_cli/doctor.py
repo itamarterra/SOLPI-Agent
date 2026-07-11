@@ -12,8 +12,8 @@ from pathlib import Path
 
 from hermes_cli.config import get_project_root, get_hermes_home, get_env_path
 from hermes_cli.env_loader import load_hermes_dotenv
-from hermes_constants import display_hermes_home
-from hermes_constants import agent_browser_runnable
+from solpi_engine_constants import display_hermes_home
+from solpi_engine_constants import agent_browser_runnable
 
 PROJECT_ROOT = get_project_root()
 HERMES_HOME = get_hermes_home()
@@ -25,7 +25,7 @@ load_hermes_dotenv(hermes_home=_env_path.parent, project_env=PROJECT_ROOT / ".en
 
 from hermes_cli.colors import Colors, color
 from hermes_cli.models import _HERMES_USER_AGENT
-from hermes_constants import OPENROUTER_MODELS_URL
+from solpi_engine_constants import OPENROUTER_MODELS_URL
 from utils import base_url_host_matches
 
 
@@ -55,7 +55,7 @@ _PROVIDER_ENV_HINTS = (
 )
 
 
-from hermes_constants import is_termux as _is_termux
+from solpi_engine_constants import is_termux as _is_termux
 
 
 def _python_install_cmd() -> str:
@@ -1234,7 +1234,7 @@ def run_doctor(args):
             # through the triggers. `_db_opens_cleanly` now drives a rolled-back
             # write so this otherwise-silent corruption class is surfaced (and
             # repaired in place with --fix).
-            from hermes_state import _db_opens_cleanly, repair_state_db_schema
+            from solpi_engine_state import _db_opens_cleanly, repair_state_db_schema
 
             _write_reason = _db_opens_cleanly(state_db_path)
             if _write_reason is not None:
@@ -1269,7 +1269,7 @@ def run_doctor(args):
                         "(or 'hermes sessions repair') to rebuild the FTS index"
                     )
         except Exception as e:
-            from hermes_state import is_malformed_db_error, repair_state_db_schema
+            from solpi_engine_state import is_malformed_db_error, repair_state_db_schema
 
             if is_malformed_db_error(e):
                 # sqlite_master itself is malformed (e.g. duplicate
@@ -1439,7 +1439,7 @@ def run_doctor(args):
     # Docker (optional)
     terminal_env = os.getenv("TERMINAL_ENV", "local")
     try:
-        from hermes_constants import is_container as _is_container
+        from solpi_engine_constants import is_container as _is_container
         running_in_container = _is_container()
     except Exception:
         running_in_container = False

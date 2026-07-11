@@ -1,4 +1,4 @@
-"""Tests for hermes_constants module."""
+"""Tests for solpi_engine_constants module."""
 
 import os
 from pathlib import Path
@@ -6,8 +6,8 @@ from types import SimpleNamespace
 
 import pytest
 
-import hermes_constants
-from hermes_constants import (
+import solpi_engine_constants
+from solpi_engine_constants import (
     VALID_REASONING_EFFORTS,
     agent_browser_runnable,
     find_hermes_node_executable,
@@ -86,7 +86,7 @@ class TestGetDefaultHermesRoot:
         monkeypatch.delenv("HERMES_HOME", raising=False)
         monkeypatch.setenv("LOCALAPPDATA", str(local_appdata))
         monkeypatch.setattr(Path, "home", lambda: tmp_path / "Home")
-        monkeypatch.setattr(hermes_constants.sys, "platform", "win32")
+        monkeypatch.setattr(solpi_engine_constants.sys, "platform", "win32")
 
         assert get_default_hermes_root() == local_appdata / "hermes"
 
@@ -96,7 +96,7 @@ class TestGetDefaultHermesRoot:
         monkeypatch.delenv("HERMES_HOME", raising=False)
         monkeypatch.delenv("LOCALAPPDATA", raising=False)
         monkeypatch.setattr(Path, "home", lambda: home)
-        monkeypatch.setattr(hermes_constants.sys, "platform", "win32")
+        monkeypatch.setattr(solpi_engine_constants.sys, "platform", "win32")
 
         assert get_default_hermes_root() == home / "AppData" / "Local" / "hermes"
 
@@ -110,8 +110,8 @@ class TestGetHermesHome:
         monkeypatch.delenv("HERMES_HOME", raising=False)
         monkeypatch.setenv("LOCALAPPDATA", str(local_appdata))
         monkeypatch.setattr(Path, "home", lambda: tmp_path / "Home")
-        monkeypatch.setattr(hermes_constants.sys, "platform", "win32")
-        monkeypatch.setattr(hermes_constants, "_profile_fallback_warned", False)
+        monkeypatch.setattr(solpi_engine_constants.sys, "platform", "win32")
+        monkeypatch.setattr(solpi_engine_constants, "_profile_fallback_warned", False)
 
         assert get_hermes_home() == local_appdata / "hermes"
 
@@ -123,7 +123,7 @@ class TestHermesManagedNode:
         bin_dir = node_dir / "bin"
         node_dir.mkdir(parents=True)
         bin_dir.mkdir()
-        monkeypatch.setattr(hermes_constants.sys, "platform", "win32")
+        monkeypatch.setattr(solpi_engine_constants.sys, "platform", "win32")
         monkeypatch.setenv("HERMES_HOME", str(home))
 
         assert iter_hermes_node_dirs() == [node_dir, bin_dir]
@@ -134,9 +134,9 @@ class TestHermesManagedNode:
         node_dir.mkdir(parents=True)
         npm_cmd = node_dir / "npm.cmd"
         npm_cmd.write_text("@echo off\n")
-        monkeypatch.setattr(hermes_constants.sys, "platform", "win32")
+        monkeypatch.setattr(solpi_engine_constants.sys, "platform", "win32")
         monkeypatch.setenv("HERMES_HOME", str(home))
-        monkeypatch.setattr(hermes_constants, "node_tool_runnable", lambda path: True)
+        monkeypatch.setattr(solpi_engine_constants, "node_tool_runnable", lambda path: True)
 
         assert find_hermes_node_executable("npm") == str(npm_cmd)
 
@@ -149,7 +149,7 @@ class TestHermesManagedNode:
         extensionless.write_text("#!/usr/bin/env node\n")
         powershell.write_text("Write-Output npm\n")
         npm_cmd.write_text("@echo off\n")
-        monkeypatch.setattr(hermes_constants.sys, "platform", "win32")
+        monkeypatch.setattr(solpi_engine_constants.sys, "platform", "win32")
         monkeypatch.setenv("PATH", str(bin_dir))
 
         assert find_node_executable_on_path("npm") == str(npm_cmd)
@@ -163,7 +163,7 @@ class TestHermesManagedNode:
         npm_cmd = bin_dir / "npm.cmd"
         extensionless.write_text("#!/usr/bin/env node\n")
         npm_cmd.write_text("@echo off\n")
-        monkeypatch.setattr(hermes_constants.sys, "platform", "win32")
+        monkeypatch.setattr(solpi_engine_constants.sys, "platform", "win32")
         monkeypatch.setenv("HERMES_HOME", str(home))
         monkeypatch.setenv("PATH", str(bin_dir))
 
@@ -178,13 +178,13 @@ class TestHermesManagedNode:
         bin_dir.mkdir()
         path_npm = bin_dir / "npm.cmd"
         path_npm.write_text("@echo off\n")
-        monkeypatch.setattr(hermes_constants.sys, "platform", "win32")
+        monkeypatch.setattr(solpi_engine_constants.sys, "platform", "win32")
         monkeypatch.setenv("HERMES_HOME", str(home))
         monkeypatch.setenv("PATH", str(bin_dir))
-        monkeypatch.setattr(hermes_constants, "_managed_node_heal_attempted", False)
-        monkeypatch.setattr(hermes_constants, "heal_hermes_managed_node", lambda: False)
+        monkeypatch.setattr(solpi_engine_constants, "_managed_node_heal_attempted", False)
+        monkeypatch.setattr(solpi_engine_constants, "heal_hermes_managed_node", lambda: False)
         monkeypatch.setattr(
-            hermes_constants,
+            solpi_engine_constants,
             "node_tool_runnable",
             lambda path: False,
         )
@@ -199,7 +199,7 @@ class TestHermesManagedNode:
         bin_dir = node_dir / "bin"
         node_dir.mkdir(parents=True)
         bin_dir.mkdir()
-        monkeypatch.setattr(hermes_constants.sys, "platform", "win32")
+        monkeypatch.setattr(solpi_engine_constants.sys, "platform", "win32")
         monkeypatch.setenv("HERMES_HOME", str(home))
 
         env = with_hermes_node_path({"PATH": "system-node"})
@@ -246,7 +246,7 @@ class TestNodeToolRunnable:
 
         monkeypatch.setenv("HERMES_HOME", str(profile_home))
         monkeypatch.setenv("PATH", str(system_bin))
-        monkeypatch.setattr(hermes_constants, "_managed_node_heal_attempted", False)
+        monkeypatch.setattr(solpi_engine_constants, "_managed_node_heal_attempted", False)
 
         def _heal():
             heal_called["value"] = True
@@ -254,7 +254,7 @@ class TestNodeToolRunnable:
             broken_npm.chmod(0o755)
             return True
 
-        monkeypatch.setattr(hermes_constants, "heal_hermes_managed_node", _heal)
+        monkeypatch.setattr(solpi_engine_constants, "heal_hermes_managed_node", _heal)
 
         resolved = find_node_executable("npm")
         assert heal_called["value"] is True
@@ -274,14 +274,14 @@ class TestNodeToolRunnable:
 
         monkeypatch.setenv("HERMES_HOME", str(profile_home))
         monkeypatch.setenv("PATH", str(system_bin))
-        monkeypatch.setattr(hermes_constants, "_managed_node_heal_attempted", False)
+        monkeypatch.setattr(solpi_engine_constants, "_managed_node_heal_attempted", False)
 
         def _heal():
             broken_npm.write_text(healed_npm.read_text())
             broken_npm.chmod(0o755)
             return True
 
-        monkeypatch.setattr(hermes_constants, "heal_hermes_managed_node", _heal)
+        monkeypatch.setattr(solpi_engine_constants, "heal_hermes_managed_node", _heal)
 
         assert find_hermes_node_executable("npm") == str(healed_npm)
         assert find_node_executable("npm") == str(healed_npm)
@@ -299,8 +299,8 @@ class TestNodeToolRunnable:
 
         monkeypatch.setenv("HERMES_HOME", str(profile_home))
         monkeypatch.setenv("PATH", str(system_bin))
-        monkeypatch.setattr(hermes_constants, "_managed_node_heal_attempted", False)
-        monkeypatch.setattr(hermes_constants, "heal_hermes_managed_node", lambda: False)
+        monkeypatch.setattr(solpi_engine_constants, "_managed_node_heal_attempted", False)
+        monkeypatch.setattr(solpi_engine_constants, "heal_hermes_managed_node", lambda: False)
 
         assert find_node_executable("npm") is None
 
@@ -325,7 +325,7 @@ class TestIsContainer:
 
     def _reset_cache(self, monkeypatch):
         """Reset the cached detection result before each test."""
-        monkeypatch.setattr(hermes_constants, "_container_detected", None)
+        monkeypatch.setattr(solpi_engine_constants, "_container_detected", None)
 
     def test_detects_dockerenv(self, monkeypatch, tmp_path):
         """/.dockerenv triggers container detection."""
@@ -417,7 +417,7 @@ class TestIsContainer:
 
     def test_caches_result(self, monkeypatch):
         """Second call uses cached value without re-probing."""
-        monkeypatch.setattr(hermes_constants, "_container_detected", True)
+        monkeypatch.setattr(solpi_engine_constants, "_container_detected", True)
         assert is_container() is True
         # Even if we make os.path.exists return False, cached value wins
         monkeypatch.setattr(os.path, "exists", lambda p: False)

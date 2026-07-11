@@ -950,7 +950,7 @@ def _rewrite_resolved_hermes_home(command: str) -> str:
     path can't be resolved or doesn't appear.
     """
     try:
-        from hermes_constants import get_hermes_home
+        from solpi_engine_constants import get_hermes_home
         home = get_hermes_home().expanduser()
         candidates = [
             str(home),

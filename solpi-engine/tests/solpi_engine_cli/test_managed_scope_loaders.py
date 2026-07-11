@@ -96,28 +96,28 @@ def test_tui_loader_does_not_persist_managed_back(homes, monkeypatch):
 def test_logging_config_honors_managed(homes, monkeypatch):
     home, managed = homes
     _seed(home, managed, user="logging:\n  level: INFO\n", mgd="logging:\n  level: DEBUG\n")
-    import hermes_logging
+    import solpi_engine_logging
 
-    level, _max, _bk = hermes_logging._read_logging_config()
+    level, _max, _bk = solpi_engine_logging._read_logging_config()
     assert level == "DEBUG"
 
 
 def test_timezone_honors_managed(homes, monkeypatch):
     home, managed = homes
-    # hermes_time checks an env override first; ensure it's unset so config wins.
-    monkeypatch.delenv("HERMES_TIMEZONE", raising=False)
+    # solpi_engine_time checks an env override first; ensure it's unset so config wins.
+    monkeypatch.delenv("solpi_engine_timeZONE", raising=False)
     monkeypatch.delenv("TZ", raising=False)
     _seed(home, managed, user="timezone: America/New_York\n", mgd="timezone: Asia/Tokyo\n")
-    import hermes_time
+    import solpi_engine_time
 
-    assert hermes_time._resolve_timezone_name() == "Asia/Tokyo"
+    assert solpi_engine_time._resolve_timezone_name() == "Asia/Tokyo"
 
 
 def test_gateway_env_bridge_honors_managed(homes, monkeypatch):
     """The gateway config→env bridge must bridge MANAGED values, not user ones.
 
     gateway/run.py bridges config.yaml settings into os.environ at startup and on
-    every turn (HERMES_TIMEZONE, HERMES_REDACT_SECRETS, HERMES_MAX_ITERATIONS,
+    every turn (solpi_engine_timeZONE, HERMES_REDACT_SECRETS, HERMES_MAX_ITERATIONS,
     ...). A managed value must win at that env layer too — otherwise the bridge
     writes the user's value into the env that the whole process then reads. This
     is the regression that manual verification caught (managed timezone was
@@ -134,7 +134,7 @@ def test_gateway_env_bridge_honors_managed(homes, monkeypatch):
 
     managed_scope.invalidate_managed_cache()
     # The bridge loads config.yaml, expands env, then applies this overlay before
-    # writing HERMES_TIMEZONE = cfg["timezone"]. Prove the overlay flips the value.
+    # writing solpi_engine_timeZONE = cfg["timezone"]. Prove the overlay flips the value.
     import yaml
 
     raw = yaml.safe_load((home / "config.yaml").read_text())

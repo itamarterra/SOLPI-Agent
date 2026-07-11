@@ -36,7 +36,7 @@ from hermes_cli.config import (
     load_config,
     normalize_extra_headers,
 )
-from hermes_constants import OPENROUTER_BASE_URL
+from solpi_engine_constants import OPENROUTER_BASE_URL
 from utils import base_url_host_matches, base_url_hostname, env_int
 
 

@@ -728,7 +728,7 @@ class _CuaDriverSession:
             # passes but the wrapper times out" reports are undiagnosable
             # from a bare "never reached ready".
             phase = getattr(self, "_startup_phase", "unknown")
-            from hermes_constants import display_hermes_home
+            from solpi_engine_constants import display_hermes_home
             raise RuntimeError(
                 "cua-driver session never reached ready (timeout 30s; "
                 f"stuck in phase: {phase}). "

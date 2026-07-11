@@ -22,7 +22,7 @@ import threading
 import time
 from datetime import datetime, timezone
 from pathlib import Path
-from hermes_constants import get_hermes_home, _get_platform_default_hermes_home
+from solpi_engine_constants import get_hermes_home, _get_platform_default_hermes_home
 from typing import Any, Optional
 from utils import atomic_json_write
 

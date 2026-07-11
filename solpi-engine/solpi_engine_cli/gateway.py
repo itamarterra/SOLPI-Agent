@@ -46,7 +46,7 @@ from hermes_cli.config import (
 )
 
 # display_hermes_home is imported lazily at call sites to avoid ImportError
-# when hermes_constants is cached from a pre-update version during `hermes update`.
+# when solpi_engine_constants is cached from a pre-update version during `hermes update`.
 from hermes_cli.setup import (
     print_header,
     print_info,
@@ -1287,7 +1287,7 @@ def get_gateway_runtime_snapshot(system: bool = False) -> GatewayRuntimeSnapshot
             gateway_pids=gateway_pids,
         )
 
-    from hermes_constants import is_container
+    from solpi_engine_constants import is_container
 
     if is_linux() and is_container():
         # Phase 4: report s6 supervision when running under our /init.
@@ -1607,7 +1607,7 @@ def is_linux() -> bool:
     return sys.platform.startswith("linux")
 
 
-from hermes_constants import is_container, is_termux, is_wsl
+from solpi_engine_constants import is_container, is_termux, is_wsl
 
 
 def _wsl_systemd_operational() -> bool:
@@ -1713,7 +1713,7 @@ def _profile_suffix() -> str:
     """
     import hashlib
     import re
-    from hermes_constants import get_default_hermes_root
+    from solpi_engine_constants import get_default_hermes_root
 
     home = get_hermes_home().resolve()
     default = get_default_hermes_root().resolve()
@@ -1748,7 +1748,7 @@ def _profile_arg(hermes_home: str | None = None, default_root: str | Path | None
             refer to root but the target profile lives under the service user.
     """
     import re
-    from hermes_constants import get_default_hermes_root
+    from solpi_engine_constants import get_default_hermes_root
 
     home = Path(hermes_home or str(get_hermes_home())).resolve()
     default = Path(default_root).resolve() if default_root else get_default_hermes_root().resolve()
@@ -3849,7 +3849,7 @@ def _launchd_fallback_to_detached(reason: str, *, exit_on_failure: bool = True) 
     launched, prints the manual workaround and (by default) exits non-zero so
     the failure surfaces instead of silently doing nothing.
     """
-    from hermes_constants import display_hermes_home as _dhh
+    from solpi_engine_constants import display_hermes_home as _dhh
 
     _write_launchd_unsupported_marker()
     print(f"⚠ launchd cannot manage the gateway on this macOS version ({reason}).")
@@ -4154,7 +4154,7 @@ def launchd_install(force: bool = False):
     print()
     print("Next steps:")
     print("  hermes gateway status             # Check status")
-    from hermes_constants import display_hermes_home as _dhh
+    from solpi_engine_constants import display_hermes_home as _dhh
 
     print(f"  tail -f {_dhh()}/logs/gateway.log  # View logs")
 
@@ -4535,7 +4535,7 @@ def _guard_named_profile_under_multiplexer(force: bool = False) -> None:
         return  # default profile (or unrecognized) — this guard doesn't apply
 
     try:
-        from hermes_constants import get_default_hermes_root
+        from solpi_engine_constants import get_default_hermes_root
         default_root = get_default_hermes_root()
         # (b) Is the default-profile gateway running?
         from gateway.status import get_running_pid as _default_running_pid  # noqa
@@ -4807,7 +4807,7 @@ def run_gateway(verbose: int = 0, quiet: bool = False, replace: bool = False, fo
         if os.environ.get("HERMES_GATEWAY_EXIT_DIAG", "1") != "1":
             return
         try:
-            from hermes_constants import get_hermes_home as _ghh
+            from solpi_engine_constants import get_hermes_home as _ghh
 
             log_dir = _ghh() / "logs"
             log_dir.mkdir(parents=True, exist_ok=True)
@@ -6273,7 +6273,7 @@ def gateway_setup():
                     "  To enable systemd: add systemd=true to /etc/wsl.conf, then 'wsl --shutdown'"
                 )
             elif is_termux():
-                from hermes_constants import display_hermes_home as _dhh
+                from solpi_engine_constants import display_hermes_home as _dhh
 
                 print_info("  Termux does not use systemd/launchd services.")
                 print_info("  Run in foreground: hermes gateway run")

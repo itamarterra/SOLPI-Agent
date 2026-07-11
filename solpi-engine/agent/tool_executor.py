@@ -1245,7 +1245,7 @@ def execute_tool_calls_sequential(agent, assistant_message, messages: list, effe
             def _execute(next_args: dict) -> Any:
                 session_db = agent._get_session_db_for_recall()
                 if not session_db:
-                    from hermes_state import format_session_db_unavailable
+                    from solpi_engine_state import format_session_db_unavailable
                     return json.dumps({"success": False, "error": format_session_db_unavailable()})
                 from tools.session_search_tool import session_search as _session_search
                 return _session_search(

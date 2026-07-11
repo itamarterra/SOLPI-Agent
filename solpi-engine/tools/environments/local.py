@@ -295,7 +295,7 @@ def _is_hermes_internal_secret(key: str) -> bool:
 def _inject_context_hermes_home(env: dict) -> None:
     """Bridge the context-local Hermes home override into subprocess env."""
     try:
-        from hermes_constants import get_hermes_home_override
+        from solpi_engine_constants import get_hermes_home_override
 
         value = get_hermes_home_override()
         if value:
@@ -381,7 +381,7 @@ def _sanitize_subprocess_env(base_env: dict | None, extra_env: dict | None = Non
 
     _inject_context_hermes_home(sanitized)
 
-    from hermes_constants import apply_subprocess_home_env
+    from solpi_engine_constants import apply_subprocess_home_env
     apply_subprocess_home_env(sanitized)
 
     # Same cross-session leak guard as _make_run_env, for the background/PTY
@@ -496,7 +496,7 @@ def hermes_subprocess_env(*, inherit_credentials: bool = False) -> dict[str, str
     env.setdefault("PYTHONUTF8", "1")
 
     _inject_context_hermes_home(env)
-    from hermes_constants import apply_subprocess_home_env
+    from solpi_engine_constants import apply_subprocess_home_env
     apply_subprocess_home_env(env)
 
     # Active-venv markers must not clobber another project's environment.
@@ -828,7 +828,7 @@ def _make_run_env(env: dict) -> dict:
 
     _inject_context_hermes_home(run_env)
 
-    from hermes_constants import apply_subprocess_home_env
+    from solpi_engine_constants import apply_subprocess_home_env
     apply_subprocess_home_env(run_env)
 
     # Bridge ContextVar-based session vars into the subprocess env (with the
@@ -967,7 +967,7 @@ class LocalEnvironment(BaseEnvironment):
             # accepts forward slashes in filesystem paths, and we control
             # the path so we can guarantee no spaces.
             try:
-                from hermes_constants import get_hermes_home
+                from solpi_engine_constants import get_hermes_home
                 cache_dir = get_hermes_home() / "cache" / "terminal"
             except Exception:
                 cache_dir = Path(tempfile.gettempdir()) / "hermes_terminal"

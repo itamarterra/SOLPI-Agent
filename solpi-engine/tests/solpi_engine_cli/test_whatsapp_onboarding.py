@@ -293,7 +293,7 @@ def test_start_whatsapp_onboarding_returns_before_bridge_spawn(monkeypatch, tmp_
 def test_spawn_whatsapp_pairing_process_uses_json_mode(monkeypatch, tmp_path):
     from gateway.platforms import whatsapp_common
     from hermes_cli import web_server as ws
-    import hermes_constants
+    import solpi_engine_constants
 
     bridge_dir = tmp_path / "bridge"
     bridge_dir.mkdir()
@@ -302,8 +302,8 @@ def test_spawn_whatsapp_pairing_process_uses_json_mode(monkeypatch, tmp_path):
     captured = {}
 
     monkeypatch.setattr(whatsapp_common, "resolve_whatsapp_bridge_dir", lambda: bridge_dir)
-    monkeypatch.setattr(hermes_constants, "find_node_executable", lambda command: "/usr/bin/node")
-    monkeypatch.setattr(hermes_constants, "with_hermes_node_path", lambda env=None: {})
+    monkeypatch.setattr(solpi_engine_constants, "find_node_executable", lambda command: "/usr/bin/node")
+    monkeypatch.setattr(solpi_engine_constants, "with_hermes_node_path", lambda env=None: {})
     monkeypatch.setattr(ws, "_ensure_whatsapp_bridge_dependencies", lambda bridge_dir: None)
 
     def fake_popen(args, **kwargs):

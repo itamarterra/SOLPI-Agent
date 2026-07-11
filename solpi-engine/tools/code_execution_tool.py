@@ -998,7 +998,7 @@ def _execute_remote(
             f"HERMES_RPC_TOKEN={shlex.quote(rpc_token)} "
             f"PYTHONDONTWRITEBYTECODE=1"
         )
-        tz = os.getenv("HERMES_TIMEZONE", "").strip()
+        tz = os.getenv("solpi_engine_timeZONE", "").strip()
         if tz:
             env_prefix += f" TZ={shlex.quote(tz)}"
 
@@ -1322,14 +1322,14 @@ def execute_code(
         child_env["PYTHONPATH"] = os.pathsep.join(_pp_parts)
         # Inject user's configured timezone so datetime.now() in sandboxed
         # code reflects the correct wall-clock time.  Only TZ is set —
-        # HERMES_TIMEZONE is an internal Hermes setting and must not leak
+        # solpi_engine_timeZONE is an internal Hermes setting and must not leak
         # into child processes.
-        _tz_name = os.getenv("HERMES_TIMEZONE", "").strip()
+        _tz_name = os.getenv("solpi_engine_timeZONE", "").strip()
         if _tz_name:
             child_env["TZ"] = _tz_name
-        child_env.pop("HERMES_TIMEZONE", None)
+        child_env.pop("solpi_engine_timeZONE", None)
 
-        from hermes_constants import apply_subprocess_home_env
+        from solpi_engine_constants import apply_subprocess_home_env
         apply_subprocess_home_env(child_env)
 
         # Resolve interpreter + CWD based on execute_code mode.

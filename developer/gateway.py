@@ -152,7 +152,7 @@ class SOLPIGateway:
     """
     brain = None
 
-    def __init__(self, brain, port=8090):
+    def __init__(self, brain, port=8095):
         SOLPIGateway.brain = brain
         self.port = port
         try:

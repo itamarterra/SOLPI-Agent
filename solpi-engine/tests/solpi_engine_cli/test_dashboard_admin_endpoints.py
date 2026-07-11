@@ -15,15 +15,15 @@ def _client():
         from starlette.testclient import TestClient
     except ImportError:
         pytest.skip("fastapi/starlette not installed")
-    import hermes_state
-    from hermes_constants import get_hermes_home
+    import solpi_engine_state
+    from solpi_engine_constants import get_hermes_home
     from hermes_cli.web_server import app, _SESSION_HEADER_NAME, _SESSION_TOKEN
 
     client = TestClient(app)
     client.headers[_SESSION_HEADER_NAME] = _SESSION_TOKEN
     # Keep the state DB under the isolated HERMES_HOME for any handler that
     # touches it.
-    hermes_state.DEFAULT_DB_PATH = get_hermes_home() / "state.db"
+    solpi_engine_state.DEFAULT_DB_PATH = get_hermes_home() / "state.db"
     return client, _SESSION_HEADER_NAME
 
 
@@ -166,7 +166,7 @@ class TestMemoryEndpoints:
     @pytest.fixture(autouse=True)
     def _setup(self, _isolate_hermes_home):
         self.client, _ = _client()
-        from hermes_constants import get_hermes_home
+        from solpi_engine_constants import get_hermes_home
 
         (get_hermes_home() / "memories").mkdir(parents=True, exist_ok=True)
 
@@ -183,7 +183,7 @@ class TestMemoryEndpoints:
         assert r.status_code == 400
 
     def test_reset_targets(self):
-        from hermes_constants import get_hermes_home
+        from solpi_engine_constants import get_hermes_home
 
         mem = get_hermes_home() / "memories"
         (mem / "MEMORY.md").write_text("notes")
@@ -445,7 +445,7 @@ class TestSessionManagementEndpoints:
     @pytest.fixture(autouse=True)
     def _setup(self, _isolate_hermes_home):
         self.client, _ = _client()
-        from hermes_state import SessionDB
+        from solpi_engine_state import SessionDB
 
         db = SessionDB()
         db.create_session(session_id="sess-x", source="cli")
@@ -481,7 +481,7 @@ class TestSessionManagementEndpoints:
         # ages (mirrors the CLI: any filter disables the implicit 90-day
         # default). dry_run so nothing is deleted; the seeded session is
         # recent + ended, so it would be invisible under a 90-day cutoff.
-        from hermes_state import SessionDB
+        from solpi_engine_state import SessionDB
 
         db = SessionDB()
         db.create_session(session_id="sess-recent-ended", source="cli")
@@ -924,7 +924,7 @@ class TestDebugShareEndpoint:
     @pytest.fixture(autouse=True)
     def _setup(self, _isolate_hermes_home):
         self.client, self.header = _client()
-        from hermes_constants import get_hermes_home
+        from solpi_engine_constants import get_hermes_home
 
         logs = get_hermes_home() / "logs"
         logs.mkdir(parents=True, exist_ok=True)

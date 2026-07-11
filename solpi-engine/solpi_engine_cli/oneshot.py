@@ -286,7 +286,7 @@ def _create_session_db_for_oneshot():
     advertised but every call returns "Session database not available.".
     """
     try:
-        from hermes_state import SessionDB
+        from solpi_engine_state import SessionDB
 
         return SessionDB()
     except Exception as exc:

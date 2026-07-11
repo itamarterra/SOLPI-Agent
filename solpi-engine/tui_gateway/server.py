@@ -17,7 +17,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Optional
 
-from hermes_constants import (
+from solpi_engine_constants import (
     get_hermes_home,
     get_hermes_home_override,
     reset_hermes_home_override,
@@ -972,7 +972,7 @@ _start_idle_reaper()
 def _get_db():
     global _db, _db_error
     if _db is None:
-        from hermes_state import SessionDB
+        from solpi_engine_state import SessionDB
 
         try:
             _db = SessionDB()
@@ -1348,7 +1348,7 @@ def _start_agent_build(sid: str, session: dict) -> None:
             if profile_home:
                 home_token = set_hermes_home_override(profile_home)
                 try:
-                    from hermes_state import SessionDB
+                    from solpi_engine_state import SessionDB
 
                     session_db = SessionDB(db_path=Path(profile_home) / "state.db")
                 except Exception:
@@ -1681,7 +1681,7 @@ def _ensure_session_db_row(session: dict) -> None:
     # unified list mis-tags it, and resume 404s ("session not found").
     profile_home = session.get("profile_home")
     if profile_home:
-        from hermes_state import SessionDB
+        from solpi_engine_state import SessionDB
 
         try:
             db = SessionDB(db_path=Path(profile_home) / "state.db")
@@ -1807,7 +1807,7 @@ def _session_db(session: dict):
     db, close_db = None, False
     profile_home = session.get("profile_home")
     if profile_home:
-        from hermes_state import SessionDB
+        from solpi_engine_state import SessionDB
 
         try:
             db, close_db = SessionDB(db_path=Path(profile_home) / "state.db"), True
@@ -2529,7 +2529,7 @@ def _display_mouse_tracking(display: dict) -> str:
 
 
 def _load_reasoning_config() -> dict | None:
-    from hermes_constants import parse_reasoning_effort
+    from solpi_engine_constants import parse_reasoning_effort
 
     # Pass the raw value through — ``or ""`` would coerce a YAML boolean
     # False (``reasoning_effort: false``/``off``/``no``) to "", silently
@@ -5203,7 +5203,7 @@ def _(rid, params: dict) -> dict:
     create_reasoning_override = None
     if effort := str(params.get("reasoning_effort") or "").strip():
         try:
-            from hermes_constants import parse_reasoning_effort
+            from solpi_engine_constants import parse_reasoning_effort
 
             create_reasoning_override = parse_reasoning_effort(effort)
         except Exception:
@@ -5557,7 +5557,7 @@ def _(rid, params: dict) -> dict:
     # In a profile scope, the agent OWNS a long-lived db handle bound to that
     # profile (do NOT auto-close it here). Otherwise reuse the shared launch db.
     if profile_home is not None:
-        from hermes_state import SessionDB
+        from solpi_engine_state import SessionDB
 
         db = SessionDB(db_path=profile_home / "state.db")
     else:
@@ -7141,7 +7141,7 @@ def _(rid, params: dict) -> dict:
 
 def _pet_gen_root():
     """Profile-scoped staging dir for in-progress generation drafts."""
-    from hermes_constants import get_hermes_home
+    from solpi_engine_constants import get_hermes_home
 
     root = get_hermes_home() / "cache" / "pet-gen"
     root.mkdir(parents=True, exist_ok=True)
@@ -7762,7 +7762,7 @@ def _(rid, params: dict) -> dict:
     if err:
         return err
 
-    from hermes_constants import display_hermes_home
+    from solpi_engine_constants import display_hermes_home
 
     key = session.get("session_key") or params.get("session_id") or ""
     agent = session.get("agent")
@@ -8210,7 +8210,7 @@ def _(rid, params: dict) -> dict:
 
 
 def _spawn_trees_root():
-    from hermes_constants import get_hermes_home
+    from solpi_engine_constants import get_hermes_home
 
     root = get_hermes_home() / "spawn-trees"
     root.mkdir(parents=True, exist_ok=True)
@@ -10462,7 +10462,7 @@ def _(rid, params: dict) -> dict:
 
     if key == "reasoning":
         try:
-            from hermes_constants import parse_reasoning_effort
+            from solpi_engine_constants import parse_reasoning_effort
 
             arg = str(value or "").strip().lower()
             if arg in {"show", "on"}:
@@ -10911,7 +10911,7 @@ def _is_repo_junk(root: str) -> bool:
     if not root:
         return True
 
-    from hermes_constants import get_hermes_home
+    from solpi_engine_constants import get_hermes_home
 
     real = os.path.realpath(root)
     home = os.path.realpath(os.path.expanduser("~"))
@@ -11200,7 +11200,7 @@ def _(rid, params: dict) -> dict:
         except Exception as e:
             return _err(rid, 5013, str(e))
     if key == "profile":
-        from hermes_constants import display_hermes_home
+        from solpi_engine_constants import display_hermes_home
 
         return _ok(rid, {"home": str(_hermes_home), "display": display_hermes_home()})
     if key == "project":

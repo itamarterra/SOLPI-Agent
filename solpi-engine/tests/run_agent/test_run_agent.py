@@ -5190,7 +5190,7 @@ class TestRunConversation:
         retry up to 3 times rather than hard-failing after one — and recover
         if a retry produces a complete tool call. Regression for the false
         'model hit max output tokens' on Opus when the stream simply dropped."""
-        from hermes_constants import PARTIAL_STREAM_STUB_ID
+        from solpi_engine_constants import PARTIAL_STREAM_STUB_ID
 
         self._setup_agent(agent)
         agent.valid_tool_names.add("write_file")
@@ -6855,7 +6855,7 @@ class TestStreamingApiCall:
         # (id=PARTIAL_STREAM_STUB_ID, tool_calls=None so it can't execute,
         # finish_reason=length so the loop's continuation machinery fires with
         # chunking guidance) rather than stamping a normal 'length' truncation.
-        from hermes_constants import PARTIAL_STREAM_STUB_ID
+        from solpi_engine_constants import PARTIAL_STREAM_STUB_ID
         chunks = [
             _make_chunk(tool_calls=[_make_tc_delta(0, "call_1", "write_file", '{"path":"x.txt","content":"hel')]),
         ]

@@ -141,7 +141,7 @@ class TestProfilePathResolutionUnderMultiplexScope:
         import threading
 
         from gateway.run import _profile_runtime_scope
-        from hermes_constants import get_hermes_home
+        from solpi_engine_constants import get_hermes_home
         from tools.thread_context import propagate_context_to_thread
 
         _prof_a, prof_b = self._profiles(tmp_path)

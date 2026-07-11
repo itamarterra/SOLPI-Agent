@@ -28,7 +28,7 @@ from pathlib import Path
 from typing import Dict, Optional, Any
 
 from hermes_cli._subprocess_compat import windows_detach_popen_kwargs
-from hermes_constants import (
+from solpi_engine_constants import (
     find_node_executable,
     get_hermes_dir,
     with_hermes_node_path,

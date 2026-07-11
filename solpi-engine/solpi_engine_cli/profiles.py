@@ -49,7 +49,7 @@ _PROFILE_DIRS = [
     # Back-compat/Docker HOME for tool subprocesses. Host subprocesses keep
     # the user's real HOME by default so normal CLI credentials remain visible;
     # containers still use this directory for persistent HOME state.
-    # See hermes_constants.get_subprocess_home().
+    # See solpi_engine_constants.get_subprocess_home().
     "home",
 ]
 
@@ -209,7 +209,7 @@ _DEFAULT_EXPORT_EXCLUDE_ROOT = frozenset({
     "node_modules",         # npm packages
     # Databases & runtime state
     "state.db", "state.db-shm", "state.db-wal",
-    "hermes_state.db",
+    "solpi_engine_state.db",
     "response_store.db", "response_store.db-shm", "response_store.db-wal",
     "gateway.pid", "gateway_state.json", "processes.json",
     "auth.json",            # API keys, OAuth tokens, credential pools
@@ -232,7 +232,7 @@ _DEFAULT_EXPORT_EXCLUDE_ROOT = frozenset({
 # Sensitive runtime infrastructure (``state.db``, ``logs/``, ``auth.*``,
 # other profiles) is intentionally *not* in this list so the export stays
 # a portable, credential-free snapshot of the user-facing surface
-# (#58394). Add new artifacts here when introduced in ``hermes_constants``.
+# (#58394). Add new artifacts here when introduced in ``solpi_engine_constants``.
 _DEFAULT_EXPORT_INCLUDE_ROOT = frozenset({
     # Configuration / persona
     "config.yaml", "SOUL.md", "MEMORY.md", "USER.md", "todo.json",
@@ -282,7 +282,7 @@ def _get_default_hermes_home() -> Path:
     In Docker/custom deployments where HERMES_HOME is outside ``~/.hermes``
     (e.g. ``/opt/data``), returns HERMES_HOME directly.
     """
-    from hermes_constants import get_default_hermes_root
+    from solpi_engine_constants import get_default_hermes_root
     return get_default_hermes_root()
 
 
@@ -519,7 +519,7 @@ def _migrate_profile_config_if_outdated(profile_dir: Path) -> None:
         return
 
     try:
-        from hermes_constants import reset_hermes_home_override, set_hermes_home_override
+        from solpi_engine_constants import reset_hermes_home_override, set_hermes_home_override
         from hermes_cli.config import check_config_version, migrate_config
 
         token = set_hermes_home_override(str(profile_dir))
@@ -1045,7 +1045,7 @@ def create_profile(
     if clone_from is not None or clone_all or clone_config:
         if clone_from is None:
             # Default: clone from active profile
-            from hermes_constants import get_hermes_home
+            from solpi_engine_constants import get_hermes_home
             source_dir = get_hermes_home()
         else:
             clone_from = normalize_profile_name(clone_from)
@@ -1836,7 +1836,7 @@ def get_active_profile_name() -> str:
     Returns the profile name if HERMES_HOME points into ``~/.hermes/profiles/<name>``.
     Returns ``"custom"`` if HERMES_HOME is set to an unrecognized path.
     """
-    from hermes_constants import get_hermes_home
+    from solpi_engine_constants import get_hermes_home
     hermes_home = get_hermes_home()
     resolved = hermes_home.resolve()
 

@@ -57,7 +57,7 @@ import shutil
 import subprocess
 import time
 from pathlib import Path
-from hermes_constants import get_hermes_home
+from solpi_engine_constants import get_hermes_home
 from hermes_cli._subprocess_compat import windows_hide_flags
 from typing import Dict, List, Optional, Set, Tuple
 

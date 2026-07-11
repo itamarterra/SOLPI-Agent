@@ -5,7 +5,7 @@ import os
 from unittest.mock import patch
 
 from agent.secret_scope import reset_secret_scope, set_secret_scope
-from hermes_constants import reset_hermes_home_override, set_hermes_home_override
+from solpi_engine_constants import reset_hermes_home_override, set_hermes_home_override
 from gateway.config import (
     ChannelOverride,
     GatewayConfig,

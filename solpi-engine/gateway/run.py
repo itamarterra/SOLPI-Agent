@@ -13,12 +13,12 @@ Usage:
     python cli.py --gateway
 """
 
-# IMPORTANT: hermes_bootstrap must be the very first import — UTF-8 stdio
-# on Windows.  No-op on POSIX.  See hermes_bootstrap.py for full rationale.
+# IMPORTANT: solpi_engine_bootstrap must be the very first import — UTF-8 stdio
+# on Windows.  No-op on POSIX.  See solpi_engine_bootstrap.py for full rationale.
 try:
-    import hermes_bootstrap  # noqa: F401
+    import solpi_engine_bootstrap  # noqa: F401
 except ModuleNotFoundError:
-    # Graceful fallback when hermes_bootstrap isn't registered in the venv
+    # Graceful fallback when solpi_engine_bootstrap isn't registered in the venv
     # yet — happens during partial ``hermes update`` where git-reset landed
     # new code but ``uv pip install -e .`` didn't finish.  Missing bootstrap
     # means UTF-8 stdio setup is skipped on Windows; POSIX is unaffected.
@@ -572,7 +572,7 @@ def _telegramize_command_mentions(text: str, platform: Any) -> str:
 # after a gateway restart when the user's next message starts new work.
 #
 # The freshness signal is the timestamp of the last transcript row, which
-# ``hermes_state.get_messages`` carries on every persisted message.  This
+# ``solpi_engine_state.get_messages`` carries on every persisted message.  This
 # handles the two auto-continue cases uniformly:
 #   * resume_pending (gateway restart/shutdown watchdog marked the session)
 #   * tool-tail     (last persisted message is a tool result the agent
@@ -829,7 +829,7 @@ def _build_gateway_agent_history(
     timestamp prefix from its stored metadata.
     """
 
-    from hermes_time import get_timezone as _get_msg_tz
+    from solpi_engine_time import get_timezone as _get_msg_tz
     from gateway.message_timestamps import (
         render_user_content_with_timestamp as _render_msg_ts,
     )
@@ -1299,7 +1299,7 @@ _ensure_ssl_certs()
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 # Resolve Hermes home directory (respects HERMES_HOME override)
-from hermes_constants import get_hermes_home, get_hermes_home_override
+from solpi_engine_constants import get_hermes_home, get_hermes_home_override
 from utils import atomic_json_write, atomic_yaml_write, base_url_host_matches, is_truthy_value
 _hermes_home = get_hermes_home()
 
@@ -1428,7 +1428,7 @@ def _profile_runtime_scope(profile_home: "Path"):
     returns an isolated dict — which is what keeps subprocesses (MCP, kanban)
     from inheriting cross-profile secrets.
     """
-    from hermes_constants import set_hermes_home_override, reset_hermes_home_override
+    from solpi_engine_constants import set_hermes_home_override, reset_hermes_home_override
     from agent.secret_scope import (
         build_profile_secret_scope,
         set_secret_scope,
@@ -1614,10 +1614,10 @@ if _config_path.exists():
                 os.environ["HERMES_GATEWAY_BUSY_STEER_ACK_ENABLED"] = str(
                     _display_cfg["busy_steer_ack_enabled"]
                 )
-        # Timezone: bridge config.yaml → HERMES_TIMEZONE env var.
+        # Timezone: bridge config.yaml → solpi_engine_timeZONE env var.
         _tz_cfg = _cfg.get("timezone", "")
         if _tz_cfg and isinstance(_tz_cfg, str):
-            os.environ["HERMES_TIMEZONE"] = _tz_cfg.strip()
+            os.environ["solpi_engine_timeZONE"] = _tz_cfg.strip()
         # Security settings
         _security_cfg = _cfg.get("security", {})
         if isinstance(_security_cfg, dict):
@@ -1683,7 +1683,7 @@ if _config_path.exists():
 
 # Apply IPv4 preference if configured (before any HTTP clients are created).
 try:
-    from hermes_constants import apply_ipv4_preference
+    from solpi_engine_constants import apply_ipv4_preference
     _network_cfg = (_cfg if '_cfg' in dir() else {}).get("network", {})
     if isinstance(_network_cfg, dict) and _network_cfg.get("force_ipv4"):
         apply_ipv4_preference(force=True)
@@ -2266,7 +2266,7 @@ def _check_unavailable_skill(command_name: str) -> str | None:
                     )
 
         # Check optional skills (shipped with repo but not installed)
-        from hermes_constants import get_optional_skills_dir
+        from solpi_engine_constants import get_optional_skills_dir
         repo_root = Path(__file__).resolve().parent.parent
         optional_dir = get_optional_skills_dir(repo_root / "optional-skills")
         if optional_dir.exists():
@@ -3039,7 +3039,7 @@ class GatewayRunner(GatewayAuthorizationMixin, GatewayKanbanWatchersMixin, Gatew
         # Initialize session database for session_search tool support
         self._session_db = None
         try:
-            from hermes_state import AsyncSessionDB, SessionDB
+            from solpi_engine_state import AsyncSessionDB, SessionDB
             self._session_db = AsyncSessionDB(SessionDB())
         except Exception as e:
             # WARNING (not DEBUG) so the failure appears in errors.log — matches
@@ -3047,7 +3047,7 @@ class GatewayRunner(GatewayAuthorizationMixin, GatewayKanbanWatchersMixin, Gatew
             # HERMES_HOME silently lost /resume, /title, /history, /branch, and
             # session search without this.  The underlying cause (usually
             # "locking protocol" from NFS) is now also captured by
-            # hermes_state.get_last_init_error() for slash-command error strings.
+            # solpi_engine_state.get_last_init_error() for slash-command error strings.
             logger.warning("SQLite session store not available: %s", e)
 
         # Opportunistic state.db maintenance: prune ended sessions older
@@ -4795,7 +4795,7 @@ class GatewayRunner(GatewayAuthorizationMixin, GatewayKanbanWatchersMixin, Gatew
         "minimal", "low", "medium", "high", "xhigh". Returns None to use
         default (medium).
         """
-        from hermes_constants import parse_reasoning_effort
+        from solpi_engine_constants import parse_reasoning_effort
         cfg = _load_gateway_runtime_config()
         # Keep the raw value — coercing with ``or ""`` turns a YAML boolean
         # False (``reasoning_effort: false``/``off``/``no``) into "", silently
@@ -11507,7 +11507,7 @@ class GatewayRunner(GatewayAuthorizationMixin, GatewayKanbanWatchersMixin, Gatew
         # human-readable prefix the model sees) is gated behind
         # gateway.message_timestamps.enabled — default OFF.
         try:
-            from hermes_time import get_timezone as _get_evt_tz
+            from solpi_engine_time import get_timezone as _get_evt_tz
             from gateway.message_timestamps import (
                 coerce_message_timestamp as _coerce_msg_ts,
                 render_user_content_with_timestamp as _render_msg_ts,
@@ -13849,7 +13849,7 @@ class GatewayRunner(GatewayAuthorizationMixin, GatewayKanbanWatchersMixin, Gatew
     async def _disable_telegram_topic_mode_for_chat(self, source: SessionSource) -> str:
         """Cleanly disable topic mode for a chat via /topic off."""
         if not self._session_db:
-            from hermes_state import format_session_db_unavailable
+            from solpi_engine_state import format_session_db_unavailable
             return format_session_db_unavailable(prefix=t("gateway.shared.session_db_unavailable_prefix"))
         chat_id = str(source.chat_id or "")
         if not chat_id:
@@ -16915,7 +16915,7 @@ class GatewayRunner(GatewayAuthorizationMixin, GatewayKanbanWatchersMixin, Gatew
             name = (source.profile or "").strip() or get_active_profile_name() or "default"
             return get_profile_dir(name)
         except Exception:
-            from hermes_constants import get_hermes_home
+            from solpi_engine_constants import get_hermes_home
             return get_hermes_home()
 
     async def _run_agent_inner(
@@ -20474,7 +20474,7 @@ async def start_gateway(config: Optional[GatewayConfig] = None, replace: bool = 
     # Centralized logging — agent.log (INFO+), errors.log (WARNING+),
     # and gateway.log (INFO+, gateway-component records only).
     # Idempotent, so repeated calls from AIAgent.__init__ won't duplicate.
-    from hermes_logging import setup_logging, _safe_stderr
+    from solpi_engine_logging import setup_logging, _safe_stderr
     setup_logging(hermes_home=_hermes_home, mode="gateway")
 
     # Startup security posture audit — warn-on-load, never blocks. Surfaces
@@ -20943,7 +20943,7 @@ def _exit_after_graceful_shutdown(exit_code: int) -> None:
 
     Logging IS drained here: the rotating file handlers are driven by an
     async ``QueueListener`` on a dedicated thread (see
-    ``hermes_logging._register_queued_handler``), so records emitted right
+    ``solpi_engine_logging._register_queued_handler``), so records emitted right
     before shutdown may still be sitting in the in-memory queue. ``os._exit``
     below bypasses ``atexit``, so the ``atexit``-registered listener drain
     never runs on this path — we drain explicitly (bounded, via
@@ -20972,7 +20972,7 @@ def _exit_after_graceful_shutdown(exit_code: int) -> None:
     # join would re-freeze the shutdown. drain_log_queue() no-ops when logging
     # never initialized a queue (very early aborts), so this is always safe.
     try:
-        from hermes_logging import drain_log_queue
+        from solpi_engine_logging import drain_log_queue
         drain_log_queue(timeout=1.0)
     except Exception:
         pass

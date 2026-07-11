@@ -22,7 +22,7 @@ Mechanism:
 
 ``hermes_cli/main.py`` (the ``hermes update`` flow, ~line 9326) already
 acknowledges this exact hazard -- "source files on disk are newer than cached
-Python modules in this process" -- and reloads ``hermes_constants`` after the
+Python modules in this process" -- and reloads ``solpi_engine_constants`` after the
 pull, but NOT ``utils``. Any ``utils`` consumer added in the same release stays
 exposed until the process restarts.
 

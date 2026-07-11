@@ -10,7 +10,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from hermes_state import SessionDB
+from solpi_engine_state import SessionDB
 from tools.todo_tool import TodoStore
 
 

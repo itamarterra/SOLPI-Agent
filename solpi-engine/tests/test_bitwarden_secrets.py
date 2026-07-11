@@ -45,9 +45,9 @@ def hermes_home(tmp_path, monkeypatch):
     home.mkdir()
     monkeypatch.setenv("HERMES_HOME", str(home))
     # Some modules cache get_hermes_home; clear if needed.
-    import hermes_constants
-    if hasattr(hermes_constants, "_HERMES_HOME_CACHE"):
-        hermes_constants._HERMES_HOME_CACHE = None  # type: ignore[attr-defined]
+    import solpi_engine_constants
+    if hasattr(solpi_engine_constants, "_HERMES_HOME_CACHE"):
+        solpi_engine_constants._HERMES_HOME_CACHE = None  # type: ignore[attr-defined]
     return home
 
 

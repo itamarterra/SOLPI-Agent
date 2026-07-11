@@ -49,7 +49,7 @@ from hermes_cli.config import (
     read_raw_config,
     require_readable_config_before_write,
 )
-from hermes_constants import OPENROUTER_BASE_URL, secure_parent_dir
+from solpi_engine_constants import OPENROUTER_BASE_URL, secure_parent_dir
 from agent.credential_persistence import sanitize_borrowed_credential_payload
 from utils import atomic_replace, atomic_yaml_write, env_float, is_truthy_value
 
@@ -924,7 +924,7 @@ def _global_auth_file_path() -> Optional[Path]:
     See issue #18594 follow-up (credential_pool shadowing).
     """
     try:
-        from hermes_constants import get_default_hermes_root
+        from solpi_engine_constants import get_default_hermes_root
         global_root = get_default_hermes_root()
     except Exception:
         return None
@@ -4632,7 +4632,7 @@ def _nous_shared_auth_dir() -> Path:
     Honors ``HERMES_SHARED_AUTH_DIR`` so tests can redirect it to a tmp
     path without touching the real user's home. Defaults to
     ``<hermes-root>/shared/``, where ``<hermes-root>`` is what
-    :func:`hermes_constants.get_default_hermes_root` returns — so
+    :func:`solpi_engine_constants.get_default_hermes_root` returns — so
     Linux/macOS classic installs land at ``~/.hermes/shared/``, native
     Windows installs at ``%LOCALAPPDATA%\\hermes\\shared\\``, and
     Docker / custom ``HERMES_HOME`` deployments at
@@ -4642,7 +4642,7 @@ def _nous_shared_auth_dir() -> Path:
     override = os.getenv("HERMES_SHARED_AUTH_DIR", "").strip()
     if override:
         return Path(override).expanduser()
-    from hermes_constants import get_default_hermes_root
+    from solpi_engine_constants import get_default_hermes_root
     return get_default_hermes_root() / "shared"
 
 
@@ -4655,7 +4655,7 @@ def _nous_shared_store_path() -> Path:
     # so forgetting to set it fails loudly instead of writing to the real
     # shared store).
     if os.environ.get("PYTEST_CURRENT_TEST"):
-        from hermes_constants import get_default_hermes_root
+        from solpi_engine_constants import get_default_hermes_root
         real_home_shared = (
             get_default_hermes_root() / "shared" / NOUS_SHARED_STORE_FILENAME
         ).resolve(strict=False)
@@ -6986,7 +6986,7 @@ def _login_openai_codex(
     config_path = _update_config_for_provider("openai-codex", creds.get("base_url", DEFAULT_CODEX_BASE_URL))
     print()
     print("Login successful!")
-    from hermes_constants import display_hermes_home as _dhh
+    from solpi_engine_constants import display_hermes_home as _dhh
     print(f"  Auth state: {_dhh()}/auth.json")
     print(f"  Config updated: {config_path} (model.provider=openai-codex)")
 
@@ -7054,7 +7054,7 @@ def _login_xai_oauth(
     config_path = _update_config_for_provider("xai-oauth", creds.get("base_url", DEFAULT_XAI_OAUTH_BASE_URL))
     print()
     print("Login successful!")
-    from hermes_constants import display_hermes_home as _dhh
+    from solpi_engine_constants import display_hermes_home as _dhh
     print(f"  Auth state: {_dhh()}/auth.json")
     print(f"  Config updated: {config_path} (model.provider=xai-oauth)")
 

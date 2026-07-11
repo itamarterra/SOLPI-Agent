@@ -581,7 +581,7 @@ def test_config_set_requires_confirmation_then_writes(_isolate_hermes_home):
 
 
 def test_sessions_list_and_stats_use_isolated_session_store(_isolate_hermes_home):
-    from hermes_state import SessionDB
+    from solpi_engine_state import SessionDB
 
     db = SessionDB()
     try:

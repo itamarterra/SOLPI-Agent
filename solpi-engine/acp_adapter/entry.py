@@ -13,12 +13,12 @@ Usage::
     hermes-acp
 """
 
-# IMPORTANT: hermes_bootstrap must be the very first import — UTF-8 stdio
-# on Windows.  No-op on POSIX.  See hermes_bootstrap.py for full rationale.
+# IMPORTANT: solpi_engine_bootstrap must be the very first import — UTF-8 stdio
+# on Windows.  No-op on POSIX.  See solpi_engine_bootstrap.py for full rationale.
 try:
-    import hermes_bootstrap  # noqa: F401
+    import solpi_engine_bootstrap  # noqa: F401
 except ModuleNotFoundError:
-    # Graceful fallback when hermes_bootstrap isn't registered in the venv
+    # Graceful fallback when solpi_engine_bootstrap isn't registered in the venv
     # yet — happens during partial ``hermes update`` where git-reset landed
     # new code but ``uv pip install -e .`` didn't finish.  Missing bootstrap
     # means UTF-8 stdio setup is skipped on Windows; POSIX is unaffected.
@@ -27,14 +27,14 @@ else:
     # Stop a ``utils/``/``proxy/``/``ui/`` package in the launch directory from
     # shadowing Hermes's own modules — ``hermes acp`` can be started from any
     # cwd, including a project that has same-named packages on its path.
-    hermes_bootstrap.harden_import_path()
+    solpi_engine_bootstrap.harden_import_path()
 
 import argparse
 import asyncio
 import logging
 import sys
 from pathlib import Path
-from hermes_constants import get_hermes_home
+from solpi_engine_constants import get_hermes_home
 
 
 # Methods clients send as periodic liveness probes. They are not part of the

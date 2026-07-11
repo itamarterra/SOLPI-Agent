@@ -27,7 +27,7 @@ from rich import box as rich_box
 from rich.markup import escape as _escape
 from rich.panel import Panel
 
-from hermes_constants import display_hermes_home, is_termux as _is_termux_environment
+from solpi_engine_constants import display_hermes_home, is_termux as _is_termux_environment
 from hermes_cli.browser_connect import (
     DEFAULT_BROWSER_CDP_URL,
     is_browser_debug_ready,
@@ -151,7 +151,7 @@ class CLICommandsMixin:
             create_quick_snapshot, list_quick_snapshots,
             restore_quick_snapshot, prune_quick_snapshots,
         )
-        from hermes_constants import display_hermes_home
+        from solpi_engine_constants import display_hermes_home
 
         parts = command.split()
         subcmd = parts[1].lower() if len(parts) > 1 else "list"
@@ -504,7 +504,7 @@ class CLICommandsMixin:
 
     def _handle_profile_command(self):
         """Display active profile name and home directory."""
-        from hermes_constants import display_hermes_home
+        from solpi_engine_constants import display_hermes_home
         from hermes_cli.profiles import get_active_profile_name
 
         display = display_hermes_home()
@@ -533,7 +533,7 @@ class CLICommandsMixin:
             False to signal CLI exit, True to keep going.
         """
         from cli import _cprint
-        from hermes_state import format_session_db_unavailable
+        from solpi_engine_state import format_session_db_unavailable
 
         parts = cmd_original.split(maxsplit=1)
         if len(parts) < 2 or not parts[1].strip():
@@ -583,7 +583,7 @@ class CLICommandsMixin:
         # Make sure we have a SessionDB handle.
         if not self._session_db:
             try:
-                from hermes_state import SessionDB
+                from solpi_engine_state import SessionDB
                 self._session_db = SessionDB()
             except Exception:
                 pass
@@ -704,7 +704,7 @@ class CLICommandsMixin:
         self._pending_resume_sessions = None
 
         if not self._session_db:
-            from hermes_state import format_session_db_unavailable
+            from solpi_engine_state import format_session_db_unavailable
             _cprint(f"  {format_session_db_unavailable()}")
             return
 
@@ -847,7 +847,7 @@ class CLICommandsMixin:
         # Bare /sessions or /sessions list — show recent sessions inline.
         if not arg or sub in {"list", "ls", "browse"}:
             if not self._session_db:
-                from hermes_state import format_session_db_unavailable
+                from solpi_engine_state import format_session_db_unavailable
                 _cprint(f"  {format_session_db_unavailable()}")
                 return
             if not self._show_recent_sessions(reason="sessions"):
@@ -870,7 +870,7 @@ class CLICommandsMixin:
             return
 
         if not self._session_db:
-            from hermes_state import format_session_db_unavailable
+            from solpi_engine_state import format_session_db_unavailable
             _cprint(f"  {format_session_db_unavailable()}")
             return
 

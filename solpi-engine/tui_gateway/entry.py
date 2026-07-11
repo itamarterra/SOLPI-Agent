@@ -2,13 +2,13 @@ import os
 import sys
 
 # Stop a ``utils/`` (or ``proxy/``, ``ui/``) package in the launch directory
-# from shadowing Hermes's own top-level modules.  ``hermes_bootstrap`` lives at
+# from shadowing Hermes's own top-level modules.  ``solpi_engine_bootstrap`` lives at
 # the repo root next to this package, so importing it is safe before the guard
 # runs (its name won't collide with a user package), and it owns the canonical
 # path-hardening logic shared with the other entry points.
-import hermes_bootstrap
+import solpi_engine_bootstrap
 
-hermes_bootstrap.harden_import_path()
+solpi_engine_bootstrap.harden_import_path()
 
 import json
 import logging

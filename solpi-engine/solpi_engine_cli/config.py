@@ -473,9 +473,9 @@ def detect_install_method(project_root: Optional[Path] = None) -> str:
 
 
 def _running_in_container() -> bool:
-    """Thin wrapper around ``hermes_constants.is_container`` (import-safe)."""
+    """Thin wrapper around ``solpi_engine_constants.is_container`` (import-safe)."""
     try:
-        from hermes_constants import is_container
+        from solpi_engine_constants import is_container
 
         return is_container()
     except Exception:
@@ -705,7 +705,7 @@ def get_container_exec_info() -> Optional[dict]:
     if os.environ.get("HERMES_DEV") == "1":
         return None
 
-    from hermes_constants import is_container
+    from solpi_engine_constants import is_container
     if is_container():
         return None
 
@@ -740,8 +740,8 @@ def get_container_exec_info() -> Optional[dict]:
 # Config paths
 # =============================================================================
 
-# Re-export from hermes_constants — canonical definition lives there.
-from hermes_constants import get_hermes_home  # noqa: F811,E402
+# Re-export from solpi_engine_constants — canonical definition lives there.
+from solpi_engine_constants import get_hermes_home  # noqa: F811,E402
 from utils import atomic_replace, fast_safe_load
 
 def get_config_path() -> Path:
@@ -5518,10 +5518,10 @@ def migrate_config(interactive: bool = True, quiet: bool = False) -> Dict[str, A
     if current_ver < 5:
         config = read_raw_config()
         if "timezone" not in config:
-            old_tz = os.getenv("HERMES_TIMEZONE", "")
+            old_tz = os.getenv("solpi_engine_timeZONE", "")
             if old_tz and old_tz.strip():
                 config["timezone"] = old_tz.strip()
-                results["config_added"].append(f"timezone={old_tz.strip()} (from HERMES_TIMEZONE)")
+                results["config_added"].append(f"timezone={old_tz.strip()} (from solpi_engine_timeZONE)")
             else:
                 config["timezone"] = ""
                 results["config_added"].append("timezone= (empty, uses server-local)")

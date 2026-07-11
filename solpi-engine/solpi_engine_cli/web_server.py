@@ -1188,7 +1188,7 @@ def _count_status_active_sessions() -> int:
     connection so /api/status never tries to initialise or migrate state.db
     while another Hermes process is writing to it.
     """
-    from hermes_state import DEFAULT_DB_PATH, SessionDB
+    from solpi_engine_state import DEFAULT_DB_PATH, SessionDB
 
     # read_only opens require the DB to already exist (see SessionDB.__init__
     # read_only contract) — on a fresh install every /api/status poll would
@@ -1617,7 +1617,7 @@ def _default_hermes_root_is_opt_data() -> bool:
     if not raw:
         return False
     try:
-        from hermes_constants import get_default_hermes_root
+        from solpi_engine_constants import get_default_hermes_root
 
         root = get_default_hermes_root().expanduser().resolve(strict=False)
     except (OSError, RuntimeError):
@@ -1643,7 +1643,7 @@ def _dashboard_local_update_managed_externally() -> bool:
     if _default_hermes_root_is_opt_data():
         return True
     try:
-        from hermes_constants import is_container
+        from solpi_engine_constants import is_container
 
         if not is_container():
             return False
@@ -4069,7 +4069,7 @@ def get_profiles_sessions(
     if order not in ("created", "recent"):
         raise HTTPException(status_code=400, detail="order must be one of: created, recent")
 
-    from hermes_state import SessionDB
+    from solpi_engine_state import SessionDB
     from hermes_cli import profiles as profiles_mod
 
     targets: List[Tuple[str, Path]] = []
@@ -7007,7 +7007,7 @@ def _normalize_whatsapp_allowed_users(value: Any) -> str:
 
 
 def _whatsapp_session_path() -> Path:
-    from hermes_constants import get_hermes_dir
+    from solpi_engine_constants import get_hermes_dir
 
     return get_hermes_dir("platforms/whatsapp/session", "whatsapp/session")
 
@@ -7059,7 +7059,7 @@ def _ensure_whatsapp_bridge_dependencies(bridge_dir: Path) -> None:
     if (bridge_dir / "node_modules").exists():
         return
 
-    from hermes_constants import find_node_executable, with_hermes_node_path
+    from solpi_engine_constants import find_node_executable, with_hermes_node_path
     from utils import env_int
 
     npm = find_node_executable("npm")
@@ -7103,7 +7103,7 @@ def _ensure_whatsapp_bridge_dependencies(bridge_dir: Path) -> None:
 
 def _spawn_whatsapp_pairing_process(session_path: Path, mode: str) -> subprocess.Popen:
     from gateway.platforms.whatsapp_common import resolve_whatsapp_bridge_dir
-    from hermes_constants import find_node_executable, with_hermes_node_path
+    from solpi_engine_constants import find_node_executable, with_hermes_node_path
 
     bridge_dir = resolve_whatsapp_bridge_dir()
     bridge_script = bridge_dir / "bridge.js"
@@ -9678,7 +9678,7 @@ def _open_session_db_for_profile(profile: Optional[str]):
     ``state.db`` directly so the primary backend can serve cross-profile reads
     (transcripts, detail) without spawning that profile's backend.
     """
-    from hermes_state import SessionDB
+    from solpi_engine_state import SessionDB
     if not profile:
         return SessionDB()
     _name, home = _cron_profile_home(profile)
@@ -9966,7 +9966,7 @@ async def get_logs(
         return {"file": file, "lines": []}
 
     try:
-        from hermes_logging import COMPONENT_PREFIXES
+        from solpi_engine_logging import COMPONENT_PREFIXES
     except ImportError:
         COMPONENT_PREFIXES = {}
 
@@ -10185,7 +10185,7 @@ def _call_cron_for_profile(target_profile: Optional[str], func_name: str, *args,
     """
     profile_name, home = _cron_profile_home(target_profile)
     from cron import jobs as cron_jobs
-    from hermes_constants import (
+    from solpi_engine_constants import (
         reset_hermes_home_override,
         set_hermes_home_override,
     )
@@ -10497,7 +10497,7 @@ def _fire_cron_job_for_profile(profile: str, job_id: str) -> bool:
     _profile_name, home = _cron_profile_home(profile)
     from cron import jobs as cron_jobs
     from cron.scheduler_provider import resolve_cron_scheduler
-    from hermes_constants import (
+    from solpi_engine_constants import (
         reset_hermes_home_override,
         set_hermes_home_override,
     )
@@ -12655,7 +12655,7 @@ def _write_profile_model(profile_dir: Path, provider: str, model: str) -> None:
     Clears any stale ``base_url`` / ``context_length`` the same way
     ``POST /api/model/set`` does, since the new model may differ.
     """
-    from hermes_constants import set_hermes_home_override, reset_hermes_home_override
+    from solpi_engine_constants import set_hermes_home_override, reset_hermes_home_override
 
     token = set_hermes_home_override(str(profile_dir))
     try:
@@ -12679,7 +12679,7 @@ def _write_profile_mcp_servers(profile_dir: Path, servers: List["MCPServerCreate
     but batched so the whole profile-create write is a single config save.
     Returns the number of servers written.
     """
-    from hermes_constants import set_hermes_home_override, reset_hermes_home_override
+    from solpi_engine_constants import set_hermes_home_override, reset_hermes_home_override
     from hermes_cli.mcp_security import validate_mcp_server_entry
 
     written = 0
@@ -12735,7 +12735,7 @@ def _disable_unselected_skills(profile_dir: Path, keep: List[str]) -> int:
     install.) Scoped to the profile via the HERMES_HOME override. Returns the
     number of skills newly disabled.
     """
-    from hermes_constants import set_hermes_home_override, reset_hermes_home_override
+    from solpi_engine_constants import set_hermes_home_override, reset_hermes_home_override
     from hermes_cli.skills_config import get_disabled_skills, save_disabled_skills
 
     keep_set = {s.strip() for s in keep if s and s.strip()}
@@ -13151,7 +13151,7 @@ def _profile_scope(profile: Optional[str]):
     """
     requested = (profile or "").strip()
 
-    from hermes_constants import (
+    from solpi_engine_constants import (
         get_hermes_home,
         set_hermes_home_override,
         reset_hermes_home_override,
@@ -13207,7 +13207,7 @@ def _config_profile_scope(profile: Optional[str]):
         yield None
         return
 
-    from hermes_constants import (
+    from solpi_engine_constants import (
         set_hermes_home_override,
         reset_hermes_home_override,
     )

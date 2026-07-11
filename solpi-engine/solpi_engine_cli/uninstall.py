@@ -12,7 +12,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-from hermes_constants import get_hermes_home
+from solpi_engine_constants import get_hermes_home
 
 from hermes_cli.colors import Colors, color
 
@@ -421,7 +421,7 @@ def _is_windows() -> bool:
 def _is_default_hermes_home(hermes_home: Path) -> bool:
     """Return True when ``hermes_home`` points at the default (non-profile) root."""
     try:
-        from hermes_constants import get_default_hermes_root
+        from solpi_engine_constants import get_default_hermes_root
         return hermes_home.resolve() == get_default_hermes_root().resolve()
     except Exception:
         return False
@@ -935,7 +935,7 @@ def main(argv=None) -> int:
     The desktop launches this with the system Python + ``PYTHONPATH=<agentRoot>``
     so ``import hermes_cli`` resolves from source while the venv is torn down.
 
-    This module imports only stdlib + ``hermes_constants`` + ``hermes_cli.colors``
+    This module imports only stdlib + ``solpi_engine_constants`` + ``hermes_cli.colors``
     (and lazily ``hermes_cli.gui_uninstall``), so it runs fine under a bare
     system Python with no site-packages from the venv.
     """

@@ -42,7 +42,7 @@ import contextvars as _ctxvars
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
-from hermes_constants import get_hermes_home, display_hermes_home
+from solpi_engine_constants import get_hermes_home, display_hermes_home
 from utils import atomic_replace, is_truthy_value
 from hermes_cli.config import cfg_get
 
@@ -613,7 +613,7 @@ def _find_skill_in_other_profiles(name: str) -> List[Tuple[str, Path]]:
     """
     matches: List[Tuple[str, Path]] = []
     try:
-        from hermes_constants import get_default_hermes_root
+        from solpi_engine_constants import get_default_hermes_root
         from agent.skill_utils import is_excluded_skill_path
     except Exception:
         return matches

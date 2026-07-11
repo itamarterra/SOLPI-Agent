@@ -13,7 +13,7 @@ import yaml
 @pytest.fixture
 def isolated_profiles(tmp_path, monkeypatch, _isolate_hermes_home):
     """Isolated default home + one named profile, each with config + .env."""
-    from hermes_constants import get_hermes_home
+    from solpi_engine_constants import get_hermes_home
     from hermes_cli import profiles
 
     default_home = get_hermes_home()
@@ -36,11 +36,11 @@ def client(monkeypatch, isolated_profiles):
     except ImportError:
         pytest.skip("fastapi/starlette not installed")
 
-    import hermes_state
-    from hermes_constants import get_hermes_home
+    import solpi_engine_state
+    from solpi_engine_constants import get_hermes_home
     from hermes_cli.web_server import app, _SESSION_HEADER_NAME, _SESSION_TOKEN
 
-    monkeypatch.setattr(hermes_state, "DEFAULT_DB_PATH", get_hermes_home() / "state.db")
+    monkeypatch.setattr(solpi_engine_state, "DEFAULT_DB_PATH", get_hermes_home() / "state.db")
     c = TestClient(app)
     c.headers[_SESSION_HEADER_NAME] = _SESSION_TOKEN
     return c
@@ -180,7 +180,7 @@ class TestProfileScopedMcp:
         scope active so env-placeholder expansion reads the profile's .env,
         matching the config the server was saved into."""
         import hermes_cli.mcp_config as mcp_config
-        from hermes_constants import get_hermes_home
+        from solpi_engine_constants import get_hermes_home
 
         (isolated_profiles["worker_beta"] / "config.yaml").write_text(
             "mcp_servers:\n  probe-srv:\n    url: http://x/sse\n",
@@ -449,7 +449,7 @@ class TestProfileScopedGateway:
         self, client, isolated_profiles, monkeypatch
     ):
         import hermes_cli.web_server as web_server
-        from hermes_constants import get_hermes_home
+        from solpi_engine_constants import get_hermes_home
 
         seen_homes = []
 

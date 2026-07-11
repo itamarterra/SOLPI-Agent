@@ -33,12 +33,12 @@ except ImportError:  # pragma: no cover - non-Windows
     msvcrt = None
 from datetime import datetime, timedelta
 from pathlib import Path
-from hermes_constants import get_hermes_home
+from solpi_engine_constants import get_hermes_home
 from typing import Optional, Dict, List, Any, Set, Tuple, Union
 
 logger = logging.getLogger(__name__)
 
-from hermes_time import now as _hermes_now
+from solpi_engine_time import now as _hermes_now
 from utils import atomic_replace
 
 try:
@@ -534,7 +534,7 @@ def parse_schedule(schedule: str) -> Dict[str, Any]:
             #
             # Anchor to the CONFIGURED Hermes timezone, not the server's local
             # timezone. The due-check (`get_due_jobs`) compares `next_run_at`
-            # against `hermes_time.now()`, which uses the configured zone. If a
+            # against `solpi_engine_time.now()`, which uses the configured zone. If a
             # naive "20:07" were interpreted as server-local (e.g. UTC) while
             # now() runs in Asia/Kolkata, the stored instant would land hours
             # off from the user's wall-clock intent — far enough that one-shots

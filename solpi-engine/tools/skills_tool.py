@@ -70,7 +70,7 @@ import json
 import logging
 import time
 
-from hermes_constants import get_hermes_home, display_hermes_home
+from solpi_engine_constants import get_hermes_home, display_hermes_home
 import os
 import re
 from enum import Enum

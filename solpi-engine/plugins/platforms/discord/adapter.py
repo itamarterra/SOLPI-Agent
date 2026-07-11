@@ -200,7 +200,7 @@ class _DiscordNonConversationalMessageTracker:
         self._ids: dict[str, None] = dict.fromkeys(self._load())
 
     def _state_path(self) -> _Path:
-        from hermes_constants import get_hermes_home
+        from solpi_engine_constants import get_hermes_home
 
         return (
             get_hermes_home()
@@ -1483,7 +1483,7 @@ class DiscordAdapter(BasePlatformAdapter):
         logger.info("[%s] Disconnected", self.name)
 
     def _command_sync_state_path(self) -> _Path:
-        from hermes_constants import get_hermes_home
+        from solpi_engine_constants import get_hermes_home
 
         directory = get_hermes_home() / _DISCORD_COMMAND_SYNC_STATE_SUBDIR
         try:
@@ -7136,7 +7136,7 @@ def _define_discord_view_classes() -> None:
 
             # Write response file
             try:
-                from hermes_constants import get_hermes_home
+                from solpi_engine_constants import get_hermes_home
                 home = get_hermes_home()
                 response_path = home / ".update_response"
                 tmp = response_path.with_suffix(".tmp")

@@ -1260,7 +1260,7 @@ def _build_child_agent(
         # instead of disabling thinking for children.
         delegation_effort = delegation_cfg.get("reasoning_effort")
         if delegation_effort or delegation_effort is False:
-            from hermes_constants import parse_reasoning_effort
+            from solpi_engine_constants import parse_reasoning_effort
 
             parsed = parse_reasoning_effort(delegation_effort)
             if parsed is not None:
@@ -1445,7 +1445,7 @@ def _dump_subagent_timeout_diagnostic(
     Returns the absolute path to the diagnostic file, or None on failure.
     """
     try:
-        from hermes_constants import get_hermes_home
+        from solpi_engine_constants import get_hermes_home
         import datetime as _dt
         import sys as _sys
         import traceback as _traceback
@@ -1579,7 +1579,7 @@ def _spill_summary_to_file(task_index: int, summary: str) -> Optional[str]:
     the trimmed head+tail is still returned to the parent regardless).
     """
     try:
-        from hermes_constants import get_hermes_dir
+        from solpi_engine_constants import get_hermes_dir
         import datetime as _dt
 
         cache_dir = get_hermes_dir("cache/delegation", "delegation_cache")

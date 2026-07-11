@@ -128,9 +128,9 @@ def test_validate_critical_files_syntax_detects_break_in_web_server(tmp_path):
 def test_validate_critical_files_syntax_tolerates_missing_files(tmp_path):
     """A refactor may legitimately remove one of the critical files — the
     guard should skip missing files, not falsely flag the install as broken."""
-    # Populate everything except hermes_constants.py
+    # Populate everything except solpi_engine_constants.py
     for relpath in hermes_main._UPDATE_CRITICAL_FILES:
-        if relpath == "hermes_constants.py":
+        if relpath == "solpi_engine_constants.py":
             continue
         path = tmp_path / relpath
         path.parent.mkdir(parents=True, exist_ok=True)

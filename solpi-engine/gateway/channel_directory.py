@@ -292,7 +292,7 @@ def _build_from_sessions_db(platform_name: str) -> List[Dict[str, str]]:
     """Pull channels/contacts from state.db gateway session rows."""
     entries: List[Dict[str, str]] = []
     try:
-        from hermes_state import SessionDB
+        from solpi_engine_state import SessionDB
         db = SessionDB()
         try:
             lister = getattr(db, "list_gateway_sessions", None)

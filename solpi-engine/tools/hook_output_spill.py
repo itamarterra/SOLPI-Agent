@@ -118,7 +118,7 @@ def _resolve_spill_dir(directory_override: Optional[str], session_id: Optional[s
         base = Path(os.path.expanduser(directory_override))
     else:
         try:
-            from hermes_constants import get_hermes_home
+            from solpi_engine_constants import get_hermes_home
             base = Path(get_hermes_home()) / "hook_outputs"
         except Exception:
             # Last-resort fallback: HERMES_HOME env var, then ~/.hermes

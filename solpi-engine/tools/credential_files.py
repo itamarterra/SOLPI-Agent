@@ -50,7 +50,7 @@ _config_files: List[Dict[str, str]] | None = None
 
 
 def _resolve_hermes_home() -> Path:
-    from hermes_constants import get_hermes_home
+    from solpi_engine_constants import get_hermes_home
     return get_hermes_home()
 
 
@@ -342,7 +342,7 @@ def iter_skills_files(
 # ---------------------------------------------------------------------------
 
 # The cache subdirectories that should be mirrored into remote backends.
-# Each tuple is (new_subpath, old_name) matching hermes_constants.get_hermes_dir().
+# Each tuple is (new_subpath, old_name) matching solpi_engine_constants.get_hermes_dir().
 _CACHE_DIRS: list[tuple[str, str]] = [
     ("cache/documents", "document_cache"),
     ("cache/images", "image_cache"),
@@ -363,7 +363,7 @@ def get_cache_directory_mounts(
     ``container_path`` keys.  The host path is resolved via
     ``get_hermes_dir()`` for backward compatibility with old directory layouts.
     """
-    from hermes_constants import get_hermes_dir
+    from solpi_engine_constants import get_hermes_dir
 
     mounts: List[Dict[str, str]] = []
     for new_subpath, old_name in _CACHE_DIRS:
@@ -455,7 +455,7 @@ def iter_cache_files(
     Used by Modal to upload files individually and resync before each command.
     Skips symlinks.  The container paths use the new ``cache/<subdir>`` layout.
     """
-    from hermes_constants import get_hermes_dir
+    from solpi_engine_constants import get_hermes_dir
 
     result: List[Dict[str, str]] = []
     for new_subpath, old_name in _CACHE_DIRS:

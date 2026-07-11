@@ -12,12 +12,12 @@ Usage:
     python cli.py --list-tools             # List available tools and exit
 """
 
-# IMPORTANT: hermes_bootstrap must be the very first import — UTF-8 stdio
-# on Windows.  No-op on POSIX.  See hermes_bootstrap.py for full rationale.
+# IMPORTANT: solpi_engine_bootstrap must be the very first import — UTF-8 stdio
+# on Windows.  No-op on POSIX.  See solpi_engine_bootstrap.py for full rationale.
 try:
-    import hermes_bootstrap  # noqa: F401
+    import solpi_engine_bootstrap  # noqa: F401
 except ModuleNotFoundError:
-    # Graceful fallback when hermes_bootstrap isn't registered in the venv
+    # Graceful fallback when solpi_engine_bootstrap isn't registered in the venv
     # yet — happens during partial ``hermes update`` where git-reset landed
     # new code but ``uv pip install -e .`` didn't finish.  Missing bootstrap
     # means UTF-8 stdio setup is skipped on Windows; POSIX is unaffected.
@@ -167,7 +167,7 @@ _COMMAND_SPINNER_FRAMES = ("⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧
 
 # Load .env from ~/.hermes/.env first, then project root as dev fallback.
 # User-managed env files should override stale shell exports on restart.
-from hermes_constants import get_hermes_home, display_hermes_home
+from solpi_engine_constants import get_hermes_home, display_hermes_home
 from hermes_cli.browser_connect import (
     DEFAULT_BROWSER_CDP_URL,
     is_browser_debug_ready,
@@ -340,7 +340,7 @@ def _parse_reasoning_config(effort) -> dict | None:
     Accepts the raw config value (string or YAML boolean — ``false``/``off``
     parse as thinking disabled, see parse_reasoning_effort).
     """
-    from hermes_constants import parse_reasoning_effort
+    from solpi_engine_constants import parse_reasoning_effort
     result = parse_reasoning_effort(effort)
     if effort and str(effort).strip() and result is None:
         logger.warning("Unknown reasoning_effort '%s', using default (medium)", effort)
@@ -733,7 +733,7 @@ CLI_CONFIG = load_cli_config()
 # Initialize centralized logging early — agent.log + errors.log in ~/.hermes/logs/.
 # This ensures CLI sessions produce a log trail even before AIAgent is instantiated.
 try:
-    from hermes_logging import setup_logging
+    from solpi_engine_logging import setup_logging
     setup_logging(mode="cli")
 except Exception:
     pass  # Logging setup is best-effort — don't crash the CLI
@@ -1781,7 +1781,7 @@ def _run_state_db_auto_maintenance(session_db) -> None:
         return
     try:
         from hermes_cli.config import load_config as _load_full_config
-        from hermes_constants import get_hermes_home as _get_hermes_home
+        from solpi_engine_constants import get_hermes_home as _get_hermes_home
         _hermes_home_maint = _get_hermes_home()
 
         # One-time prune of empty TUI ghost sessions.
@@ -2760,7 +2760,7 @@ _IMAGE_EXTENSIONS = frozenset({
 })
 
 
-from hermes_constants import is_termux as _is_termux_environment
+from solpi_engine_constants import is_termux as _is_termux_environment
 
 
 def _termux_example_image_path(filename: str = "cat.png") -> str:
@@ -3976,7 +3976,7 @@ class HermesCLI(CLIAgentSetupMixin, CLICommandsMixin):
         self._session_db = None
         self._session_db_unavailable = False
         try:
-            from hermes_state import SessionDB
+            from solpi_engine_state import SessionDB
             self._session_db = SessionDB()
         except Exception as e:
             # #41386: a failed session store means the transcript is NOT
@@ -6967,7 +6967,7 @@ class HermesCLI(CLIAgentSetupMixin, CLICommandsMixin):
         if getattr(self, "conversation_history", None):
             return False
         try:
-            from hermes_constants import get_hermes_home as _ghh
+            from solpi_engine_constants import get_hermes_home as _ghh
             return self._session_db.delete_session_if_empty(
                 session_id, sessions_dir=_ghh() / "sessions"
             )
@@ -7101,7 +7101,7 @@ class HermesCLI(CLIAgentSetupMixin, CLICommandsMixin):
                 except Exception:
                     pass
                 if title and self._session_db:
-                    from hermes_state import SessionDB
+                    from solpi_engine_state import SessionDB
                     try:
                         sanitized = SessionDB.sanitize_title(title)
                     except ValueError as e:
@@ -8570,7 +8570,7 @@ class HermesCLI(CLIAgentSetupMixin, CLICommandsMixin):
                     if self._session_db:
                         # Sanitize the title early so feedback matches what gets stored
                         try:
-                            from hermes_state import SessionDB
+                            from solpi_engine_state import SessionDB
                             new_title = SessionDB.sanitize_title(raw_title)
                         except ValueError as e:
                             _cprint(f"  {e}")
@@ -8596,7 +8596,7 @@ class HermesCLI(CLIAgentSetupMixin, CLICommandsMixin):
                                 self._pending_title = new_title
                                 _cprint(f"  Session title queued: {new_title} (will be saved on first message)")
                     else:
-                        from hermes_state import format_session_db_unavailable
+                        from solpi_engine_state import format_session_db_unavailable
                         _cprint(f"  {format_session_db_unavailable()}")
                 else:
                     _cprint("  Usage: /title <your session title>")
@@ -8611,7 +8611,7 @@ class HermesCLI(CLIAgentSetupMixin, CLICommandsMixin):
                 else:
                     _cprint("  No title set. Usage: /title <your session title>")
             else:
-                from hermes_state import format_session_db_unavailable
+                from solpi_engine_state import format_session_db_unavailable
                 _cprint(f"  {format_session_db_unavailable()}")
         elif canonical == "handoff":
             if not self._handle_handoff_command(cmd_original):
@@ -9724,7 +9724,7 @@ class HermesCLI(CLIAgentSetupMixin, CLICommandsMixin):
             # above the file handler level filters records before they
             # reach handlers, so agent.log / errors.log lose visibility
             # into stream-retry events, credential rotations, etc.
-            # Console quietness is enforced by hermes_logging not
+            # Console quietness is enforced by solpi_engine_logging not
             # installing a console StreamHandler in non-verbose mode.
 
     def _print_nous_credits_block(self) -> bool:
@@ -10476,7 +10476,7 @@ class HermesCLI(CLIAgentSetupMixin, CLICommandsMixin):
                 i += 1
 
         try:
-            from hermes_state import SessionDB
+            from solpi_engine_state import SessionDB
             from agent.insights import InsightsEngine
 
             db = SessionDB()
@@ -15627,7 +15627,7 @@ class HermesCLI(CLIAgentSetupMixin, CLICommandsMixin):
                 # and SQLite history. Ported from google-gemini/gemini-cli#19332.
                 if getattr(self, '_delete_session_on_exit', False):
                     try:
-                        from hermes_constants import get_hermes_home as _ghh
+                        from solpi_engine_constants import get_hermes_home as _ghh
                         _sessions_dir = _ghh() / "sessions"
                         _sid = self.agent.session_id
                         if self._session_db.delete_session(_sid, sessions_dir=_sessions_dir):

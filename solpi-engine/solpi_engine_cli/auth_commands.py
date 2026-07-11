@@ -29,7 +29,7 @@ from agent.credential_pool import (
 )
 import hermes_cli.auth as auth_mod
 from hermes_cli.auth import PROVIDER_REGISTRY
-from hermes_constants import OPENROUTER_BASE_URL
+from solpi_engine_constants import OPENROUTER_BASE_URL
 from hermes_cli.secret_prompt import masked_secret_prompt
 
 

@@ -223,7 +223,7 @@ class TestFinalizeSessionPersistE2E:
         never written to the DB) must be flushed to state.db when the WS
         disconnect tears the session down."""
         monkeypatch.setenv("HERMES_HOME", str(tmp_path / ".hermes"))
-        from hermes_state import SessionDB
+        from solpi_engine_state import SessionDB
         import tui_gateway.server as srv
 
         db = SessionDB(db_path=tmp_path / "state.db")
@@ -256,7 +256,7 @@ class TestFinalizeSessionPersistE2E:
         """A resumed session torn down before any new turn (its transcript is
         already durable in the DB) must NOT re-append duplicate rows."""
         monkeypatch.setenv("HERMES_HOME", str(tmp_path / ".hermes"))
-        from hermes_state import SessionDB
+        from solpi_engine_state import SessionDB
         import tui_gateway.server as srv
 
         db = SessionDB(db_path=tmp_path / "state.db")
@@ -293,7 +293,7 @@ class TestFinalizeSessionPersistE2E:
         can't catch a duplicate-write regression; this one drives a real flush.
         """
         monkeypatch.setenv("HERMES_HOME", str(tmp_path / ".hermes"))
-        from hermes_state import SessionDB
+        from solpi_engine_state import SessionDB
         import tui_gateway.server as srv
 
         db = SessionDB(db_path=tmp_path / "state.db")
