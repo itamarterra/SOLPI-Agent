@@ -4,30 +4,34 @@ from platform.bus import SOLPIServiceBus
 from platform.bios import SOLPIBIOS
 from platform.scheduler import SOLPITaskScheduler
 from platform.storage import SOLPIStorage
+from platform.topology import SOLPITopologyManager
+from platform.resources import SOLPIResourceManager
 
 class SOLPIKernel:
     """
-    PACOTE 0001: SOLPI-OS KERNEL v50.3
-    O Núcleo central da plataforma. Gerencia o ciclo de vida de todos os domínios.
-    Implementa BIOS, Service Bus, Scheduler e Storage.
+    PACOTE 0001: SOLPI-OS META KERNEL v60.0
+    Núcleo de Singularidade com Consciência de Topologia e Mercado de Recursos.
     """
     def __init__(self):
         self.start_time = datetime.now()
-        self.version = "50.3-ENTERPRISE"
+        self.version = "60.0-SINGULARITY"
         
-        # 1. Inicializa o Barramento de Serviços (Sistema Nervoso)
+        # 1. Sistema Nervoso e BIOS
         self.service_bus = SOLPIServiceBus(self)
         self.event_bus = self.service_bus
-        
-        # 2. Inicializa BIOS (Detecção de Hardware)
         self.bios = SOLPIBIOS(self)
         self.hardware = self.bios.boot_check()
         
-        # 3. Inicializa Scheduler e Storage
+        # 2. Infraestrutura Industrial (Blueprint 300)
+        self.topology = SOLPITopologyManager(self) # Architecture Graph
+        self.resources = SOLPIResourceManager(self) # Resource Market
         self.scheduler = SOLPITaskScheduler(self)
         self.storage = SOLPIStorage(self)
         
-        self.log_event("KERNEL", f"SOLPI-OS {self.version} Bootloader concluído.")
+        # 3. Mapeia a Arquitetura no Boot
+        self.malha = self.topology.scan_runtime_topology()
+        
+        self.log_event("KERNEL", f"SOLPI-OS {self.version} Meta-Kernel Ativo.")
 
     def log_event(self, layer, event):
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
