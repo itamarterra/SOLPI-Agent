@@ -23,7 +23,8 @@ class SOLPISupervisor:
             "SQL_EXPERT": "SQL_AGENT",
             "DEV_EXPERT": "DEV_AGENT",
             "VISION_EXPERT": "VISION_AGENT",
-            "KNOWLEDGE_EXPERT": "KNOWLEDGE_AGENT"
+            "KNOWLEDGE_EXPERT": "KNOWLEDGE_AGENT",
+            "HERMES": "HERMES_AGENT"
         }
         
         final_agent = mapping.get(agent_type, agent_type)

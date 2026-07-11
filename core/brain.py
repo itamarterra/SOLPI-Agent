@@ -37,6 +37,7 @@ from execution.agents.dev import DevAgent
 from execution.agents.vision import VisionAgent
 from execution.agents.sql import SQLAgent
 from execution.agents.knowledge import KnowledgeAgent
+from execution.agents.hermes import HermesAgent
 from execution.tools import AgentTools
 
 from operations.telemetry import SOLPITelemetryEngine
@@ -53,7 +54,7 @@ from developer.formatter import SOLPIFormatter
 
 class SOLPIBrain:
     """
-    INTERFACE OPERACIONAL v70.1 (Social Singularity)
+    INTERFACE OPERACIONAL v70.4 (Singularity Hermes)
     Cérebro orquestrado com foco em Diálogo e Execução Especializada.
     """
     def __init__(self):
@@ -110,6 +111,7 @@ class SOLPIBrain:
         self.vision_agent = VisionAgent(self)
         self.sql_agent = SQLAgent(self)
         self.knowledge_agent = KnowledgeAgent(self)
+        self.hermes_agent = HermesAgent(self) # 🟢 Hermes Agent v60
         
         # 5. DEVELOPER
         self.gateway = SOLPIGateway(self)
@@ -142,6 +144,7 @@ class SOLPIBrain:
             elif agent_type == "VISION_AGENT": return self.vision_agent.run(user_input)
             elif agent_type == "DEV_AGENT": return self.dev_agent.run(user_input)
             elif agent_type == "KNOWLEDGE_AGENT": return self.knowledge_agent.run(user_input)
+            elif agent_type == "HERMES_AGENT": return self.hermes_agent.run(user_input)
             
             # Se for Generalista, usamos o Inference Engine (CONVERSA REAL)
             return self.chat_logic(user_input)

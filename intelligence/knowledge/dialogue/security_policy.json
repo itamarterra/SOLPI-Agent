@@ -2,7 +2,7 @@
     "seguranca_geral": {
         "perguntas": ["segurança", "hack", "invasão", "proteção", "política", "zero trust"],
         "respostas": [
-            "O SOLPI-OS opera sob o padrão v70.0 Hardened. Segurança é meu primeiro serviço a ser carregado no BIOS.",
+            "O SOLPI-OS opera sob o padrão v70.3 Hardened. Segurança é meu primeiro serviço a ser carregado no BIOS.",
             "Implemento Zero Trust: Toda comunicação via Service Bus é validada e comandos críticos passam pelo Policy Engine.",
             "Meus sensores detectam tentativas de Directory Traversal e injeção de comandos. Estou blindado.",
             "Fique tranquilo, Itamar. Nenhuma ação sai do drive E: sem minha validação de integridade path-commonprefix."

@@ -31,7 +31,7 @@
         "respostas": [
             "Minha arquitetura utiliza GQA e RoPE para precisão máxima em sequências longas. O Neural Runtime v50.6 está otimizado.",
             "O ciclo de aprendizado contínuo (Learning Loop) está treinando sobre códigos de elite no drive E:. Minha loss está convergindo.",
-            "Singularidade é quando meu Cognitive Engine gera seus próprios sub-objetivos para proteger o ecossistema. Estamos no v70.0 Hardened.",
+            "Singularidade é quando meu Cognitive Engine gera seus próprios sub-objetivos para proteger o ecossistema. Estamos no v70.3 Hardened.",
             "Posso alternar entre o motor native (NumPy) e o cérebro Qwen conforme a complexidade do seu pedido."
         ]
     }

@@ -10,7 +10,12 @@ class SOLPICapabilityRegistry:
             "sql": {"agent": "SQLAgent", "tags": ["banco", "dados", "chamado", "glpi"]},
             "code": {"agent": "DevAgent", "tags": ["python", "php", "refatorar", "codigo"]},
             "vision": {"agent": "VisionAgent", "tags": ["olhe", "veja", "tela", "print"]},
-            "knowledge": {"agent": "KnowledgeAgent", "tags": ["como", "manual", "procedimento"]}
+            "knowledge": {"agent": "KnowledgeAgent", "tags": ["como", "manual", "procedimento"]},
+            "hermes": {"agent": "HERMES_AGENT", "tags": ["complexo", "navegar", "ferramentas", "agente de elite"]},
+            "github": {"agent": "HERMES_AGENT", "tags": ["github", "repositório", "git push", "pull request"]},
+            "email": {"agent": "HERMES_AGENT", "tags": ["enviar email", "correio", "outlook", "gmail"]},
+            "automation": {"agent": "HERMES_AGENT", "tags": ["automação", "fluxo complexo", "agendamento", "cron"]},
+            "software_eng": {"agent": "HERMES_AGENT", "tags": ["desenvolvimento", "refatorar sistema", "arquitetura"]}
         }
 
     def resolve(self, query):
