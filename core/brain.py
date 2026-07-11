@@ -12,6 +12,7 @@ from intelligence.cognitive import SOLPICognitiveEngine
 from intelligence.executive import SOLPIExecutiveFunction
 from intelligence.causal import SOLPICausalEngine
 from intelligence.architecture import SOLPISelfArchitecture
+from intelligence.hypothesis import SOLPIHypothesisEngine
 from execution.supervisor import SOLPISupervisor
 from execution.registry import SOLPICapabilityRegistry
 from execution.workflow import SOLPIWorkflowEngine
@@ -65,6 +66,7 @@ class SOLPIBrain:
         self.executive = SOLPIExecutiveFunction(self)
         self.causal = SOLPICausalEngine(self) # 🟢 Causal
         self.architecture = SOLPISelfArchitecture(self) # 🟢 Architecture
+        self.hypothesis = SOLPIHypothesisEngine(self) # 🟢 Hypothesis
         self.memory = AgentMemory()
         self.model_registry = SOLPIModelRegistry(self)
         self.inference_engine = SOLPIInferenceEngine(self)
