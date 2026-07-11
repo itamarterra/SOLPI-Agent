@@ -4,44 +4,40 @@ import random
 
 class SOLPISocialEngine:
     """
-    PACOTE 5900: SOCIAL ENGINE v1.0
-    Gerencia o Corpus de Diálogo (Perguntas e Respostas pré-definidas).
-    Garante que o SOLPI-OS responda de forma humana e consistente.
+    PACOTE 5900: SOCIAL DIALOGUE ENGINE v70.2
+    Gerencia a 'Área de Diálogo' baseada em bibliotecas JSON.
+    Permite customizar todas as perguntas e respostas do sistema.
     """
     def __init__(self, brain):
         self.brain = brain
-        self.corpus_path = "E:/SOLPI-Agent/intelligence/corpus/dialogue_base.json"
-        self.dialogue_data = {}
-        self.load_corpus()
+        self.dialogue_dir = "E:/SOLPI-Agent/intelligence/knowledge/dialogue"
+        self.knowledge_base = {}
+        self.load_dialogues()
 
-    def load_corpus(self):
-        """Carrega a base de perguntas e respostas do JSON."""
-        if os.path.exists(self.corpus_path):
-            with open(self.corpus_path, 'r', encoding='utf-8') as f:
-                self.dialogue_data = json.load(f)
+    def load_dialogues(self):
+        """Carrega os arquivos de diálogo JSON."""
+        if not os.path.exists(self.dialogue_dir):
+            os.makedirs(self.dialogue_dir, exist_ok=True)
+            return
+            
+        for file in os.listdir(self.dialogue_dir):
+            if file.endswith(".json"):
+                path = os.path.join(self.dialogue_dir, file)
+                try:
+                    with open(path, 'r', encoding='utf-8') as f:
+                        data = json.load(f)
+                        self.knowledge_base.update(data)
+                except Exception as e:
+                    self.brain.kernel.log_event("ERROR", f"Falha ao carregar diálogo {file}: {e}")
 
     def get_response(self, user_input):
-        """Tenta encontrar uma resposta mapeada para o input do usuário."""
-        input_low = user_input.lower()
+        """Busca se a pergunta do usuário está mapeada na biblioteca."""
+        input_low = user_input.lower().strip()
         
-        for category, data in self.dialogue_data.items():
-            # Verifica se alguma das perguntas gatilho está no input
-            if any(trigger in input_low for trigger in data["perguntas"]):
-                # Retorna uma resposta aleatória da categoria para não ser repetitivo
-                return random.choice(data["respostas"])
+        for category, content in self.knowledge_base.items():
+            # Verifica se alguma pergunta mapeada está no input do usuário
+            for p in content.get("perguntas", []):
+                if p.lower() in input_low:
+                    return random.choice(content["respostas"])
         
         return None
-
-    def add_to_corpus(self, category, trigger, response):
-        """Permite expandir o corpus dinamicamente."""
-        if category not in self.dialogue_data:
-            self.dialogue_data[category] = {"perguntas": [], "respostas": []}
-        
-        if trigger not in self.dialogue_data[category]["perguntas"]:
-            self.dialogue_data[category]["perguntas"].append(trigger)
-        if response not in self.dialogue_data[category]["respostas"]:
-            self.dialogue_data[category]["respostas"].append(response)
-            
-        with open(self.corpus_path, 'w', encoding='utf-8') as f:
-            json.dump(self.dialogue_data, f, indent=4, ensure_ascii=False)
-        return f"✅ Nova inteligência social adicionada à categoria {category}."
