@@ -19,7 +19,8 @@ class SOLPISemanticRouter:
             "INFRA_EXPERT": "status rede zabbix docker servidor infraestrutura porta conexão",
             "SQL_EXPERT": "listar chamados banco dados sql maria db ativos hardware usuários",
             "DEV_EXPERT": "código python php script erro correção programa algoritmo função",
-            "VISION_EXPERT": "tela screenshot print veja olhe captura visão imagem"
+            "VISION_EXPERT": "tela screenshot print veja olhe captura visão imagem",
+            "AUDITOR_AGENT": "auditoria sabedoria evolução progresso sistema relatório"
         }
         
         for expert, text in anchors.items():

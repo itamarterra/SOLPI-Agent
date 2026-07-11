@@ -2,8 +2,9 @@ from intelligence.router import SOLPISemanticRouter
 
 class SOLPISupervisor:
     """
-    PACOTE 1603: AGENT SUPERVISOR v50.0
+    PACOTE 1603: AGENT SUPERVISOR v80.3 (Elite Coordination)
     Coordenador de Agentes Especialistas no Domínio de Execução.
+    Hibridiza busca por Tags (Registry) e Roteamento Semântico.
     """
     def __init__(self, brain):
         self.brain = brain
@@ -11,13 +12,18 @@ class SOLPISupervisor:
         self.router = SOLPISemanticRouter(brain)
 
     def delegate(self, user_input):
-        """Delega a tarefa para o Agente mais apto via Roteamento Semântico."""
+        """Delega a tarefa para o Agente mais apto."""
         self.kernel.log_event("SUPERVISOR", f"Analisando delegação: {user_input[:20]}")
         
-        # 1. Roteamento Inteligente
+        # 1. Tenta correspondência exata por TAGS via Registry (Prioridade Alta)
+        agent_from_registry = self.brain.capability_registry.resolve(user_input)
+        if agent_from_registry != "GENERALIST":
+            return agent_from_registry, "Identificado via assinatura de Tags (Registry)."
+        
+        # 2. Roteamento Inteligente (Similaridade Vetorial)
         agent_type, reason = self.router.route(user_input)
         
-        # 2. Mapeamento para nomes de Agentes v50.0
+        # 3. Mapeamento para nomes de Agentes v80
         mapping = {
             "INFRA_EXPERT": "INFRA_AGENT",
             "SQL_EXPERT": "SQL_AGENT",
