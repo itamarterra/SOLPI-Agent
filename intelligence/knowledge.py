@@ -1,51 +1,56 @@
 import os
 import requests
+import hashlib
 from bs4 import BeautifulSoup
 
 class KnowledgeEngine:
     """
-    MOTOR DE INGESTÃO DE CONHECIMENTO v40.0
-    Transforma arquivos e sites em inteligência local no drive E:.
+    MOTOR DE INGESTÃO E INDEXAÇÃO v80.3
+    Transforma arquivos, códigos e sites em Memória Semântica de Longo Prazo.
+    Gerencia o "Cérebro de Pesquisa" no drive E:.
     """
     def __init__(self, brain, knowledge_dir="E:/SOLPI-RESEARCH"):
         self.brain = brain
         self.knowledge_dir = knowledge_dir
+        self.index = {} # Hash -> Metadata
         if not os.path.exists(self.knowledge_dir):
             os.makedirs(self.knowledge_dir, exist_ok=True)
+        self._build_index()
 
-    def download_site(self, url, name):
-        """Baixa o conteúdo de um site e salva como inteligência."""
-        print(f"📥 [KNOWLEDGE]: Baixando conteúdo de {url}...")
-        try:
-            res = requests.get(url, timeout=15, headers={'User-Agent': 'SOLPI-Bot'})
-            soup = BeautifulSoup(res.text, 'html.parser')
-            
-            # Remove lixo (scripts, styles)
-            for script in soup(["script", "style"]):
-                script.decompose()
-            
-            text = soup.get_text(separator='\n')
-            # Limpa linhas vazias
-            clean_text = "\n".join([line.strip() for line in text.splitlines() if line.strip()])
-            
-            file_path = os.path.join(self.knowledge_dir, f"{name}.txt")
-            with open(file_path, "w", encoding="utf-8") as f:
-                f.write(f"FONTE: {url}\n\n" + clean_text)
-            
-            return f"✅ Conhecimento '{name}' absorvido com sucesso!"
-        except Exception as e:
-            return f"❌ Falha ao baixar conteúdo: {str(e)}"
+    def _build_index(self):
+        """Mapeia todos os arquivos técnicos no drive E:."""
+        self.brain.kernel.log_event("KNOWLEDGE", "Indexando base de conhecimento técnica...")
+        for root, _, files in os.walk(self.knowledge_dir):
+            for f in files:
+                if f.endswith(('.py', '.txt', '.md', '.json')):
+                    path = os.path.join(root, f)
+                    file_hash = hashlib.md5(path.encode()).hexdigest()
+                    self.index[file_hash] = {
+                        "name": f,
+                        "path": path,
+                        "size": os.path.getsize(path)
+                    }
+
+    def query_engine_intelligence(self, query):
+        """Busca profunda no SOLPI-ENGINE e em Skills."""
+        self.brain.kernel.log_event("RAG", f"Pesquisando contexto para: {query[:20]}")
+        results = []
+        
+        # Busca prioritária em skills e core
+        search_paths = ["E:/SOLPI-Agent/skills", "E:/SOLPI-Agent/core"]
+        
+        for sp in search_paths:
+            if os.path.exists(sp):
+                for root, _, files in os.walk(sp):
+                    for f in files:
+                        if f.endswith('.py'):
+                            with open(os.path.join(root, f), 'r', encoding='utf-8', errors='ignore') as content:
+                                text = content.read()
+                                if query.lower() in text.lower():
+                                    results.append(f"🔍 Encontrado no código ({f}):\n{text[:300]}...")
+        
+        return results if results else ["Nenhuma referência direta encontrada no núcleo."]
 
     def get_local_intelligence(self, query):
-        """Busca palavras-chave nos arquivos baixados."""
-        relevant_chunks = []
-        files = [f for f in os.listdir(self.knowledge_dir) if f.endswith(".txt")]
-        
-        for file in files:
-            with open(os.path.join(self.knowledge_dir, file), "r", encoding="utf-8") as f:
-                content = f.read()
-                if query.lower() in content.lower():
-                    # Pega um pedaço do texto ao redor do termo
-                    relevant_chunks.append(f"📚 Do arquivo {file}:\n{content[:500]}...")
-        
-        return relevant_chunks
+        """Interface RAG padrão."""
+        return self.query_engine_intelligence(query)
