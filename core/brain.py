@@ -25,6 +25,7 @@ from core.context_engine import SOLPIContextEngine
 from core.executor import SOLPIExecutor
 from core.storage_layer import SOLPIStorageLayer
 from core.evaluation_engine import SOLPIEvaluationEngine
+from core.feature_store import SOLPIFeatureStore
 from core.experts import InfraExpert, DevExpert, KnowledgeExpert, SQLExpert, VisionExpert
 from core.formatter import SOLPIFormatter
 from core.persona import SOLPIPersona
@@ -55,7 +56,8 @@ class SOLPIBrain:
         self.context_engine = SOLPIContextEngine(self)
         self.executor = SOLPIExecutor(self)
         self.storage = SOLPIStorageLayer(self)
-        self.evaluation = SOLPIEvaluationEngine(self) # 🟢 Evaluation
+        self.evaluation = SOLPIEvaluationEngine(self)
+        self.feature_store = SOLPIFeatureStore(self)   # 🟢 Feature Store
         
         self.event_bus = self.kernel.event_bus
         self.reflection = SOLPIReflectionEngine(self.kernel)
@@ -104,32 +106,39 @@ class SOLPIBrain:
         # 4. REFLECTION AUDIT
         self.reflection.audit_moe_routing(self.native_core.moe.routing_stats)
 
-        # 5. COMPILAÇÃO DE PROMPT (v40.2)
+        # 5. COMPILAÇÃO DE PROMPT
         compiled_prompt = self.prompt_compiler.compile(user_input, expert_type, reason)
 
-        # 6. VALIDAÇÃO DE POLÍTICAS (v40.2)
-        allowed, message = self.policy_engine.validate_action("PROMPT_INPUT", user_input)
-        if not allowed:
-            return self.formatter.format_response("SECURITY", f"❌ Bloqueio de Política: {message}", "Violação de Governança.")
-
-        # 7. EXECUÇÃO VIA ESPECIALISTA COM FORMATAÇÃO
-        response_content = ""
-        expert_name = expert_type
+        # 🟢 OTIMIZAÇÃO VIA FEATURE STORE (v40.7)
+        # Se o pedido for idêntico, o Feature Store retorna a resposta anterior instantaneamente
+        response_content = self.feature_store.get_feature(user_input)
         
-        if expert_type == "INFRA_EXPERT":
-            response_content = self.infra_expert.run()
-        elif expert_type == "DEV_EXPERT":
-            response_content = self.dev_expert.run(user_input)
-        elif expert_type == "KNOWLEDGE_EXPERT":
-            response_content = self.knowledge_expert.run(user_input)
-        elif expert_type == "SQL_EXPERT":
-            response_content = self.sql_expert.run(user_input)
-        elif expert_type == "VISION_EXPERT":
-            response_content = self.vision_expert.run(user_input)
+        if response_content:
+            response_content = response_content["data"]
         else:
-            expert_name = "ORQUESTRADOR"
-            search_res = self.tools.search(user_input)
-            response_content = "🔍 Buscando informações externas:\n" + "\n".join(search_res[:2])
+            # 6. VALIDAÇÃO DE POLÍTICAS
+            allowed, message = self.policy_engine.validate_action("PROMPT_INPUT", user_input)
+            if not allowed:
+                return self.formatter.format_response("SECURITY", f"❌ Bloqueio de Política: {message}", "Violação de Governança.")
+
+            # 7. EXECUÇÃO VIA ESPECIALISTA (Se não houver no cache)
+            if expert_type == "INFRA_EXPERT":
+                response_content = self.infra_expert.run()
+            elif expert_type == "DEV_EXPERT":
+                response_content = self.dev_expert.run(user_input)
+            elif expert_type == "KNOWLEDGE_EXPERT":
+                response_content = self.knowledge_expert.run(user_input)
+            elif expert_type == "SQL_EXPERT":
+                response_content = self.sql_expert.run(user_input)
+            elif expert_type == "VISION_EXPERT":
+                response_content = self.vision_expert.run(user_input)
+            else:
+                expert_name = "ORQUESTRADOR"
+                search_res = self.tools.search(user_input)
+                response_content = "🔍 Buscando informações externas:\n" + "\n".join(search_res[:2])
+            
+            # Salva no Feature Store para a próxima vez
+            self.feature_store.save_feature(user_input, response_content)
 
         # Aplica a formatação final "Perfect Communication"
         final_response = self.formatter.format_response(expert_name, response_content, reason)
