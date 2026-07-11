@@ -2,7 +2,7 @@ import os
 import time
 import threading
 
-from core.kernel import SOLPIKernel
+from platform.kernel import SOLPIKernel
 from execution.supervisor import SOLPISupervisor
 from core.memory import AgentMemory
 from core.tools import AgentTools
@@ -17,7 +17,6 @@ from core.learning_loop import SOLPILearningLoop
 from core.predictor import SOLPIPredictor
 from core.model_registry import SOLPIModelRegistry
 from execution.registry import SOLPICapabilityRegistry
-from core.scheduler import SOLPIScheduler
 from core.state_manager import SOLPIStateManager
 from core.prompt_compiler import SOLPIPromptCompiler
 from core.policy_engine import SOLPIPolicyEngine
@@ -25,7 +24,6 @@ from core.inference_engine import SOLPIInferenceEngine
 from intelligence.rag import SOLPIRAG
 from intelligence.context import SOLPIContextEngine
 from execution.workflow import SOLPIWorkflowEngine
-from core.storage_layer import SOLPIStorageLayer
 from intelligence.evaluation import SOLPIEvaluationEngine
 from core.feature_store import SOLPIFeatureStore
 from execution.agents.infra import InfraAgent
@@ -38,14 +36,17 @@ from core.persona import SOLPIPersona
 
 class SOLPIBrain:
     """
-    INTERFACE OPERACIONAL v50.2 (Domain-Driven Architecture)
-    Cérebro orquestrado via domínios de Intelligence e Execution.
+    INTERFACE OPERACIONAL v50.3 (Platform Integrated)
+    Cérebro orquestrado via domínios Platform, Intelligence e Execution.
     """
     def __init__(self):
+        # 1. PLATFORM DOMAIN
         self.kernel = SOLPIKernel()
         self.service_bus = self.kernel.service_bus
-        self.event_bus = self.kernel.event_bus
+        self.scheduler = self.kernel.scheduler
+        self.storage = self.kernel.storage
         
+        # 2. CORE ENGINES
         self.memory = AgentMemory()
         self.tools = AgentTools()
         self.telemetry = SOLPITelemetry()
@@ -53,40 +54,37 @@ class SOLPIBrain:
         self.native_core = SOLPINeuralRuntime()
         self.model_loader = SOLPIModelLoader(self)
         
-        # Infraestrutura de Plataforma
+        # 3. INTELLIGENCE DOMAIN
         self.model_registry = SOLPIModelRegistry(self)
-        self.capability_registry = SOLPICapabilityRegistry(self)
         self.state_manager = SOLPIStateManager(self)
-        self.scheduler = SOLPIScheduler(self)
         self.prompt_compiler = SOLPIPromptCompiler(self)
         self.policy_engine = SOLPIPolicyEngine(self)
         self.inference_engine = SOLPIInferenceEngine(self)
         self.rag = SOLPIRAG(self)
         self.context_engine = SOLPIContextEngine(self)
-        self.workflow = SOLPIWorkflowEngine(self)
-        self.storage = SOLPIStorageLayer(self)
         self.evaluation = SOLPIEvaluationEngine(self)
         self.feature_store = SOLPIFeatureStore(self)
-        
         self.reflection = SOLPIReflectionEngine(self.kernel)
-        self.twin = SOLPIDigitalTwin(self)
         self.evolution = EvolutionEngine(self)
         self.learning = SOLPILearningLoop(self)
-        self.supervisor = SOLPISupervisor(self)
-        self.formatter = SOLPIFormatter()
         self.predictor = SOLPIPredictor(self)
         
-        # Inscrições no Service Bus
-        self._setup_bus_subscriptions()
+        # 4. EXECUTION DOMAIN
+        self.capability_registry = SOLPICapabilityRegistry(self)
+        self.workflow = SOLPIWorkflowEngine(self)
+        self.supervisor = SOLPISupervisor(self)
+        self.formatter = SOLPIFormatter()
         
-        # Agentes Especialistas (Execution Domain v50.2)
+        # Especialistas Instanciados
         self.infra_agent = InfraAgent(self)
         self.dev_agent = DevAgent(self)
         self.vision_agent = VisionAgent(self)
         self.sql_agent = SQLAgent(self)
         self.knowledge_agent = KnowledgeAgent(self)
         
-        self.scheduler.start(num_workers=2)
+        # Start Background Services
+        self._setup_bus_subscriptions()
+        self.scheduler.start(workers=2)
         self.scheduler.schedule(self.learning.start, priority=5, name="ContinuousLearning")
 
     def _setup_bus_subscriptions(self):
@@ -97,7 +95,6 @@ class SOLPIBrain:
     def process(self, user_input):
         start_time = time.time()
         self.state_manager.transition_to("THINKING")
-        
         self.service_bus.publish("BRAIN", "MEMORY_UPDATE", {"role": "user", "content": user_input})
         
         tokens_count = len(user_input.split())
@@ -106,14 +103,10 @@ class SOLPIBrain:
         if any(x in user_input.lower() for x in ["stats", "performance"]):
             return self.formatter.format_response("TELEMETRY", str(self.telemetry.get_stats()))
 
-        if "twin" in user_input.lower():
-            return self.formatter.format_response("DIGITAL_TWIN", self.twin.get_3d_payload())
-
-        # Roteamento e Compilação
+        # Execution Flow
         agent_type, reason = self.supervisor.delegate(user_input)
         compiled_prompt = self.prompt_compiler.compile(user_input, agent_type, reason)
 
-        # Otimização Feature Store
         response_content = self.feature_store.get_feature(user_input)
         if response_content:
             response_content = response_content["data"]
