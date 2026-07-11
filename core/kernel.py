@@ -2,20 +2,21 @@ import os
 import time
 from datetime import datetime
 
-from core.event_bus import SOLPIEventBus
+from core.service_bus import SOLPIServiceBus
 
 class SOLPIKernel:
     """
-    KERNEL DO SOLPI-OS v40.0
-    Gerencia recursos, permissões e barramento de eventos.
+    KERNEL DO SOLPI-OS v40.7
+    Gerencia recursos, permissões e Barramento de Serviços de IA.
     """
     def __init__(self):
         self.start_time = datetime.now()
-        self.version = "40.0-ENTERPRISE"
+        self.version = "40.7-ENTERPRISE"
         self.active_agents = []
         self.permissions_level = "ADMIN"
-        self.event_bus = SOLPIEventBus(self) # Inicializa o barramento
-        self.event_bus.start_listening()
+        # Inicializa o AI Service Bus (v40.7)
+        self.service_bus = SOLPIServiceBus(self)
+        self.event_bus = self.service_bus # Alias para compatibilidade
         
     def log_event(self, layer, event):
         """Camada 9: Observabilidade com proteção contra flood."""
