@@ -48,7 +48,7 @@ class SOLPIGatewayHandler(BaseHTTPRequestHandler):
         msg = request.get("data", {}).get("message", {})
         if "buttonsResponseMessage" in msg:
             btn_id = msg["buttonsResponseMessage"]["selectedButtonId"]
-            SOLPIGateway.brain.kernel.service_bus.publish("WHATSAPP", "BUTTON_CLICK", {"id": btn_id})
+            SOLPIGateway.brain.kernel.service_bus.publish("BUTTON_CLICK", {"id": btn_id}, sender="WHATSAPP")
 
     def _serve_html_dashboard(self):
         """Serve a interface 3D do Digital Twin."""

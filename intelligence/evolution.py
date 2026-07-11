@@ -1,7 +1,7 @@
 import os
 import time
-from core.skills import SkillManager
-from core.researcher import SOLPIResearcher
+from execution.skills import SkillManager
+from intelligence.researcher import SOLPIResearcher
 
 class EvolutionEngine:
     """

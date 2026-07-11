@@ -72,7 +72,7 @@ class AgentTools:
     @staticmethod
     def self_audit():
         """O Agente verifica se ele e seu ambiente estão saudáveis."""
-        from core.self_healing import SelfHealingEngine
+        from operations.self_healing import SelfHealingEngine
         healer = SelfHealingEngine(AgentTools)
         
         report = []

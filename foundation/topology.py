@@ -20,7 +20,7 @@ class SOLPITopologyManager:
         self.kernel.log_event("TOPOLOGY", "Iniciando mapeamento da malha de módulos...")
         
         base_path = "E:/SOLPI-Agent"
-        domains = ["platform", "intelligence", "execution", "operations", "developer"]
+        domains = ["foundation", "intelligence", "execution", "operations", "developer"]
         
         for domain in domains:
             domain_path = os.path.join(base_path, domain)

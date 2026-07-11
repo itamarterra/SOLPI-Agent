@@ -1,4 +1,4 @@
-from core.semantic_router import SOLPISemanticRouter
+from intelligence.router import SOLPISemanticRouter
 
 class SOLPISupervisor:
     """

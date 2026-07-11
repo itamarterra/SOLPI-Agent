@@ -27,4 +27,4 @@ class SOLPIReflectionEngine:
             f.write(json.dumps(entry) + "\n")
             
         if status != "STABLE":
-            self.kernel.service_bus.publish("REFLECTION", "TRAINING_ANOMALY", entry)
+            self.kernel.service_bus.publish("TRAINING_ANOMALY", entry, sender="REFLECTION")

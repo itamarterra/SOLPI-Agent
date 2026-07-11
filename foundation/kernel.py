@@ -1,11 +1,11 @@
 import os
 from datetime import datetime
-from platform.bus import SOLPIServiceBus
-from platform.bios import SOLPIBIOS
-from platform.scheduler import SOLPITaskScheduler
-from platform.storage import SOLPIStorage
-from platform.topology import SOLPITopologyManager
-from platform.resources import SOLPIResourceManager
+from foundation.bus import SOLPIServiceBus
+from foundation.bios import SOLPIBIOS
+from foundation.scheduler import SOLPITaskScheduler
+from foundation.storage import SOLPIStorage
+from foundation.topology import SOLPITopologyManager
+from foundation.resources import SOLPIResourceManager
 
 class SOLPIKernel:
     """

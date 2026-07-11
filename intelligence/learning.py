@@ -1,6 +1,6 @@
 import os
 import time
-from core.trainer import SOLPITrainer
+from intelligence.trainer import SOLPITrainer
 
 class SOLPILearningLoop:
     """

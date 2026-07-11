@@ -30,8 +30,8 @@ class SOLPISemanticRouter:
         tokens = self.brain.native_core.tokenizer.encode(text)
         if not tokens: return np.zeros(self.brain.native_core.config.EMBED_DIM)
         
-        # Pega os embeddings dos tokens do NativeCore
-        token_vecs = self.brain.native_core.embeddings[tokens]
+        # Pega os embeddings dos tokens do NeuralRuntime v50
+        token_vecs = self.brain.native_core.embedding_engine.weights[tokens]
         return np.mean(token_vecs, axis=0)
 
     def route(self, user_input):

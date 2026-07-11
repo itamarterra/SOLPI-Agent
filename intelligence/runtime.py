@@ -4,7 +4,7 @@ from intelligence.layers.embeddings import SOLPIEmbeddingEngine
 from intelligence.layers.attention import SOLPIAttentionEngine
 from intelligence.layers.norm import SOLPIRMSNorm
 from intelligence.layers.feed_forward import SOLPIFeedForward
-from core.config import SOLPIConfig
+from foundation.config import SOLPIConfig
 
 class SOLPITransformerBlock:
     """Bloco Transformer Completo (Attention + FeedForward + Residual + Norm)"""

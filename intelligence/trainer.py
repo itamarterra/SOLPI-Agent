@@ -1,8 +1,8 @@
 import os
 import time
 import numpy as np
-from core.loss import SOLPICrossEntropyLoss
-from core.optimizer import SOLPIAdamW
+from intelligence.layers.loss import SOLPICrossEntropyLoss
+from intelligence.layers.optimizer import SOLPIAdamW
 
 class SOLPITrainer:
     """
