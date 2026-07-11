@@ -12,16 +12,19 @@ class SOLPIStorage:
         if not os.path.exists(self.base_dir): os.makedirs(self.base_dir, exist_ok=True)
 
     def write_json(self, domain, name, data):
-        path = os.path.join(self.base_dir, domain)
+        # 🟢 Validação de Path Traversal (v70.0)
+        safe_path = self.kernel.security.validate_path(self.base_dir, os.path.join(domain, f"{name}.json"))
+        
+        path = os.path.dirname(safe_path)
         if not os.path.exists(path): os.makedirs(path, exist_ok=True)
-        file = os.path.join(path, f"{name}.json")
-        with open(file, 'w', encoding='utf-8') as f:
+        
+        with open(safe_path, 'w', encoding='utf-8') as f:
             json.dump(data, f, indent=4)
-        return file
+        return safe_path
 
     def read_json(self, domain, name):
-        file = os.path.join(self.base_dir, domain, f"{name}.json")
-        if os.path.exists(file):
-            with open(file, 'r', encoding='utf-8') as f:
+        safe_path = self.kernel.security.validate_path(self.base_dir, os.path.join(domain, f"{name}.json"))
+        if os.path.exists(safe_path):
+            with open(safe_path, 'r', encoding='utf-8') as f:
                 return json.load(f)
         return None

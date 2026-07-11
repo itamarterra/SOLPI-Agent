@@ -6,17 +6,21 @@ from foundation.scheduler import SOLPITaskScheduler
 from foundation.storage import SOLPIStorage
 from foundation.topology import SOLPITopologyManager
 from foundation.resources import SOLPIResourceManager
+from foundation.security import SOLPISecurity
 
 class SOLPIKernel:
     """
-    PACOTE 0001: SOLPI-OS META KERNEL v60.0
-    Núcleo de Singularidade com Consciência de Topologia e Mercado de Recursos.
+    PACOTE 0001: SOLPI-OS META KERNEL v70.0 (Hardened)
+    Núcleo de Singularidade com Segurança Nativa e Zero Trust.
     """
     def __init__(self):
         self.start_time = datetime.now()
-        self.version = "60.0-SINGULARITY"
+        self.version = "70.0-SECURE"
         
-        # 1. Sistema Nervoso e BIOS
+        # 1. Inicializa Segurança ANTES de tudo
+        self.security = SOLPISecurity(self)
+        
+        # 2. Inicializa Barramento e BIOS
         self.service_bus = SOLPIServiceBus(self)
         self.event_bus = self.service_bus
         self.bios = SOLPIBIOS(self)

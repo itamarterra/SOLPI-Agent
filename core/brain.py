@@ -17,6 +17,7 @@ from intelligence.causal import SOLPICausalEngine
 from intelligence.architecture import SOLPISelfArchitecture
 from intelligence.hypothesis import SOLPIHypothesisEngine
 from intelligence.trust import SOLPITrustNetwork
+from intelligence.guardrails import SOLPIGuardrails
 from intelligence.process_manager import SOLPICognitiveProcessManager
 from intelligence.memory import AgentMemory
 from intelligence.model_registry import SOLPIModelRegistry
@@ -78,6 +79,7 @@ class SOLPIBrain:
         self.architecture = SOLPISelfArchitecture(self)
         self.hypothesis = SOLPIHypothesisEngine(self)
         self.trust = SOLPITrustNetwork(self)
+        self.guardrails = SOLPIGuardrails(self) # 🟢 AI Guardrails
         self.process_manager = SOLPICognitiveProcessManager(self)
         self.memory = AgentMemory()
         self.model_registry = SOLPIModelRegistry(self)
@@ -126,6 +128,11 @@ class SOLPIBrain:
         self.service_bus.subscribe("TRAINING_ANOMALY", lambda msg: self.self_repair.diagnose_and_fix(msg.payload))
 
     def process(self, user_input):
+        # 1. AI Guardrails Check (v70.0 Hardened)
+        safe, msg = self.guardrails.scan_prompt(user_input)
+        if not safe:
+            return self.formatter.format_response("SECURITY", msg, "Bloqueio preventivo de Prompt Injection.")
+
         start_time = time.time()
         pid = self.process_manager.spawn_thought(f"Query: {user_input[:15]}", "EXECUTION")
         
