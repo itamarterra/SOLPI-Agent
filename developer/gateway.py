@@ -29,6 +29,10 @@ class SOLPIGatewayHandler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(json.dumps(res).encode())
 
+    def log_message(self, format, *args):
+        """Silencia os logs do servidor HTTP no console para manter o chat limpo."""
+        pass
+
     def _serve_json_metrics(self):
         self.send_response(200)
         self.send_header('Content-type', 'application/json')

@@ -3,7 +3,7 @@ TITLE SOLPI-OS SINGULARITY BOOTLOADER
 COLOR 0A
 SET PYTHONPATH=%~dp0
 echo ---------------------------------------------------------
-echo 🚀 SOLPI-OS SINGULARITY v70.6 (Enterprise Elite)
+echo 🚀 SOLPI-OS SINGULARITY v80.2 (Elite Engine)
 echo ---------------------------------------------------------
 echo [BOOT]: Local: %~dp0
 echo [BOOT]: Verificando Ambiente Virtual...

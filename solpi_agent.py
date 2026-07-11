@@ -2,16 +2,20 @@ import os
 import threading
 import time
 import sys
+import subprocess
 from dotenv import load_dotenv
 
 # Adiciona o diretório atual ao path
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-# 🟢 IMPORTANTE: Forçamos o uso do .venv se ele existir
-venv_python = os.path.join(os.getcwd(), ".venv", "Scripts", "python.exe")
+# 🟢 AUTO-RECOVERY: Se não estivermos no .venv, tentamos re-lançar o script usando o venv correto
+venv_python = os.path.abspath(os.path.join(os.path.dirname(__file__), ".venv", "Scripts", "python.exe"))
 if os.path.exists(venv_python) and sys.executable.lower() != venv_python.lower():
-    # Se não estamos no venv, mas ele existe, algo está errado (o .bat deveria ter cuidado disso)
-    pass
+    print("🔄 Detectado lançamento fora do ambiente virtual. Redirecionando...")
+    # Garante que o processo filho rode no diretório correto do projeto
+    os.chdir(os.path.dirname(os.path.abspath(__file__)))
+    subprocess.run([venv_python] + sys.argv, cwd=os.getcwd())
+    sys.exit()
 
 try:
     from core.brain import SOLPIBrain
