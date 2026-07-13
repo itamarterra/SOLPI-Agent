@@ -41,6 +41,7 @@ from execution.agents.vision import VisionAgent
 from execution.agents.sql import SQLAgent
 from execution.agents.knowledge import KnowledgeAgent
 from execution.agents.engine_agent import SolpiEngineAgent
+from execution.agents.integration import IntegrationAgent
 from execution.tools import AgentTools
 
 from operations.telemetry import SOLPITelemetryEngine
@@ -117,6 +118,7 @@ class SOLPIBrain:
         self.sql_agent = SQLAgent(self)
         self.knowledge_agent = KnowledgeAgent(self)
         self.solpi_engine_agent = SolpiEngineAgent(self) # 🟢 SOLPI Engine v60
+        self.integration_agent = IntegrationAgent(self)
         
         # 5. DEVELOPER
         self.gateway = SOLPIGateway(self)
@@ -129,10 +131,16 @@ class SOLPIBrain:
         self.neural_vm = NeuralVM(self)
         
         self._setup_bus_subscriptions()
-        self.scheduler.start(workers=2)
+        self.scheduler.start(workers=3)
         
         # Agenda o primeiro Auto-Audit de Sabedoria para 1 minuto após o boot
         self.scheduler.schedule(self.wisdom_auditor.run_audit, priority=5, name="WisdomAudit")
+        
+        # Inicia o Ciclo de Aprendizado Global (v80.2)
+        # Rodando em thread separada para não bloquear o Kernel
+        learning_thread = threading.Thread(target=self.learning.start, daemon=True)
+        learning_thread.start()
+
 
     def _setup_bus_subscriptions(self):
         self.service_bus.subscribe("MEMORY_UPDATE", lambda msg: self.memory.add_episodic(msg.payload["role"], msg.payload["content"]))
@@ -157,7 +165,9 @@ class SOLPIBrain:
             elif agent_type == "DEV_AGENT": return self.dev_agent.run(user_input)
             elif agent_type == "KNOWLEDGE_AGENT": return self.knowledge_agent.run(user_input)
             elif agent_type == "SOLPI_ENGINE_AGENT": return self.solpi_engine_agent.run(user_input)
+            elif agent_type == "INTEGRATION_AGENT": return self.integration_agent.run(user_input)
             elif agent_type == "AUDITOR_AGENT": return self.wisdom_auditor.run_audit()
+            elif agent_type == "REFLECTION_AGENT": return self.reflection.reflect_on_communication(self)
             
             return self.chat_logic(user_input)
 

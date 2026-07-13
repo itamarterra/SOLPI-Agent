@@ -1,3 +1,6 @@
+import os
+
+
 class SOLPIConfig:
     """
     CONFIGURAÇÃO DA IA v25.0 (Etapa 3 do Guia)
@@ -18,9 +21,9 @@ class SOLPIConfig:
     
     # Caminhos e Modelos (Fase 1 - Enterprise)
     MODEL_TYPE = "transformers"
-    MODEL_PATH = "E:/SOLPI-MODELS/qwen"
+    MODEL_PATH = os.getenv("SOLPI_MODEL_PATH", "E:/SOLPI-MODELS/qwen")
     DEVICE = "auto"
     
     # Caminhos
     WEIGHTS_PATH = "brain_weights.npy"
-    KNOWLEDGE_DIR = "E:/SOLPI-RESEARCH" # Usa a biblioteca de elite como base RAG
+    KNOWLEDGE_DIR = os.getenv("SOLPI_KNOWLEDGE_DIR", "E:/SOLPI-RESEARCH")

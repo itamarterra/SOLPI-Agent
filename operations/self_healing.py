@@ -25,8 +25,16 @@ class SelfHealingEngine:
         self.tools.speak("Detectei falha no banco de dados. Tentando reiniciar o container de infraestrutura.")
         # Tenta reiniciar via Docker Compose na pasta oficial
         try:
-            cmd = "cd C:/SOLPI/SOLPI-main/glpi && docker compose restart glpi-db"
-            res = subprocess.run(cmd, shell=True, capture_output=True, text=True)
+            compose_dir = os.getenv("SOLPI_GLPI_COMPOSE_DIR")
+            if not compose_dir:
+                return "⚠️ Reparo não executado: SOLPI_GLPI_COMPOSE_DIR não configurado."
+            res = subprocess.run(
+                ["docker", "compose", "restart", "glpi-db"],
+                cwd=compose_dir,
+                capture_output=True,
+                text=True,
+                timeout=60,
+            )
             if res.returncode == 0:
                 return "✅ Sucesso: O Banco de Dados foi reiniciado com sucesso."
             return f"❌ Falha ao reiniciar: {res.stderr}"

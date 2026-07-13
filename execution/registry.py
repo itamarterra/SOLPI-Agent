@@ -1,11 +1,13 @@
 class SOLPICapabilityRegistry:
     """
-    PACOTE 8100: CAPABILITY REGISTRY v50.0
+    PACOTE 8100: CAPABILITY REGISTRY v80.2 (Elite Precision)
     Catálogo central de Habilidades dos Agentes (O "Who is Who").
     """
     def __init__(self, brain):
         self.brain = brain
         self.capabilities = {
+            "reflection": {"agent": "REFLECTION_AGENT", "tags": ["reflexão", "auto-reflexão", "analisar interação", "melhorar comunicação"]},
+            "glpi_integration": {"agent": "INTEGRATION_AGENT", "tags": ["dashboard", "métricas", "metricas", "worker", "fila de integração", "fila de integracao", "processar integração", "processar integracao"]},
             "infra": {"agent": "INFRA_AGENT", "tags": ["servidor", "zabbix", "docker", "rede"]},
             "sql": {"agent": "SQL_AGENT", "tags": ["banco", "dados", "chamado", "glpi"]},
             "code": {"agent": "DEV_AGENT", "tags": ["python", "php", "refatorar", "codigo"]},

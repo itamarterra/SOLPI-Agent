@@ -25,10 +25,10 @@ class SolpiEngineAgent(BaseAgent):
         super().__init__(brain)
         self.engine = None
         if AIAgent:
-            # Inicializa o motor com as configurações de modelo do SOLPI
+            # Inicializa o motor
+            # Ele vai ler automaticamente do config.yaml
             self.engine = AIAgent(
-                model=self.brain.config.MODEL_PATH,
-                enabled_toolsets=["research", "development", "web", "terminal"]
+                enabled_toolsets=["web", "terminal"]
             )
 
     def run(self, task):

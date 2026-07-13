@@ -17,6 +17,16 @@ numpy
 screeninfo
 lxml
 
+# --- Inferência local ---
+torch
+transformers
+accelerate
+safetensors
+sentencepiece
+peft
+trl
+datasets
+
 # --- Hermes Engine Integrated Dependencies ---
 openai==2.24.0
 tenacity==9.1.4

@@ -14,8 +14,8 @@ if os.path.exists(venv_python) and sys.executable.lower() != venv_python.lower()
     print("🔄 Detectado lançamento fora do ambiente virtual. Redirecionando...")
     # Garante que o processo filho rode no diretório correto do projeto
     os.chdir(os.path.dirname(os.path.abspath(__file__)))
-    subprocess.run([venv_python] + sys.argv, cwd=os.getcwd())
-    sys.exit()
+    result = subprocess.run([venv_python] + sys.argv, cwd=os.getcwd())
+    sys.exit(result.returncode)
 
 try:
     from core.brain import SOLPIBrain
@@ -35,7 +35,7 @@ load_dotenv()
 
 class SOLPIOS:
     """
-    SOLPI-OS: ENTERPRISE AI OPERATING SYSTEM v70.6 (Singularity Elite)
+    SOLPI-OS: ENTERPRISE AI OPERATING SYSTEM v80.2 (Singularity Elite)
     Interface Terminal Minimalista e Conversacional.
     """
     def __init__(self):
@@ -68,16 +68,16 @@ class SOLPIOS:
             try:
                 # Entrada do Usuário com estilo
                 user_input = input(f"\033[1;36m👤 Itamar:\033[0m ").strip()
-                
+
                 if not user_input: continue
-                if user_input.lower() in ['sair', 'exit', 'shutdown', 'stop']: 
+                if user_input.lower() in ['sair', 'exit', 'shutdown', 'stop']:
                     print("\nEncerrando consciência SOLPI... Até logo, Arquiteto.")
                     self.active = False
                     break
                 
                 # Feedback de pensamento discreto
                 print("\033[1;30m🧠 Pensando...\033[0m", end="\r")
-                
+
                 # Processamento
                 response = self.brain.process(user_input)
                 
@@ -85,7 +85,7 @@ class SOLPIOS:
                 print(" " * 40, end="\r")
                 print(f"{response}\n")
 
-            except KeyboardInterrupt: 
+            except KeyboardInterrupt:
                 print("\nEncerrando via teclado...")
                 break
             except Exception as e: 

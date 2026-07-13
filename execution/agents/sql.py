@@ -1,5 +1,5 @@
-import pymysql
 from execution.agents.base import BaseAgent
+from execution.tools import AgentTools
 
 class SQLAgent(BaseAgent):
     """
@@ -20,7 +20,7 @@ class SQLAgent(BaseAgent):
 
     def _exec(self, sql, label):
         try:
-            conn = pymysql.connect(host='localhost', port=3306, user='glpi', password='glpi', database='glpi')
+            conn = AgentTools._db_connection()
             with conn.cursor() as cur:
                 cur.execute(sql)
                 rows = cur.fetchall()
